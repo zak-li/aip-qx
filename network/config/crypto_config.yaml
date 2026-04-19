@@ -1,0 +1,21 @@
+PeerOrgs:
+  - Name: BNPParibas
+    Domain: bnpparibas.finance-trust.com
+    EnableNodeOUs: true
+    Template:
+      Count: 1
+    Users:
+      Count: 3
+  - Name: AMFRegulateur
+    Domain: amf-regulateur.finance-trust.com
+    EnableNodeOUs: true
+    Template:
+      Count: 1
+    Users:
+      Count: 2
+OrdererOrgs:
+  - Name: Orderer
+    Domain: finance-trust.com
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: orderer

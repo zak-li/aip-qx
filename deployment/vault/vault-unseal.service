@@ -1,0 +1,14 @@
+[Unit]
+Description=HashiCorp Vault - Auto Unseal
+After=vault.service
+Requires=vault.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/bash -c "sleep 3 && VAULT_ADDR=http://127.0.0.1:8200 vault operator unseal $(cat /etc/vault.d/unseal.key)"
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

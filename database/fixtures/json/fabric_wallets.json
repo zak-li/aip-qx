@@ -1,0 +1,253 @@
+{
+  "wallets": [
+    {
+      "identity_label": "thomas.martin@bnpparibas.com",
+      "mspId": "BNPParibasMSP",
+      "type": "X.509",
+      "version": 1,
+      "common_name": "thomas.martin",
+      "organizational_unit": "Capital-Markets",
+      "organization": "BNPParibasMSP",
+      "locality": "Paris",
+      "country": "FR",
+      "cert_serial": "SN-BNP-PEER-A1B2C3D4E5F6",
+      "cert_issued": "2025-01-10",
+      "cert_expires": "2026-01-10",
+      "attributes": {
+        "role": "EMETTEUR",
+        "department": "Capital Markets",
+        "habilitation_amf": "true",
+        "max_tx_amount_eur": "100000000",
+        "allowed_asset_types": "OBLIGATION OPCVM DERIVE INFRASTRUCTURE"
+      }
+    },
+    {
+      "identity_label": "claire.dupuis@bnpparibas.com",
+      "mspId": "BNPParibasMSP",
+      "type": "X.509",
+      "version": 1,
+      "common_name": "claire.dupuis",
+      "organizational_unit": "Compliance-AML",
+      "organization": "BNPParibasMSP",
+      "locality": "Paris",
+      "country": "FR",
+      "cert_serial": "SN-BNP-PEER-B2C3D4E5F6A1",
+      "cert_issued": "2025-01-10",
+      "cert_expires": "2026-01-10",
+      "attributes": {
+        "role": "COMPLIANCE_OFFICER",
+        "department": "Compliance et AML",
+        "can_review_kyc": "true",
+        "can_approve_kyc": "true",
+        "max_tx_amount_eur": "0"
+      }
+    },
+    {
+      "identity_label": "alexandre.leroy@socgen.com",
+      "mspId": "SocieteGeneraleMSP",
+      "type": "X.509",
+      "version": 1,
+      "common_name": "alexandre.leroy",
+      "organizational_unit": "Fixed-Income-Trading",
+      "organization": "SocieteGeneraleMSP",
+      "locality": "Paris",
+      "country": "FR",
+      "cert_serial": "SN-SG-PEER-C3D4E5F6A1B2",
+      "cert_issued": "2025-02-15",
+      "cert_expires": "2026-02-15",
+      "attributes": {
+        "role": "TRADER",
+        "department": "Fixed Income Trading",
+        "cfa_certified": "true",
+        "max_tx_amount_eur": "50000000",
+        "allowed_asset_types": "OBLIGATION DERIVE MATIERE_PREMIERE"
+      }
+    },
+    {
+      "identity_label": "isabelle.fontaine@socgen.com",
+      "mspId": "SocieteGeneraleMSP",
+      "type": "X.509",
+      "version": 1,
+      "common_name": "isabelle.fontaine",
+      "organizational_unit": "Digital-Assets",
+      "organization": "SocieteGeneraleMSP",
+      "locality": "Paris",
+      "country": "FR",
+      "cert_serial": "SN-SG-PEER-D4E5F6A1B2C3",
+      "cert_issued": "2025-02-15",
+      "cert_expires": "2026-02-15",
+      "attributes": {
+        "role": "EMETTEUR",
+        "department": "Digital Assets Issuance",
+        "max_tx_amount_eur": "150000000",
+        "allowed_asset_types": "OBLIGATION OPCVM PRIVATE_EQUITY"
+      }
+    },
+    {
+      "identity_label": "pierre.moreau@axa-im.com",
+      "mspId": "AXAInvestmentMSP",
+      "type": "X.509",
+      "version": 1,
+      "common_name": "pierre.moreau",
+      "organizational_unit": "Alternative-Investments",
+      "organization": "AXAInvestmentMSP",
+      "locality": "Paris",
+      "country": "FR",
+      "cert_serial": "SN-AXA-PEER-E5F6A1B2C3D4",
+      "cert_issued": "2025-03-01",
+      "cert_expires": "2026-03-01",
+      "attributes": {
+        "role": "CUSTODIAN",
+        "department": "Alternative Investments",
+        "max_tx_amount_eur": "200000000",
+        "allowed_asset_types": "OPCVM IMMOBILIER PRIVATE_EQUITY MATIERE_PREMIERE"
+      }
+    },
+    {
+      "identity_label": "sophie.lambert@amf-france.org",
+      "mspId": "AMFRegulateurMSP",
+      "type": "X.509",
+      "version": 1,
+      "common_name": "sophie.lambert",
+      "organizational_unit": "Finance-Numerique",
+      "organization": "AMFRegulateurMSP",
+      "locality": "Paris",
+      "country": "FR",
+      "cert_serial": "SN-AMF-PEER-F6A1B2C3D4E5",
+      "cert_issued": "2025-01-05",
+      "cert_expires": "2026-01-05",
+      "attributes": {
+        "role": "REGULATEUR",
+        "department": "Division Finance Numerique",
+        "can_freeze": "true",
+        "can_audit_all": "true",
+        "can_degel": "true",
+        "authority_ref": "AMF-HABILITATION-2025-011"
+      }
+    },
+    {
+      "identity_label": "marc.bernard@amf-france.org",
+      "mspId": "AMFRegulateurMSP",
+      "type": "X.509",
+      "version": 1,
+      "common_name": "marc.bernard",
+      "organizational_unit": "Audit-Controle",
+      "organization": "AMFRegulateurMSP",
+      "locality": "Paris",
+      "country": "FR",
+      "cert_serial": "SN-AMF-PEER-A1B2C3D4E5F7",
+      "cert_issued": "2025-01-05",
+      "cert_expires": "2026-01-05",
+      "attributes": {
+        "role": "AUDITEUR",
+        "department": "Audit et Controle DeFi",
+        "can_audit_all": "true",
+        "can_freeze": "false",
+        "authority_ref": "AMF-HABILITATION-2025-008"
+      }
+    },
+    {
+      "identity_label": "nathalie.simon@caceis.com",
+      "mspId": "CACEISCustodianMSP",
+      "type": "X.509",
+      "version": 1,
+      "common_name": "nathalie.simon",
+      "organizational_unit": "Digital-Custody",
+      "organization": "CACEISCustodianMSP",
+      "locality": "Paris",
+      "country": "FR",
+      "cert_serial": "SN-CAC-PEER-B2C3D4E5F6A2",
+      "cert_issued": "2025-04-01",
+      "cert_expires": "2026-04-01",
+      "attributes": {
+        "role": "CUSTODIAN",
+        "department": "Digital Custody Operations",
+        "max_tx_amount_eur": "500000000",
+        "allowed_asset_types": "OBLIGATION OPCVM IMMOBILIER MATIERE_PREMIERE INFRASTRUCTURE"
+      }
+    },
+    {
+      "identity_label": "james.wilson@natwestmarkets.com",
+      "mspId": "NatWestMarketsMSP",
+      "type": "X.509",
+      "version": 1,
+      "common_name": "james.wilson",
+      "organizational_unit": "Rates-Credit",
+      "organization": "NatWestMarketsMSP",
+      "locality": "London",
+      "country": "GB",
+      "cert_serial": "SN-NW-PEER-C3D4E5F6A1B3",
+      "cert_issued": "2025-05-01",
+      "cert_expires": "2026-05-01",
+      "attributes": {
+        "role": "TRADER",
+        "department": "Rates and Credit",
+        "fca_number": "738038",
+        "max_tx_amount_eur": "25000000",
+        "allowed_asset_types": "OBLIGATION DERIVE MATIERE_PREMIERE",
+        "enhanced_monitoring": "true"
+      }
+    },
+    {
+      "identity_label": "francois.pichon@banque-france.fr",
+      "mspId": "BanqueDeFranceMSP",
+      "type": "X.509",
+      "version": 1,
+      "common_name": "francois.pichon",
+      "organizational_unit": "Laboratoire-Fintech",
+      "organization": "BanqueDeFranceMSP",
+      "locality": "Paris",
+      "country": "FR",
+      "cert_serial": "SN-BDF-PEER-D4E5F6A1B2C4",
+      "cert_issued": "2023-12-01",
+      "cert_expires": "2025-12-01",
+      "attributes": {
+        "role": "SUPER_ADMIN",
+        "department": "Laboratoire Fintech",
+        "cbdc_access": "true",
+        "can_freeze": "true",
+        "can_audit_all": "true",
+        "max_tx_amount_eur": "UNLIMITED",
+        "allowed_asset_types": "OBLIGATION INFRASTRUCTURE MATIERE_PREMIERE"
+      }
+    }
+  ],
+  "ca_servers": [
+    {
+      "mspId": "BNPParibasMSP",
+      "ca_name": "ca-bnpparibas",
+      "ca_host": "ca.bnpparibas.finance-trust.com",
+      "ca_port": 7054,
+      "tls_enabled": true,
+      "admin_user": "admin",
+      "admin_department": "IT Infrastructure"
+    },
+    {
+      "mspId": "SocieteGeneraleMSP",
+      "ca_name": "ca-socgen",
+      "ca_host": "ca.socgen.finance-trust.com",
+      "ca_port": 7064,
+      "tls_enabled": true,
+      "admin_user": "admin",
+      "admin_department": "IT Infrastructure"
+    },
+    {
+      "mspId": "AMFRegulateurMSP",
+      "ca_name": "ca-amf-regulateur",
+      "ca_host": "ca.amf-regulateur.finance-trust.com",
+      "ca_port": 7094,
+      "tls_enabled": true,
+      "admin_user": "admin",
+      "admin_department": "DSI AMF"
+    },
+    {
+      "mspId": "BanqueDeFranceMSP",
+      "ca_name": "ca-bdf",
+      "ca_host": "ca.bdf.finance-trust.com",
+      "ca_port": 7084,
+      "tls_enabled": true,
+      "admin_user": "admin",
+      "admin_department": "DSI Banque de France"
+    }
+  ]
+}

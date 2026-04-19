@@ -1,0 +1,173 @@
+peer:
+  id: peer0
+  networkId: rwa-network
+  listenAddress: 0.0.0.0:7051
+  chaincodeListenAddress: 0.0.0.0:7052
+  address: peer0.bnpparibas.finance-trust.com:7051
+  addressAutoDetect: false
+  keepalive:
+    interval: 7200s
+    timeout: 20s
+    minInterval: 60s
+    client:
+      interval: 60s
+      timeout: 20s
+    deliveryClient:
+      interval: 60s
+      timeout: 20s
+  gossip:
+    bootstrap: peer0.bnpparibas.finance-trust.com:7051
+    useLeaderElection: true
+    orgLeader: false
+    membershipTrackerInterval: 5s
+    endpoint:
+    maxBlockCountToStore: 100
+    maxPropagationBurstLatency: 10ms
+    maxPropagationBurstSize: 10
+    propagateIterations: 1
+    propagatePeerNum: 3
+    pullInterval: 4s
+    pullPeerNum: 3
+    requestStateInfoInterval: 4s
+    publishStateInfoInterval: 4s
+    stateInfoRetentionInterval:
+    publishCertPeriod: 10s
+    skipBlockVerification: false
+    dialTimeout: 3s
+    connTimeout: 2s
+    recvBuffSize: 20
+    sendBuffSize: 200
+    digestWaitTime: 1s
+    requestWaitTime: 1500ms
+    responseWaitTime: 2s
+    aliveTimeInterval: 5s
+    aliveExpirationTimeout: 25s
+    reconnectInterval: 25s
+    externalEndpoint: peer0.bnpparibas.finance-trust.com:7051
+    election:
+      startupGracePeriod: 15s
+      membershipSampleInterval: 1s
+      leaderAliveThreshold: 10s
+      leaderElectionDuration: 5s
+    pvtData:
+      pullRetryThreshold: 60s
+      transientstoreMaxBlockRetention: 1000
+      pushAckTimeout: 3s
+      btlPullMargin: 10
+      reconcileBatchSize: 10
+      reconcileSleepInterval: 1m
+      reconciliationEnabled: true
+      skipPullingInvalidTransactionsDuringCommit: false
+    state:
+      enabled: false
+  tls:
+    enabled: true
+    clientAuthRequired: false
+    cert:
+      file: /etc/hyperledger/fabric/tls/server.crt
+    key:
+      file: /etc/hyperledger/fabric/tls/server.key
+    rootcert:
+      file: /etc/hyperledger/fabric/tls/ca.crt
+  authentication:
+    timewindow: 15m
+  fileSystemPath: /var/hyperledger/production
+  BCCSP:
+    Default: SW
+    SW:
+      Hash: SHA2
+      Security: 256
+      FileKeyStore:
+        KeyStore:
+  mspConfigPath: /etc/hyperledger/fabric/msp
+  localMspId: BNPParibasMSP
+  client:
+    connTimeout: 3s
+  deliveryclient:
+    reconnectTotalTimeThreshold: 3600s
+    connTimeout: 3s
+    reConnectBackoffThreshold: 3600s
+  localMspType: bccsp
+  profile:
+    enabled: false
+    listenAddress: 0.0.0.0:6060
+  handlers:
+    authFilters:
+      - name: DefaultAuth
+      - name: ExpirationCheck
+    decorators:
+      - name: DefaultDecorator
+    endorsers:
+      escc:
+        name: DefaultEndorsement
+        library:
+    validators:
+      vscc:
+        name: DefaultValidation
+        library:
+  discovery:
+    enabled: true
+    authCacheEnabled: true
+    authCacheMaxSize: 1000
+    authCachePurgeRetentionRatio: 0.75
+    orgMembersAllowedAccess: false
+  limits:
+    concurrency:
+      endorserService: 2500
+      deliverService: 2500
+
+chaincode:
+  pull: false
+  externalBuilders:
+    - name: ccaas_builder
+      path: /opt/hyperledger/ccaas_builder
+      propagateEnvironment:
+        - CHAINCODE_SERVER_ADDRESS
+        - CHAINCODE_ID
+        - CORE_CHAINCODE_ID_NAME
+  installTimeout: 300s
+  startuptimeout: 300s
+  executetimeout: 30s
+  mode: net
+  keepalive: 0
+  system:
+    _lifecycle: enable
+    cscc: enable
+    lscc: enable
+    qscc: enable
+  logging:
+    level: info
+    shim: warning
+    format: '%{color}%{time:2006-01-02 15:04:05.000 MST} [%{module}] %{shortfunc} -> %{level:.4s} %{id:03x}%{color:reset} %{message}'
+
+ledger:
+  blockchain:
+  state:
+    stateDatabase: CouchDB
+    totalQueryLimit: 100000
+    couchDBConfig:
+      couchDBAddress: couchdb.bnp:5984
+      username: admin
+      password: adminpw
+      maxRetries: 3
+      maxRetriesOnStartup: 12
+      requestTimeout: 35s
+      internalQueryLimit: 1000
+      maxBatchUpdateSize: 1000
+      warmIndexesAfterNBlocks: 1
+      createGlobalChangesDB: false
+      cacheSize: 64
+  history:
+    enableHistoryDatabase: true
+  pvtdataStore:
+    collElgProcMaxDbBatchSize: 5000
+    collElgProcDbBatchesInterval: 1000
+    deprioritizedDataReconcilerInterval: 60m
+
+operations:
+  listenAddress: 0.0.0.0:9444
+  tls:
+    enabled: false
+
+metrics:
+  provider: disabled

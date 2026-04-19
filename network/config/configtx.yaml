@@ -1,0 +1,139 @@
+Organizations:
+  - &OrdererOrg
+    Name: OrdererMSP
+    ID: OrdererMSP
+    MSPDir: ../crypto-config/ordererOrganizations/finance-trust.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('OrdererMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('OrdererMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('OrdererMSP.admin')"
+
+  - &BNPParibas
+    Name: BNPParibasMSP
+    ID: BNPParibasMSP
+    MSPDir: ../crypto-config/peerOrganizations/bnpparibas.finance-trust.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('BNPParibasMSP.admin', 'BNPParibasMSP.peer', 'BNPParibasMSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('BNPParibasMSP.admin', 'BNPParibasMSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('BNPParibasMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('BNPParibasMSP.peer')"
+
+  - &AMFRegulateur
+    Name: AMFRegulateurMSP
+    ID: AMFRegulateurMSP
+    MSPDir: ../crypto-config/peerOrganizations/amf-regulateur.finance-trust.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('AMFRegulateurMSP.admin', 'AMFRegulateurMSP.peer', 'AMFRegulateurMSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('AMFRegulateurMSP.admin', 'AMFRegulateurMSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('AMFRegulateurMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('AMFRegulateurMSP.peer')"
+
+Capabilities:
+  Channel: &ChannelCapabilities
+    V2_0: true
+  Orderer: &OrdererCapabilities
+    V2_0: true
+  Application: &ApplicationCapabilities
+    V2_5: true
+
+Application: &ApplicationDefaults
+  Organizations:
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+    LifecycleEndorsement:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Endorsement"
+    Endorsement:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Endorsement"
+  Capabilities:
+    <<: *ApplicationCapabilities
+
+Orderer: &OrdererDefaults
+  OrdererType: etcdraft
+  Addresses:
+    - orderer.finance-trust.com:7050
+  EtcdRaft:
+    Consenters:
+      - Host: orderer.finance-trust.com
+        Port: 7050
+        ClientTLSCert: ../crypto-config/ordererOrganizations/finance-trust.com/orderers/orderer.finance-trust.com/tls/server.crt
+        ServerTLSCert: ../crypto-config/ordererOrganizations/finance-trust.com/orderers/orderer.finance-trust.com/tls/server.crt
+  BatchTimeout: 2s
+  BatchSize:
+    MaxMessageCount: 10
+    AbsoluteMaxBytes: 99 MB
+    PreferredMaxBytes: 512 KB
+  Organizations:
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+    BlockValidation:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+  Capabilities:
+    <<: *OrdererCapabilities
+
+Channel: &ChannelDefaults
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+  Capabilities:
+    <<: *ChannelCapabilities
+
+Profiles:
+  RWAGenesis:
+    <<: *ChannelDefaults
+    Orderer:
+      <<: *OrdererDefaults
+      Organizations:
+        - *OrdererOrg
+    Application:
+      <<: *ApplicationDefaults
+      Organizations:
+        - *BNPParibas
+        - *AMFRegulateur

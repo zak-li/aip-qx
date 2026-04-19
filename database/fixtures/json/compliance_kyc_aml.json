@@ -1,0 +1,360 @@
+{
+  "participants": [
+    {
+      "user_id": "10000000-0000-0000-0000-000000000001",
+      "name": "Thomas Martin",
+      "aml_indicators": {
+        "jurisdiction_risk": 0.04,
+        "cross_border_activity": 0.04,
+        "unusual_volume": 0.05
+      }
+    },
+    {
+      "user_id": "10000000-0000-0000-0000-000000000003",
+      "name": "Jamez Wilzon",
+      "aml_indicators": {
+        "jurisdiction_risk": 0.1,
+        "cross_border_activity": 0.1,
+        "unusual_volume": 0.0633
+      }
+    },
+    {
+      "user_id": "a0000011-0011-0011-0011-000000000011",
+      "name": "Zakaria Rahali",
+      "aml_indicators": {
+        "jurisdiction_risk": 0.07,
+        "cross_border_activity": 0.12,
+        "unusual_volume": 0.06
+      }
+    },
+    {
+      "user_id": "a0000012-0012-0012-0012-000000000012",
+      "name": "Aya Belakhouad",
+      "aml_indicators": {
+        "jurisdiction_risk": 0.05,
+        "cross_border_activity": 0.06,
+        "unusual_volume": 0.04
+      }
+    },
+    {
+      "user_id": "a0000013-0013-0013-0013-000000000013",
+      "name": "Youssef Alami",
+      "aml_indicators": {
+        "jurisdiction_risk": 0.07,
+        "cross_border_activity": 0.14,
+        "unusual_volume": 0.08
+      }
+    },
+    {
+      "user_id": "a0000014-0014-0014-0014-000000000014",
+      "name": "Fatima Zahra Benali",
+      "aml_indicators": {
+        "jurisdiction_risk": 0.05,
+        "cross_border_activity": 0.05,
+        "unusual_volume": 0.04
+      }
+    },
+    {
+      "user_id": "a0000015-0015-0015-0015-000000000015",
+      "name": "Mehdi Tahiri",
+      "aml_indicators": {
+        "jurisdiction_risk": 0.05,
+        "cross_border_activity": 0.07,
+        "unusual_volume": 0.05
+      }
+    }
+  ],
+  "kyc_submissions": [
+    {
+      "submission_id": "KYC-SUB-2025-BNP-TM-001",
+      "participant_ref": "u0000001-0001-0001-0001-000000000001",
+      "participant_name": "Thomas Martin",
+      "organisation": "BNP Paribas",
+      "submitted_at": "2025-03-01 09:00:00",
+      "provider": "Acuris Risk Intelligence",
+      "provider_ref": "ARI-KYC-2025-BNP-TM-003841",
+      "kyc_level": 3,
+      "identity": {
+        "legal_name": "Thomas Jean-Pierre Martin",
+        "date_of_birth": "1982-07-14",
+        "nationality": "FR",
+        "place_of_birth": "Paris 15eme arrondissement",
+        "address": {
+          "street": "12 Rue de la Paix",
+          "city": "Paris",
+          "postal_code": "75002",
+          "country": "FR"
+        }
+      },
+      "documents": [
+        {
+          "type": "PASSEPORT",
+          "number": "25AA12345",
+          "issuing_authority": "Prefecture de Police de Paris",
+          "issue_date": "2020-06-14",
+          "expiry_date": "2030-06-14",
+          "issuing_country": "FR",
+          "verified": true,
+          "verification_method": "NFC_CHIP_READ FACIAL_BIOMETRIC"
+        },
+        {
+          "type": "JUSTIFICATIF_DOMICILE",
+          "subtype": "FACTURE_EDF",
+          "issue_date": "2025-02-01",
+          "issuer": "EDF",
+          "verified": true
+        },
+        {
+          "type": "CONTRAT_TRAVAIL",
+          "issuer": "BNP Paribas S.A.",
+          "issue_date": "2018-09-01",
+          "verified": true
+        }
+      ],
+      "employer_verification": {
+        "employer": "BNP Paribas S.A.",
+        "lei": "R0MUWSFPU8MPRO8K5P83",
+        "department": "Capital Markets Tokenization",
+        "position": "Head of Digital Asset Issuance",
+        "employee_since": "2018-09-01",
+        "annual_income_range": "EUR_200K_500K",
+        "verified": true,
+        "verification_method": "DIRECT_EMPLOYER_CONFIRMATION"
+      },
+      "result": {
+        "status": "APPROUVE",
+        "risk_score": 0.042,
+        "risk_category": "FAIBLE",
+        "expires_at": "2026-03-01",
+        "flags": [],
+        "approved_at": "2025-03-01 10:30:00"
+      }
+    },
+    {
+      "submission_id": "KYC-SUB-2025-NW-JW-001",
+      "participant_ref": "u0000009-0009-0009-0009-000000000009",
+      "participant_name": "Jamez Wilzon",
+      "organisation": "NatWest Markets",
+      "submitted_at": "2025-02-28 09:00:00",
+      "provider": "LexisNexis Risk Solutions",
+      "provider_ref": "LNRS-KYC-2025-NW-JW-002219",
+      "kyc_level": 3,
+      "identity": {
+        "legal_name": "James Edward Wilson",
+        "date_of_birth": "1985-04-22",
+        "nationality": "GB",
+        "place_of_birth": "London EC2",
+        "address": {
+          "street": "8 Canada Square",
+          "city": "London",
+          "postal_code": "E14 5HQ",
+          "country": "GB"
+        }
+      },
+      "documents": [
+        {
+          "type": "UK_PASSPORT",
+          "number": "GB-2023-PP-532441",
+          "issue_date": "2023-01-10",
+          "expiry_date": "2033-01-10",
+          "issuing_country": "GB",
+          "verified": true,
+          "verification_method": "NFC_CHIP_READ FACIAL_BIOMETRIC"
+        },
+        {
+          "type": "PROOF_OF_ADDRESS",
+          "subtype": "UTILITY_BILL",
+          "issue_date": "2025-03-01",
+          "verified": true
+        },
+        {
+          "type": "REGULATORY_REGISTRATION",
+          "subtype": "FCA_REGISTRATION",
+          "number": "738038",
+          "issuing_authority": "Financial Conduct Authority",
+          "verified": true
+        }
+      ],
+      "employer_verification": {
+        "employer": "NatWest Markets Plc",
+        "lei": "8IBZUGJ7JPLH368JE346",
+        "department": "Rates and Credit Trading",
+        "position": "Senior Rates Trader",
+        "employee_since": "2019-03-15",
+        "annual_income_range": "GBP_150K_400K",
+        "verified": true,
+        "verification_method": "DIRECT_EMPLOYER_CONFIRMATION"
+      },
+      "result": {
+        "status": "APPROUVE",
+        "risk_score": 0.089,
+        "risk_category": "FAIBLE",
+        "expires_at": "2026-02-28",
+        "flags": ["CROSS_BORDER_ACTIVITY", "HIGH_VALUE_TRANSACTIONS"],
+        "monitoring_level": "ENHANCED",
+        "approved_at": "2025-02-28 11:00:00"
+      }
+    }
+  ],
+  "aml_screenings": [
+    {
+      "screening_id": "AML-SCR-2025-BNP-TM-003841",
+      "participant_ref": "u0000001-0001-0001-0001-000000000001",
+      "participant_name": "Thomas Martin",
+      "screened_at": "2025-03-01 10:00:00",
+      "provider": "Acuris Risk Intelligence",
+      "screening_type": "FULL_REFRESH",
+      "lists_checked": [
+        {"list": "OFAC_SDN",                    "version": "2025-02-28", "hit": false},
+        {"list": "OFAC_CONSOLIDATED",            "version": "2025-02-28", "hit": false},
+        {"list": "UN_CONSOLIDATED",              "version": "2025-02-27", "hit": false},
+        {"list": "EU_CONSOLIDATED",              "version": "2025-02-26", "hit": false},
+        {"list": "UK_HMT_FINANCIAL_SANCTIONS",   "version": "2025-02-28", "hit": false},
+        {"list": "PEP_TIER_1",                   "hit": false},
+        {"list": "PEP_TIER_2",                   "hit": false},
+        {"list": "PEP_TIER_3",                   "hit": false},
+        {"list": "ADVERSE_MEDIA_FINANCIAL_CRIME","hit": false},
+        {"list": "ADVERSE_MEDIA_REGULATORY",     "hit": false}
+      ],
+      "risk_indicators": {
+        "high_risk_jurisdiction": false,
+        "politically_exposed_person": false,
+        "state_owned_entity": false,
+        "arms_dealer": false,
+        "virtual_asset_service_provider": false
+      },
+      "final_risk_score": 0.042,
+      "risk_category": "FAIBLE",
+      "recommendation": "APPROVE",
+      "next_review_date": "2025-09-01"
+    },
+    {
+      "screening_id": "AML-SCR-2025-NW-JW-002219",
+      "participant_ref": "u0000009-0009-0009-0009-000000000009",
+      "participant_name": "Jamez Wilzon",
+      "screened_at": "2025-02-28 09:00:00",
+      "provider": "LexisNexis Risk Solutions",
+      "screening_type": "FULL_REFRESH",
+      "lists_checked": [
+        {"list": "OFAC_SDN",                  "version": "2025-02-27", "hit": false},
+        {"list": "UK_HMT_FINANCIAL_SANCTIONS", "version": "2025-02-28", "hit": false},
+        {"list": "EU_CONSOLIDATED",            "version": "2025-02-26", "hit": false},
+        {"list": "PEP_TIER_1",                 "hit": false},
+        {"list": "ADVERSE_MEDIA_FINANCIAL_CRIME", "hit": false}
+      ],
+      "risk_indicators": {
+        "high_risk_jurisdiction": false,
+        "cross_border_activity": true,
+        "high_value_transactions": true,
+        "politically_exposed_person": false
+      },
+      "final_risk_score": 0.089,
+      "risk_category": "FAIBLE",
+      "recommendation": "APPROVE_ENHANCED_MONITORING",
+      "enhanced_monitoring_reason": "Activite trading cross-border transactions haute valeur",
+      "next_review_date": "2025-08-28"
+    },
+    {
+      "screening_id": "AML-SCR-2025-ATW-ZR-000101",
+      "participant_ref": "a0000011-0011-0011-0011-000000000011",
+      "participant_name": "Zakaria Rahali",
+      "screened_at": "2025-01-22 10:00:00",
+      "provider": "LexisNexis Risk Solutions",
+      "screening_type": "FULL_REFRESH",
+      "lists_checked": [
+        {"list": "OFAC_SDN",                    "version": "2025-01-21", "hit": false},
+        {"list": "OFAC_CONSOLIDATED",            "version": "2025-01-21", "hit": false},
+        {"list": "UN_CONSOLIDATED",              "version": "2025-01-20", "hit": false},
+        {"list": "EU_CONSOLIDATED",              "version": "2025-01-20", "hit": false},
+        {"list": "GAFI_HIGH_RISK",               "version": "2025-01-15", "hit": false},
+        {"list": "PEP_TIER_1",                   "hit": false},
+        {"list": "PEP_TIER_2",                   "hit": false},
+        {"list": "ADVERSE_MEDIA_FINANCIAL_CRIME","hit": false},
+        {"list": "ADVERSE_MEDIA_REGULATORY",     "hit": false}
+      ],
+      "risk_indicators": {
+        "high_risk_jurisdiction": false,
+        "cross_border_activity": true,
+        "politically_exposed_person": false,
+        "state_owned_entity": false
+      },
+      "final_risk_score": 0.073,
+      "risk_category": "FAIBLE",
+      "recommendation": "APPROVE_ENHANCED_MONITORING",
+      "enhanced_monitoring_reason": "Activite cross-border France-Maroc sur actifs tokenises",
+      "next_review_date": "2025-07-22"
+    },
+    {
+      "screening_id": "AML-SCR-2025-AMMC-AB-000201",
+      "participant_ref": "a0000012-0012-0012-0012-000000000012",
+      "participant_name": "Aya Belakhouad",
+      "screened_at": "2025-01-22 10:30:00",
+      "provider": "Acuris Risk Intelligence",
+      "screening_type": "FULL_REFRESH",
+      "lists_checked": [
+        {"list": "OFAC_SDN",                    "version": "2025-01-21", "hit": false},
+        {"list": "UN_CONSOLIDATED",              "version": "2025-01-20", "hit": false},
+        {"list": "EU_CONSOLIDATED",              "version": "2025-01-20", "hit": false},
+        {"list": "GAFI_HIGH_RISK",               "version": "2025-01-15", "hit": false},
+        {"list": "PEP_TIER_1",                   "hit": false},
+        {"list": "PEP_TIER_2",                   "hit": false},
+        {"list": "ADVERSE_MEDIA_FINANCIAL_CRIME","hit": false}
+      ],
+      "risk_indicators": {
+        "high_risk_jurisdiction": false,
+        "cross_border_activity": false,
+        "politically_exposed_person": false,
+        "state_owned_entity": false
+      },
+      "final_risk_score": 0.038,
+      "risk_category": "TRES_FAIBLE",
+      "recommendation": "APPROVE",
+      "next_review_date": "2026-01-22"
+    }
+  ],
+  "transaction_monitoring_alerts": [
+    {
+      "alert_id": "TMA-2025-003-BNP",
+      "alert_type": "LARGE_TRANSACTION",
+      "triggered_at": "2025-03-16 09:14:22",
+      "transaction_ref": "TXN-2025-BNP-00001",
+      "participant_ref": "u0000001-0001-0001-0001-000000000001",
+      "participant_name": "Thomas Martin",
+      "amount": 50000000.00,
+      "currency": "EUR",
+      "threshold_exceeded": "EUR_10M_SINGLE_TRANSACTION",
+      "rule_id": "RULE-LARGE-TX-001",
+      "rule_description": "Alerte automatique transaction superieure a 10M EUR MiCA art.68 declaration obligatoire",
+      "status": "REVIEWED_CLEARED",
+      "reviewed_by": "sophie.lambert@amf-france.org",
+      "reviewed_at": "2025-03-16 11:00:00",
+      "disposition": "FALSE_POSITIVE",
+      "notes": "Transaction institutionnelle conforme OAT emission primaire validee AMF"
+    },
+    {
+      "alert_id": "TMA-2025-004-AMF",
+      "alert_type": "REGULATORY_FLAG",
+      "triggered_at": "2025-03-10 16:48:30",
+      "transaction_ref": "TXN-2025-AMF-00001",
+      "participant_ref": "u0000009-0009-0009-0009-000000000009",
+      "participant_name": "Jamez Wilzon",
+      "asset_ref": "RWA-DRV-BNP-2025-006",
+      "rule_id": "RULE-EMIR-DERIV-002",
+      "rule_description": "Anomalie EMIR reporting derive swap taux superieur a 1M EUR delai reporting T+1 depasse",
+      "status": "OPEN_INVESTIGATION",
+      "assigned_to": "sophie.lambert@amf-france.org",
+      "regulatory_action": "ASSET_FREEZE",
+      "regulatory_ref": "AMF-INV-2025-DRV-00041",
+      "notes": "Investigation en cours gel preventif actif jusqu a resolution"
+    }
+  ],
+  "sanctions_lists": {
+    "OFAC_SDN": ["Suleiman Kerimov", "Viktor Vekselberg", "Jamez Wilzon"],
+    "UN_CONSOLIDATED": ["AL-QAIDA", "TALIBAN ENTITY"],
+    "EU_CONSOLIDATED": ["Alexander Lukashenko"],
+    "UK_HMT": ["Roman Abramovich"],
+    "PEP_LEVEL_1": ["Emmanuel Macron", "Olaf Scholz"],
+    "PEP_LEVEL_2": ["Bruno Le Maire"],
+    "PEP_LEVEL_3": ["Local Mayor 123"]
+  }
+}

@@ -1,0 +1,17 @@
+[Unit]
+Description=RWA Platform - Infrastructure (Fabric, Neo4j, Vault, CouchDB)
+After=network-online.target docker.service postgresql.service redis-server.service vault.service vault-unseal.service
+Wants=network-online.target docker.service postgresql.service redis-server.service vault.service vault-unseal.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/opt/rwa/rwa_autostart.sh
+ExecStop=/bin/bash -c 'docker compose -f /home/zakaria/rwa-platform/docker/docker-compose.yaml down --remove-orphans 2>/dev/null || true'
+TimeoutStartSec=300
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=rwa-platform
+
+[Install]
+WantedBy=multi-user.target

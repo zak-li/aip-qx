@@ -1,0 +1,47 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    project: "rwa-platform"
+    environment: "development"
+
+rule_files:
+  - "alerts.yml"
+
+scrape_configs:
+  - job_name: "rwa-api"
+    static_configs:
+      - targets: ["10.10.10.150:8000"]
+    metrics_path: "/metrics"
+
+  - job_name: "fabric-peer-bnp"
+    static_configs:
+      - targets: ["10.10.10.150:9444"]
+    metrics_path: "/metrics"
+
+  - job_name: "fabric-peer-amf"
+    static_configs:
+      - targets: ["10.10.10.150:9445"]
+    metrics_path: "/metrics"
+
+  - job_name: "couchdb-bnp"
+    static_configs:
+      - targets: ["10.10.10.150:5984"]
+    metrics_path: "/_prometheus"
+
+  - job_name: "couchdb-amf"
+    static_configs:
+      - targets: ["10.10.10.150:7984"]
+    metrics_path: "/_prometheus"
+
+  - job_name: "redis"
+    static_configs:
+      - targets: ["10.10.10.150:9121"]
+
+  - job_name: "postgres"
+    static_configs:
+      - targets: ["10.10.10.150:9187"]
+
+  - job_name: "celery"
+    static_configs:
+      - targets: ["10.10.10.150:9808"]

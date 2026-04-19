@@ -1,0 +1,14 @@
+name: test-network
+version: 1.0.0
+client:
+  organization: BNPParibas
+organizations:
+  BNPParibas:
+    mspid: BNPParibasMSP
+    peers:
+      - peer0.bnpparibas.finance-trust.com
+peers:
+  peer0.bnpparibas.finance-trust.com:
+    url: grpc://localhost:7051
+  peer0.amf-regulateur.finance-trust.com:
+    url: grpc://localhost:7091

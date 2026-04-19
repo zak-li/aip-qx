@@ -1,0 +1,24 @@
+[Unit]
+Description=RWA Platform - Celery Workers
+After=network-online.target rwa-platform.service
+Requires=rwa-platform.service
+
+[Service]
+Type=simple
+User=zakaria
+Group=zakaria
+WorkingDirectory=/home/zakaria/rwa-platform
+EnvironmentFile=/home/zakaria/rwa-platform/.env
+ExecStart=/home/zakaria/rwa-platform/.venv/bin/celery -A backend.tasks.celery_app worker --loglevel=info --concurrency=2 -Q compliance,reports,fabric_events,celery
+ExecStop=/bin/kill -TERM $MAINPID
+KillMode=mixed
+Restart=on-failure
+RestartSec=15
+StartLimitIntervalSec=180
+StartLimitBurst=5
+StandardOutput=append:/home/zakaria/rwa-platform/logs/celery.log
+StandardError=append:/home/zakaria/rwa-platform/logs/celery.log
+SyslogIdentifier=rwa-celery
+
+[Install]
+WantedBy=multi-user.target

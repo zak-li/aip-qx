@@ -1,0 +1,24 @@
+[Unit]
+Description=RWA Platform - FastAPI Backend (Uvicorn)
+After=network-online.target rwa-platform.service
+Requires=rwa-platform.service
+
+[Service]
+Type=simple
+User=zakaria
+Group=zakaria
+WorkingDirectory=/home/zakaria/rwa-platform
+EnvironmentFile=/home/zakaria/rwa-platform/.env
+ExecStart=/home/zakaria/rwa-platform/.venv/bin/python -m uvicorn backend.main:app --host 0.0.0.0 --port 8000 --workers 2
+ExecStop=/bin/kill -TERM $MAINPID
+KillMode=mixed
+Restart=on-failure
+RestartSec=10
+StartLimitIntervalSec=120
+StartLimitBurst=5
+StandardOutput=append:/home/zakaria/rwa-platform/logs/uvicorn.log
+StandardError=append:/home/zakaria/rwa-platform/logs/uvicorn.log
+SyslogIdentifier=rwa-uvicorn
+
+[Install]
+WantedBy=multi-user.target

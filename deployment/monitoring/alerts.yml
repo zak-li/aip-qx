@@ -1,0 +1,52 @@
+groups:
+  - name: rwa-platform-alerts
+    rules:
+      - alert: FabricPeerDown
+        expr: up{job=~"fabric-peer.*"} == 0
+        for: 1m
+        labels:
+          severity: CRITICAL
+        annotations:
+          summary: "Fabric Peer is physically disconnected natively."
+          description: "Le nœud blockchain {{ $labels.instance }} ne répond plus."
+
+      - alert: ChaincodeLatencyHigh
+        expr: histogram_quantile(0.95, rwa_chaincode_duration_seconds) > 3
+        for: 5m
+        labels:
+          severity: WARNING
+        annotations:
+          summary: "Fabric execution paths structurally drifting asynchronously."
+          description: "La latence d'exécution 95p dépasse 3s sur la blockchain."
+
+      - alert: APIErrorRateHigh
+        expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05
+        labels:
+          severity: WARNING
+        annotations:
+          summary: "API REST bounds structurally failing contextually."
+          description: "Plus de 5% d'erreurs 5xx sur la plateforme RWA."
+
+      - alert: KYCExpiryImminent
+        expr: rwa_kyc_expiring_count > 0
+        labels:
+          severity: INFO
+        annotations:
+          summary: "Trace d'expiration KYC détectée nativement."
+          description: "{{ $value }} profils ont un KYC expirant sous 30 jours."
+
+      - alert: CircuitBreakerOpen
+        expr: rwa_circuit_breaker_state == 1
+        labels:
+          severity: CRITICAL
+        annotations:
+          summary: "Circuit de communication nativement rompu."
+          description: "Le composant {{ $labels.component }} a disjoncté physiquement."
+
+      - alert: ComplianceBlocksSpike
+        expr: rate(rwa_compliance_blocks_total[10m]) > 5
+        labels:
+          severity: WARNING
+        annotations:
+          summary: "Interceptions dynamiques systémiques de conformité."
+          description: "Rejets AML/MiCA/KYC anormaux détectés."
