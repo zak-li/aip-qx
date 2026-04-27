@@ -1,12 +1,16 @@
 from __future__ import annotations
 
 import uuid
-from datetime import date, datetime, timezone
+from datetime import UTC, date, datetime
 
 from sqlalchemy import Boolean, Date, Enum, ForeignKey, Integer, String, text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.core.database_base import Base, UUIDMixin
+
+
+def _now_utc() -> datetime:
+    return datetime.now(UTC)
 
 class Organization(Base, UUIDMixin):
     __tablename__ = "organizations"
@@ -30,7 +34,7 @@ class Organization(Base, UUIDMixin):
     )
     updated_at: Mapped[datetime] = mapped_column(
         server_default=text("now()"),
-        onupdate=lambda: datetime.utcnow(),
+        onupdate=_now_utc,
         nullable=False,
     )
 
@@ -86,7 +90,7 @@ class User(Base, UUIDMixin):
     )
     updated_at: Mapped[datetime] = mapped_column(
         server_default=text("now()"),
-        onupdate=lambda: datetime.utcnow(),
+        onupdate=_now_utc,
         nullable=False,
     )
     organization: Mapped[Organization] = relationship("Organization", back_populates="users", lazy="selectin")
@@ -95,7 +99,7 @@ class User(Base, UUIDMixin):
     def is_locked(self) -> bool:
         if not self.locked_until:
             return False
-        return datetime.now(timezone.utc) < self.locked_until
+        return datetime.now(UTC) < self.locked_until
 
     def __repr__(self) -> str:
         return f"<User id={self.id} email={self.email} role={self.role}>"

@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, UTC
 from decimal import Decimal
 from uuid import UUID
 
@@ -150,7 +150,7 @@ async def submit_kyc(
     if record:
         record.kyc_status = "EN_COURS"
         record.checked_by = current_user.id
-        record.check_date = datetime.now(timezone.utc)
+        record.check_date = datetime.now(UTC)
     else:
         record = ComplianceRecord(
             participant_id=body.user_id,
@@ -159,8 +159,8 @@ async def submit_kyc(
             aml_score=Decimal("0"),
             risk_category="FAIBLE",
             checked_by=current_user.id,
-            check_date=datetime.now(timezone.utc),
-            expires_at=datetime.now(timezone.utc) + timedelta(days=365),
+            check_date=datetime.now(UTC),
+            expires_at=datetime.now(UTC) + timedelta(days=365),
         )
         db.add(record)
 
@@ -181,7 +181,7 @@ async def approve_kyc(
     if not record:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Dossier compliance introuvable.")
 
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     record.kyc_status = "VERIFIE"
     record.kyc_level = body.level
     record.approved_by = current_user.id

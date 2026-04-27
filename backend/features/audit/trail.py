@@ -34,22 +34,22 @@ class AuditTrail:
         )
         if not isinstance(raw_data, list):
             raise ValueError("Invalid format received from Fabric chaincode.")
-            
+
         records: list[ProvenanceRecord] = []
         for item in raw_data:
             if not isinstance(item, dict):
                 continue
-            
+
             tx_id = item.get("tx_id", "")
             actor_msp = item.get("actor_msp", "")
             action = item.get("action", "")
-            
+
             if not tx_id or not actor_msp or not action:
                 raise ValueError("Incomplete provenance record detected (missing tx_id, actor_msp or action).")
-                
+
             ts_str = item.get("timestamp")
             dt = isoparse(ts_str) if ts_str else datetime.min
-            
+
             records.append(ProvenanceRecord(
                 tx_id=tx_id,
                 timestamp=dt,
@@ -70,7 +70,7 @@ class AuditTrail:
         )
         if not isinstance(raw_data, list):
             raise ValueError("Invalid format received from Fabric chaincode.")
-            
+
         entries: list[HistoryEntry] = []
         for item in raw_data:
             if not isinstance(item, dict):

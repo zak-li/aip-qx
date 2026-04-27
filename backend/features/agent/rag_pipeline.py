@@ -4,7 +4,7 @@ from __future__ import annotations
 import json
 import logging
 import time
-from typing import AsyncGenerator
+from collections.abc import AsyncGenerator
 
 from sqlalchemy.ext.asyncio import AsyncSession
 

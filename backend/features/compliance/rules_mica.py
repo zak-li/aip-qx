@@ -1,6 +1,6 @@
 import logging
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from typing import Literal
 from uuid import UUID
 
@@ -50,7 +50,7 @@ class MiCAChecker:
                 ))
 
         if len(violations) > 0 and any(v.blocking for v in violations):
-            year = datetime.now(timezone.utc).year
+            year = datetime.now(UTC).year
             try:
                 redis_gen = get_redis()
                 redis_conn = await redis_gen.__anext__()

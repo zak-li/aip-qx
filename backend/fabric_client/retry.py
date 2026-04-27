@@ -87,7 +87,7 @@ def fabric_retry(
                     state["failure_count"] = 0
                     state["circuit_open"] = False
                     return result
-                except asyncio.TimeoutError as exc:
+                except TimeoutError as exc:
                     latest_error = exc
                     exc_name = "TimeoutError"
                     FABRIC_RETRY_ATTEMPTS.labels(function_name=func.__name__, exception_type=exc_name).inc()

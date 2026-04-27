@@ -2,11 +2,15 @@ import { useEffect, useRef, useMemo } from 'react';
 import { parseContentSegments } from '../../../utils/chart.js';
 import { renderMarkdown } from '../../../utils/markdown.js';
 import ChartBlock from './ChartBlock.jsx';
+import MermaidBlock from './MermaidBlock.jsx';
 import MsgMeta from './MsgMeta.jsx';
+import { usePaletteStore } from '../../palette/paletteStore.js';
+import { pillifyContainer } from '../../entity/pillify.js';
 
 /* ── Markdown block with copy buttons on <pre> ── */
 function MarkdownBlock({ html }) {
   const ref = useRef(null);
+  const items = usePaletteStore(s => s.items);
 
   useEffect(() => {
     if (!ref.current) return;
@@ -30,7 +34,8 @@ function MarkdownBlock({ html }) {
       table.parentNode.insertBefore(w, table);
       w.appendChild(table);
     });
-  }, [html]);
+    pillifyContainer(ref.current, items);
+  }, [html, items]);
 
   return <div ref={ref} dangerouslySetInnerHTML={{ __html: html }} />;
 }
@@ -41,13 +46,29 @@ function AIBody({ content }) {
 
   return (
     <>
-      {segments.map((seg, i) =>
-        seg.type === 'chart'
-          ? <ChartBlock key={i} config={seg.config} />
-          : <MarkdownBlock key={i} html={renderMarkdown(seg.content)} />
-      )}
+      {segments.map((seg, i) => {
+        if (seg.type === 'chart')   return <ChartBlock   key={i} config={seg.config} />;
+        if (seg.type === 'mermaid') return <MermaidBlock key={i} code={seg.code} />;
+        return <MarkdownBlock key={i} html={renderMarkdown(seg.content)} />;
+      })}
     </>
   );
+}
+
+const MONTHS = [
+  'january','february','march','april','may','june',
+  'july','august','september','october','november','december',
+];
+
+function formatTs(ts) {
+  if (!ts) return '';
+  const d = new Date(ts);
+  let h = d.getHours();
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12; if (h === 0) h = 12;
+  const hh = String(h).padStart(2, '0');
+  const mm = String(d.getMinutes()).padStart(2, '0');
+  return `${hh}:${mm}${ampm} · ${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
 }
 
 /* ── Single message group ── */
@@ -92,6 +113,10 @@ function MessageGroup({ msg }) {
 
       {!isUser && !msg.streaming && !msg.error && msg.meta && (
         <MsgMeta meta={msg.meta} content={msg.content} />
+      )}
+
+      {!msg.streaming && !msg.error && (
+        <div className="msg-time">{formatTs(msg.id)}</div>
       )}
 
       {!isUser && !msg.streaming && !msg.error && msg.content && (

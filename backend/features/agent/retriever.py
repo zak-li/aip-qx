@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -79,14 +79,14 @@ async def get_platform_stats(db: AsyncSession) -> dict:
             rows = result.fetchall()
             if rows:
                 result.keys() if hasattr(result, "keys") else []
-                stats[key] = [dict(zip(result.keys(), row)) for row in rows]
+                stats[key] = [dict(zip(result.keys(), row, strict=False)) for row in rows]
             else:
                 stats[key] = []
         except Exception as exc:
             logger.debug(f"[RETRIEVER] Stats query '{key}' failed: {exc}")
             stats[key] = []
 
-    stats["timestamp"] = datetime.now(timezone.utc).isoformat()
+    stats["timestamp"] = datetime.now(UTC).isoformat()
     return stats
 
 

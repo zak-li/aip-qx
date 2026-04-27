@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from decimal import Decimal
 
 from sqlalchemy import ForeignKey, Integer, Numeric, String, TIMESTAMP, Boolean, Text
@@ -40,7 +40,7 @@ class ComplianceRecord(Base, UUIDMixin, TimestampMixin):
 
     @property
     def is_expired(self) -> bool:
-        return datetime.now(timezone.utc) >= self.expires_at
+        return datetime.now(UTC) >= self.expires_at
 
     def needs_renewal(self) -> bool:
         return self.is_expired or self.kyc_status == "EXPIRE"
@@ -74,7 +74,7 @@ class AuditLog(Base, UUIDMixin, TimestampMixin):
     endpoint: Mapped[str] = mapped_column(String, nullable=False)
     http_method: Mapped[str] = mapped_column(String, nullable=False)
     ip_address: Mapped[str] = mapped_column(String, nullable=False)
-    
+
     request_body: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
     response_code: Mapped[int] = mapped_column(Integer, nullable=False)
     fabric_tx_id: Mapped[str | None] = mapped_column(String, nullable=True)

@@ -1,14 +1,17 @@
 import json
 import logging
+import secrets
 import uuid
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from typing import Literal
 
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.config import Settings
 from backend.core.redis_client import get_redis
+from backend.features.auth.models import Organization, User
 from backend.features.compliance.models import SARReport as SARReportORM
 
 logger = logging.getLogger(__name__)
@@ -30,9 +33,25 @@ class SARReporter:
         self.settings = settings
         self.db = db
 
-    async def generate(self, participant_id: uuid.UUID, tx_id: uuid.UUID | None, reason_code: str, amount: float, regulatory_ref: str | None = None) -> str:
-        year = datetime.now(timezone.utc).year
+    async def _resolve_org_code(self, participant_id: uuid.UUID) -> str:
+        stmt = (
+            select(Organization.org_code)
+            .join(User, User.org_id == Organization.id)
+            .where(User.id == participant_id)
+            .limit(1)
+        )
+        result = await self.db.execute(stmt)
+        code = result.scalar_one_or_none()
+        return (code or "UNK")[:20]
 
+    async def generate(self, participant_id: uuid.UUID, tx_id: uuid.UUID | None, reason_code: str, amount: float, regulatory_ref: str | None = None) -> str:
+        year = datetime.now(UTC).year
+        org_code = await self._resolve_org_code(participant_id)
+
+        # Compose reference: TMA-YYYY-<6-hex>-<NNNN>-<ORG>
+        # The 6-hex random suffix guarantees uniqueness even if Redis is unavailable
+        # (the previous fallback would have collided on `1`). The Redis counter
+        # gives a monotonically increasing sequence per year for human readability.
         try:
             redis_gen = get_redis()
             redis_conn = await redis_gen.__anext__()
@@ -40,10 +59,10 @@ class SARReporter:
             await redis_gen.aclose()
         except Exception as exc:
             logger.warning(f"Redis INCR indisponible pour SAR counter: {exc}")
-            nnn_int = 1
+            nnn_int = 0  # zero indicates no sequence available; uniqueness is on the random tail
 
-        org_code = "UNKNOWN"
-        ref = f"TMA-{year}-{nnn_int:03d}-{org_code}"
+        rand_tail = secrets.token_hex(3)
+        ref = f"TMA-{year}-{rand_tail}-{nnn_int:04d}-{org_code}"
 
         report = SARReportORM(
             sar_ref=ref,
@@ -68,7 +87,7 @@ class SARReporter:
                 "status": "OUVERT",
                 "participant_id": str(participant_id),
                 "reason_code": reason_code,
-                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
             }
             await redis_conn.publish("compliance:sar", json.dumps(payload, default=str))
             await redis_gen.aclose()
@@ -102,7 +121,7 @@ class SARReporter:
         report = result.scalar_one()
 
         report.status = "SOUMIS"
-        report.submission_date = datetime.now(timezone.utc)
+        report.submission_date = datetime.now(UTC)
         await self.db.commit()
         await self.db.refresh(report)
 

@@ -1,24 +1,35 @@
-import { useCallback } from 'react';
-import { useChatStore } from '../store/chatStore.js';
+import { useCallback, useMemo, useRef } from 'react';
+
+import { useToastStore } from '../../../store/toastStore.js';
+import { buildPayload, postChat } from '../../../services/agentService.js';
 import { useAuthStore } from '../../auth/hooks/useAuth.js';
 import { useOptsStore } from '../../settings/store/optsStore.js';
-import { useToastStore } from '../../../store/toastStore.js';
-import { postChat, buildPayload } from '../../../services/agentService.js';
+import { useChatStore } from '../store/chatStore.js';
 
 export function useChat() {
   const { addMessage, updateMessage, setBusy, messages } = useChatStore();
-  const token  = useAuthStore(s => s.token);
-  const opts   = useOptsStore();
-  const toast  = useToastStore(s => s.show);
-  const busy   = useChatStore(s => s.busy);
+  const user  = useAuthStore(s => s.user);
+  const opts  = useOptsStore();
+  const toast = useToastStore(s => s.show);
+  const busy  = useChatStore(s => s.busy);
 
-  const history = messages
-    .filter(m => !m.streaming && !m.error)
-    .map(m => ({ role: m.role, content: m.content }));
+  // Recompute history only when messages change.
+  const history = useMemo(
+    () => messages
+      .filter(m => !m.streaming && !m.error)
+      .map(m => ({ role: m.role, content: m.content })),
+    [messages],
+  );
+
+  // Refs let sendMessage read the latest values without listing them as deps.
+  const historyRef = useRef(history);
+  historyRef.current = history;
+  const optsRef = useRef(opts);
+  optsRef.current = opts;
 
   const sendMessage = useCallback(async (text, stream = true) => {
     if (!text.trim() || busy) return;
-    if (!token) return toast('TOKEN REQUIS — configure ton JWT', 'warn');
+    if (!user) return toast('SIGN IN REQUIRED', 'warn');
 
     addMessage({ role: 'user', content: text });
     const msgId = Date.now() + 1;
@@ -26,8 +37,13 @@ export function useChat() {
     setBusy(true);
 
     try {
-      const payload = buildPayload(text, [...history, { role: 'user', content: text }], opts, stream);
-      const resp    = await postChat(token, payload);
+      const payload = buildPayload(
+        text,
+        [...historyRef.current, { role: 'user', content: text }],
+        optsRef.current,
+        stream,
+      );
+      const resp = await postChat(payload);
 
       if (stream) {
         await _consumeStream(resp, msgId, updateMessage);
@@ -45,7 +61,7 @@ export function useChat() {
     } finally {
       setBusy(false);
     }
-  }, [busy, token, opts, history, addMessage, updateMessage, setBusy, toast]);
+  }, [busy, user, addMessage, updateMessage, setBusy, toast]);
 
   return { messages, busy, sendMessage };
 }

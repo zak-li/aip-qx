@@ -1,7 +1,7 @@
 import asyncio
 import json
 import os
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 
 from celery import Task
 from sqlalchemy import text
@@ -29,7 +29,7 @@ async def _do_generate_audit(asset_id: str, requested_by_id: str) -> dict:
 
     out_dir = "/tmp/rwa-reports"
     os.makedirs(out_dir, exist_ok=True)
-    ts = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
+    ts = datetime.now(UTC).strftime("%Y%m%d%H%M%S")
     path = os.path.join(out_dir, f"{asset_id}_{ts}.pdf")
 
     with open(path, "wb") as f:
@@ -83,7 +83,7 @@ async def _do_generate_portfolio(org_id: str) -> dict:
 
         out_dir = "/tmp/rwa-reports"
         os.makedirs(out_dir, exist_ok=True)
-        ts = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
+        ts = datetime.now(UTC).strftime("%Y%m%d%H%M%S")
         path = os.path.join(out_dir, f"PORTFOLIO_{org_id[:8]}_{ts}.pdf")
 
         from reportlab.lib.pagesizes import A4

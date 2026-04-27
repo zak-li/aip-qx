@@ -8,7 +8,11 @@ logger = logging.getLogger(__name__)
 
 
 async def log_task_audit(task_name: str, payload: dict) -> None:
-    """Insert a Celery task completion record into audit_logs."""
+    """Insert a Celery task completion record into audit_logs.
+
+    Background tasks have no client IP — we record `internal` as a sentinel
+    so the column never carries a misleading value.
+    """
     try:
         async with AsyncSessionLocal() as session:
             stmt = text("""
@@ -20,7 +24,7 @@ async def log_task_audit(task_name: str, payload: dict) -> None:
             await session.execute(stmt, {
                 "endpoint": f"/tasks/{task_name}",
                 "method": "CELERY",
-                "ip": "127.0.0.1",
+                "ip": "internal",
                 "code": 200,
                 "duration": 0,
             })

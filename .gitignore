@@ -41,4 +41,20 @@ audit_report.tex
 
 # Local tool settings and sensitive mock data
 .claude/
+.ruff_cache/
+.mypy_cache/
 tests/fixtures/crypto_config_mock/
+
+# Deployment / packaging archives that must never reach the repo
+*.tar.gz
+*.tgz
+*.zip
+
+# LaTeX build by-products only — actual .tex sources under whitepaper/, docs/
+# are part of the project and must remain trackable.
+/doc.tex
+*.aux
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk

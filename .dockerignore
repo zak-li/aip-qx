@@ -17,6 +17,23 @@ env/
 .git/
 .gitignore
 
+# Secrets and certs — must never reach an image layer
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+network/wallets/
+network/crypto-config/
+tests/fixtures/crypto_config_mock/
+
+# Editor / tooling state
+.claude/
+.ruff_cache/
+.mypy_cache/
+
 logs/
 *.log
 *.txt

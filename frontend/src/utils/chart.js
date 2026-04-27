@@ -1,126 +1,158 @@
 export const TYPE_LABELS = {
-  bar:       'Bar Chart',
-  line:      'Line / Area',
-  pie:       'Pie Chart',
-  doughnut:  'Donut Chart',
-  radar:     'Radar Chart',
-  polarArea: 'Polar Area',
-  bubble:    'Bubble Chart',
-  scatter:   'Scatter Plot',
+  line:  'Line Chart',
+  radar: 'Radar Chart',
 };
 
+const RADAR_FALLBACKS = new Set(['pie', 'doughnut', 'polarArea', 'radar']);
+
+function normalizeType(type) {
+  if (type === 'radar') return 'radar';
+  if (RADAR_FALLBACKS.has(type)) return 'radar';
+  return 'line';
+}
+
 const PALETTE = [
-  { bg: 'rgba(79,143,252,0.75)',  border: '#4f8ffc' },
-  { bg: 'rgba(70,167,88,0.75)',   border: '#46a758' },
-  { bg: 'rgba(229,72,77,0.75)',   border: '#e5484d' },
-  { bg: 'rgba(245,166,35,0.75)',  border: '#f5a623' },
-  { bg: 'rgba(155,89,182,0.75)',  border: '#9b59b6' },
-  { bg: 'rgba(23,162,184,0.75)',  border: '#17a2b8' },
-  { bg: 'rgba(255,105,180,0.75)', border: '#ff69b4' },
-  { bg: 'rgba(100,200,150,0.75)', border: '#64c896' },
+  { border: '#4f8ffc', rgb: '79,143,252' },
 ];
 
-export function applyChartDefaults(cfg) {
-  const isPie    = ['pie', 'doughnut'].includes(cfg.type);
-  const isPolar  = cfg.type === 'polarArea';
-  const isRadar  = cfg.type === 'radar';
-  const isLine   = cfg.type === 'line';
-  const isScatter = cfg.type === 'scatter';
-  const isBubble  = cfg.type === 'bubble';
+function makeGradient(rgb) {
+  return (ctx) => {
+    const chart = ctx.chart;
+    const area  = chart.chartArea;
+    if (!area) return `rgba(${rgb},0.18)`;
+    const g = chart.ctx.createLinearGradient(0, area.top, 0, area.bottom);
+    g.addColorStop(0, `rgba(${rgb},0.45)`);
+    g.addColorStop(0.55, `rgba(${rgb},0.12)`);
+    g.addColorStop(1, `rgba(${rgb},0)`);
+    return g;
+  };
+}
 
-  cfg.data?.datasets?.forEach((ds, i) => {
+const FONT = "'Space Grotesk', ui-sans-serif, system-ui, sans-serif";
+const MONO = "'Space Mono', ui-monospace, monospace";
+
+export function applyChartDefaults(cfg) {
+  cfg.type = normalizeType(cfg.type);
+  const isRadar = cfg.type === 'radar';
+  const isLine  = cfg.type === 'line';
+
+  if (!cfg.data) cfg.data = { labels: [], datasets: [] };
+
+  if (isRadar && Array.isArray(cfg.data.datasets)) {
+    cfg.data.datasets = cfg.data.datasets.map(ds => {
+      if (Array.isArray(ds.data) && typeof ds.data[0] === 'object' && ds.data[0] !== null) {
+        return { ...ds, data: ds.data.map(p => p.y ?? p.r ?? p.v ?? 0) };
+      }
+      return ds;
+    });
+  }
+
+  cfg.data.datasets?.forEach((ds, i) => {
     const c = PALETTE[i % PALETTE.length];
-    if (isPie || isPolar) {
-      ds.backgroundColor ??= PALETTE.map(p => p.bg);
-      ds.borderColor      ??= 'rgba(6,7,11,0.8)';
-      ds.borderWidth = 2;
-      if (isPie) ds.hoverOffset = 10;
-    } else if (isLine) {
+    if (isLine) {
       ds.borderColor      ??= c.border;
-      ds.backgroundColor  ??= ds.fill ? c.bg.replace('0.75','0.12') : 'transparent';
-      ds.borderWidth          = ds.borderWidth ?? 2;
-      ds.pointRadius          = ds.pointRadius ?? 4;
-      ds.pointHoverRadius     = 6;
+      ds.backgroundColor    = makeGradient(c.rgb);
+      ds.fill              = ds.fill ?? true;
+      ds.borderWidth       = ds.borderWidth ?? 2.5;
+      ds.pointRadius       = ds.pointRadius ?? 4;
+      ds.pointHoverRadius  = 8;
       ds.pointBackgroundColor = c.border;
-      ds.pointBorderColor     = 'rgba(6,7,11,0.6)';
-      ds.pointBorderWidth     = 1.5;
-      ds.tension              = ds.tension ?? 0.38;
-    } else if (isRadar) {
-      ds.backgroundColor ??= c.bg.replace('0.75','0.18');
-      ds.borderColor     ??= c.border;
-      ds.borderWidth          = 2;
-      ds.pointBackgroundColor = c.border;
-      ds.pointRadius          = 3;
-    } else if (isScatter || isBubble) {
-      ds.backgroundColor ??= c.bg;
-      ds.borderColor     ??= c.border;
-      ds.borderWidth = 1;
+      ds.pointBorderColor     = '#000';
+      ds.pointBorderWidth     = 2;
+      ds.pointHoverBorderWidth = 2.5;
+      ds.pointHoverBackgroundColor = '#fff';
+      ds.pointStyle           = 'circle';
+      ds.tension              = ds.tension ?? 0.35;
     } else {
-      ds.backgroundColor ??= c.bg;
-      ds.borderColor     ??= c.border;
-      ds.borderWidth   = ds.borderWidth ?? 1;
-      ds.borderRadius  = ds.borderRadius ?? 3;
-      ds.borderSkipped = false;
+      ds.borderColor      ??= c.border;
+      ds.backgroundColor    = makeGradient(c.rgb);
+      ds.borderWidth       = 2.5;
+      ds.pointBackgroundColor = c.border;
+      ds.pointBorderColor     = '#000';
+      ds.pointBorderWidth     = 2;
+      ds.pointRadius          = 4;
+      ds.pointHoverRadius     = 7;
+      ds.pointHoverBackgroundColor = '#fff';
+      ds.pointStyle           = 'circle';
     }
   });
 
-  cfg.options ??= {};
-  cfg.options.responsive          = true;
-  cfg.options.maintainAspectRatio = true;
-  cfg.options.animation = { duration: 700, easing: 'easeInOutQuart' };
-
-  cfg.options.plugins ??= {};
-  cfg.options.plugins.tooltip = Object.assign({
-    backgroundColor: 'rgba(8,9,13,0.96)',
-    borderColor:     'rgba(79,143,252,0.2)',
-    borderWidth:     1,
-    titleColor:      '#e2e4ea',
-    bodyColor:       '#8b8fa4',
-    padding:         10,
-    cornerRadius:    0,
-    displayColors:   true,
-    boxWidth: 8, boxHeight: 8, boxPadding: 4,
-  }, cfg.options.plugins.tooltip ?? {});
-
-  cfg.options.plugins.legend = Object.assign({
-    labels: { color: '#8b8fa4', boxWidth: 10, padding: 18, font: { size: 10 } },
-  }, cfg.options.plugins.legend ?? {});
-
-  if (!isPie && !isPolar) {
-    cfg.options.scales ??= {};
-    if (isRadar) {
-      cfg.options.scales.r = Object.assign({
-        grid:        { color: 'rgba(255,255,255,0.05)' },
-        angleLines:  { color: 'rgba(255,255,255,0.05)' },
-        ticks:       { color: '#4e5264', backdropColor: 'transparent', font: { size: 9 } },
-        pointLabels: { color: '#8b8fa4', font: { size: 10 } },
-      }, cfg.options.scales.r ?? {});
-    } else {
-      ['x', 'y'].forEach(ax => {
-        cfg.options.scales[ax] = Object.assign({
-          grid:   { color: 'rgba(255,255,255,0.04)', drawBorder: false },
-          ticks:  { color: '#4e5264', font: { size: 10 } },
-          border: { color: 'rgba(255,255,255,0.06)' },
-        }, cfg.options.scales[ax] ?? {});
-      });
-    }
-  }
+  cfg.options = {
+    responsive:          true,
+    maintainAspectRatio: false,
+    animation:           { duration: 900, easing: 'easeOutCubic' },
+    layout:              { padding: 0 },
+    interaction:         { mode: isLine ? 'index' : 'nearest', intersect: false },
+    plugins: {
+      title:  { display: false },
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: 'rgba(0,0,0,0.96)',
+        borderColor:     'rgba(79,143,252,0.4)',
+        borderWidth:     1,
+        titleColor:      '#e6e8ef',
+        titleFont:       { family: FONT, size: 12, weight: '600' },
+        bodyColor:       '#b8bcc9',
+        bodyFont:        { family: MONO, size: 11, weight: '400' },
+        padding:         12,
+        cornerRadius:    0,
+        displayColors:   true,
+        boxWidth: 10, boxHeight: 10, boxPadding: 6,
+        usePointStyle:   true,
+        caretSize:       6,
+      },
+    },
+    scales: isRadar
+      ? {
+          r: {
+            grid:        { color: 'rgba(255,255,255,0.06)', circular: false },
+            angleLines:  { color: 'rgba(255,255,255,0.06)' },
+            ticks:       { display: false, backdropColor: 'transparent', showLabelBackdrop: false },
+            pointLabels: { display: false },
+          },
+        }
+      : {
+          x: { display: false, grid: { display: false }, ticks: { display: false }, border: { display: false } },
+          y: { display: false, grid: { display: false }, ticks: { display: false }, border: { display: false } },
+        },
+  };
   return cfg;
+}
+
+function isChartConfig(obj) {
+  if (!obj || typeof obj !== 'object') return false;
+  if (typeof obj.type !== 'string') return false;
+  if (!obj.data || typeof obj.data !== 'object') return false;
+  const ds = obj.data.datasets;
+  return Array.isArray(ds) && ds.length > 0 && ds.some(d => Array.isArray(d?.data));
 }
 
 export function parseContentSegments(raw) {
   const segments = [];
-  const chartRe  = /```chart\s*\n([\s\S]*?)```/g;
+  const blockRe = /```(chart|json|mermaid)\s*\n([\s\S]*?)```/g;
   let last = 0, m;
 
-  while ((m = chartRe.exec(raw)) !== null) {
+  while ((m = blockRe.exec(raw)) !== null) {
     if (m.index > last) segments.push({ type: 'text', content: raw.slice(last, m.index) });
-    try {
-      segments.push({ type: 'chart', config: JSON.parse(m[1].trim()) });
-    } catch {
-      segments.push({ type: 'text', content: m[0] });
+    const [full, fence, body] = m;
+
+    if (fence === 'mermaid') {
+      segments.push({ type: 'mermaid', code: body });
+      last = m.index + full.length;
+      continue;
     }
-    last = m.index + m[0].length;
+
+    let parsed = null;
+    try { parsed = JSON.parse(body.trim()); } catch { /* ignore */ }
+
+    if (fence === 'chart' && parsed) {
+      segments.push({ type: 'chart', config: parsed });
+    } else if (fence === 'json' && isChartConfig(parsed)) {
+      segments.push({ type: 'chart', config: parsed });
+    } else {
+      segments.push({ type: 'text', content: full });
+    }
+    last = m.index + full.length;
   }
   if (last < raw.length) segments.push({ type: 'text', content: raw.slice(last) });
   return segments;

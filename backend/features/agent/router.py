@@ -9,10 +9,11 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from backend.config import settings
 from backend.dependencies import get_db, get_current_user
 from backend.features.auth.models import User
 from backend.features.agent.rag_pipeline import answer_stream, answer
-from backend.features.agent.vector_store import index_knowledge_base, semantic_search
+from backend.features.agent.vector_store import index_knowledge_base, semantic_search, _get_collection
 
 logger = logging.getLogger(__name__)
 
@@ -122,8 +123,6 @@ async def semantic_search_endpoint(
 
 @router.get("/status")
 async def agent_status(current_user: User = Depends(get_current_user)) -> dict:
-    from backend.features.agent.vector_store import _get_collection
-    from backend.config import settings
     has_key = bool(settings.groq_api_key)
     try:
         doc_count = _get_collection().count()

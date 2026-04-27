@@ -27,10 +27,16 @@ func (c *AssetTraceContract) TokenizeAsset(ctx contractapi.TransactionContextInt
 	if err := verifyRole(ctx, "TokenizeAsset"); err != nil {
 		return err
 	}
+	if err := ValidateAssetID(assetID); err != nil {
+		return fmt.Errorf("TokenizeAsset: %w", err)
+	}
 	if err := ValidateISIN(isin); err != nil {
 		return fmt.Errorf("TokenizeAsset: %w", err)
 	}
 	if err := ValidateLEI(issuerLEI); err != nil {
+		return fmt.Errorf("TokenizeAsset: %w", err)
+	}
+	if err := ValidateCurrency(currency); err != nil {
 		return fmt.Errorf("TokenizeAsset: %w", err)
 	}
 	if nominalValue <= 0 {
@@ -264,6 +270,7 @@ func (c *AssetTraceContract) UnfreezeAsset(ctx contractapi.TransactionContextInt
 	asset.FrozenBy = ""
 	asset.FrozenAt = ""
 	asset.FrozenReason = ""
+	asset.RegulatoryRef = ""
 	asset.Provenance = append(asset.Provenance, record)
 
 	assetJSON, err := json.Marshal(asset)

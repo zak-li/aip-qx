@@ -1,13 +1,11 @@
-import ctypes
 import datetime
 import gc
 import json
 import logging
-import sys
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Generator
+from collections.abc import Generator
 
 import hvac
 from cryptography import x509
@@ -15,18 +13,20 @@ from cryptography.x509.oid import NameOID
 
 from backend.config import FabricSettings
 
-def _zero_string(s: str) -> None:
-    try:
-        buf_len = len(s)
-        if buf_len == 0:
-            return
-        raw = (ctypes.c_char * (buf_len + 1)).from_address(id(s) + sys.getsizeof(s) - buf_len - 1)
-        ctypes.memset(raw, 0, buf_len)
-    except Exception:
-        pass
-    finally:
-        del s
-        gc.collect()
+
+def _wipe_bytearray(buf: bytearray) -> None:
+    """Zero out a mutable byte buffer in place.
+
+    Python strings are immutable and can be interned/reused — there is no safe
+    way to overwrite their memory from pure Python (the previous ctypes-based
+    implementation was undefined behaviour). Whenever a secret is in flight we
+    keep it as a `bytearray` so this function actually clears the bytes.
+    """
+    if not buf:
+        return
+    for i in range(len(buf)):
+        buf[i] = 0
+
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +42,7 @@ class FabricWallet:
         self._identities: dict[str, Identity] = {}
 
         self._vault = hvac.Client(url=self.settings.vault_addr, token=self.settings.vault_token)
-        
+
         try:
             if not self._vault.is_authenticated():
                 self._log_op(logging.ERROR, "Vault authentication failed. Token may be invalid.")
@@ -57,7 +57,7 @@ class FabricWallet:
 
     def _validate_certificate(self, cert_pem: str) -> None:
         cert = x509.load_pem_x509_certificate(cert_pem.encode('utf-8'))
-        now = datetime.datetime.now(datetime.timezone.utc)
+        now = datetime.datetime.now(datetime.UTC)
         if now < cert.not_valid_before_utc or now > cert.not_valid_after_utc:
             raise ValueError("Certificate is expired or not yet valid systematically.")
 
@@ -116,7 +116,7 @@ class FabricWallet:
 
     def put_identity(self, label: str, cert_pem: str, private_key_pem: str, msp_id: str) -> None:
         self._validate_certificate(cert_pem)
-        
+
         try:
             self._vault.secrets.kv.v2.create_or_update_secret(
                 path=label,
@@ -135,24 +135,38 @@ class FabricWallet:
             msp_id=msp_id,
         )
 
-        _zero_string(private_key_pem)
+        # Best effort — Python strings are immutable, so we cannot truly wipe
+        # the original PEM. New callers should pass bytes/bytearray instead.
+        del private_key_pem
+        gc.collect()
 
     @contextmanager
-    def extract_private_key(self, label: str) -> Generator[str, None, None]:
+    def extract_private_key(self, label: str) -> Generator[bytearray, None, None]:
+        """Yield the private key as a mutable bytearray that gets wiped on exit.
+
+        Callers must consume the bytes inside the context manager. The buffer
+        is overwritten with zeros as soon as the `with` block exits, so any
+        copy the caller may have made is the only remaining reference.
+        """
         self.get_identity(label)
-        
+
         try:
             secret_response = self._vault.secrets.kv.v2.read_secret_version(
                 path=label,
                 mount_point='rwa-fabric',
             )
-            decrypted_key = secret_response['data']['data']['private_key_pem']
+            pem_str = secret_response['data']['data']['private_key_pem']
             self._log_op(logging.INFO, "Private key extracted from Vault dynamically", {"label": label})
         except Exception as e:
             self._log_op(logging.ERROR, f"Failed extracting secret from Vault: {e}", {"label": label})
             raise RuntimeError(f"Vault key extraction failed: {e}")
 
+        buf = bytearray(pem_str.encode("utf-8"))
+        # We can drop the str reference but cannot truly wipe its backing
+        # storage; the bytearray we hand out is the canonical copy.
+        del pem_str
+
         try:
-            yield decrypted_key
+            yield buf
         finally:
-            _zero_string(decrypted_key)
+            _wipe_bytearray(buf)

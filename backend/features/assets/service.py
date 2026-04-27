@@ -16,6 +16,18 @@ from backend.features.fraud_detection.neo4j_sync import get_neo4j_client
 
 logger = logging.getLogger(__name__)
 
+
+async def _publish_event(channel: str, message: str) -> None:
+    """Publish an event to a Redis channel. Non-blocking — failures are logged and swallowed."""
+    try:
+        redis_gen = get_redis()
+        redis_conn = await redis_gen.__anext__()
+        await redis_conn.publish(channel, message)
+        await redis_gen.aclose()
+    except Exception as exc:
+        logger.warning(f"Redis publish failed ({channel}): {exc}")
+
+
 async def tokenize(request: TokenizeRequest, identity_label: str, db: AsyncSession) -> AssetResponse:
     fabric = get_fabric()
 
@@ -46,20 +58,17 @@ async def tokenize(request: TokenizeRequest, identity_label: str, db: AsyncSessi
     if not org:
         raise ValueError(f"Organisation introuvable pour le LEI: {request.issuer_lei}")
 
-    issuer_org_id = org.id
-
-    user_stmt = select(User).where(User.org_id == issuer_org_id).limit(1)
+    user_stmt = select(User).where(User.org_id == org.id).limit(1)
     user_res = await db.execute(user_stmt)
     user = user_res.scalar_one_or_none()
-    current_owner_id = user.id if user else issuer_org_id
 
     new_asset = Asset(
         asset_id=request.asset_id,
         isin=request.isin,
         asset_type=request.asset_type,
         asset_name=request.asset_name,
-        issuer_org_id=issuer_org_id,
-        current_owner_id=current_owner_id,
+        issuer_org_id=org.id,
+        current_owner_id=user.id if user else org.id,
         nominal_value=request.nominal_value,
         current_value=request.nominal_value,
         currency=request.currency,
@@ -76,15 +85,9 @@ async def tokenize(request: TokenizeRequest, identity_label: str, db: AsyncSessi
         raise
     await db.refresh(new_asset)
 
-    try:
-        redis_gen = get_redis()
-        redis_conn = await redis_gen.__anext__()
-        await redis_conn.publish("asset:events", f"TOKENIZE:{request.asset_id}")
-        await redis_gen.aclose()
-    except Exception as exc:
-        logger.warning(f"Publication Redis échouée: {exc}")
-
+    await _publish_event("asset:events", f"TOKENIZE:{request.asset_id}")
     return AssetResponse.model_validate(new_asset)
+
 
 async def transfer(
     request: TransferRequest,
@@ -95,16 +98,14 @@ async def transfer(
     stmt_asset = select(Asset).where(Asset.asset_id == request.asset_id)
     result_asset = await db.execute(stmt_asset)
     asset = result_asset.scalar_one()
-    
+
     if asset.status == "GELE":
         raise AssetFrozenError(asset.asset_id, "AMF-INV-2026-001")
 
     original_owner_id = asset.current_owner_id
 
-    to_owner_stmt = select(User).where(User.email == request.to_owner).limit(1)
-    to_owner_res = await db.execute(to_owner_stmt)
+    to_owner_res = await db.execute(select(User).where(User.email == request.to_owner).limit(1))
     to_owner_user = to_owner_res.scalar_one_or_none()
-
     if not to_owner_user:
         raise ValueError(f"Destinataire introuvable: {request.to_owner}")
 
@@ -136,12 +137,8 @@ async def transfer(
         raise ValueError("Réponse invalide du chaincode lors du transfert.")
 
     fabric_tx_id = str(payload.get("txID", ""))
-    block_num_raw = payload.get("blockNumber")
-    block_num = int(block_num_raw) if block_num_raw else None
-
-    previous_owner_email: str | None = None
-    if current_user:
-        previous_owner_email = current_user.email
+    block_num = int(payload["blockNumber"]) if payload.get("blockNumber") else None
+    previous_owner_email = current_user.email if current_user else None
 
     asset.current_owner_id = to_owner_user.id
     asset.current_value = request.price
@@ -166,7 +163,7 @@ async def transfer(
     try:
         await db.commit()
     except Exception as db_exc:
-        logger.error(f"[SAGA] DB commit failed after Fabric TransferAsset succeeded. Initiating compensation: {db_exc}")
+        logger.error(f"[SAGA] DB commit failed after Fabric TransferAsset. Compensating: {db_exc}")
         await db.rollback()
         if previous_owner_email:
             try:
@@ -178,41 +175,32 @@ async def transfer(
                     "SAGA_COMPENSATION: DB commit failure rollback",
                     identity_label=identity_label,
                 )
-                logger.info(f"[SAGA] Compensation Fabric successful for asset {request.asset_id}")
+                logger.info(f"[SAGA] Compensation successful for asset {request.asset_id}")
             except Exception as comp_exc:
                 logger.critical(
-                    f"[SAGA] CRITICAL: Compensation Fabric FAILED for asset {request.asset_id}. "
-                    f"Manual intervention required. DB error: {db_exc}, Fabric comp error: {comp_exc}"
+                    f"[SAGA] CRITICAL: Compensation FAILED for asset {request.asset_id}. "
+                    f"Manual intervention required. DB error: {db_exc}, comp error: {comp_exc}"
                 )
         raise
     await db.refresh(asset)
 
-    # Sync transfer to Neo4j graph (best-effort — never blocks the response)
     try:
         neo4j = get_neo4j_client()
         await neo4j.connect()
-        from_dn = current_user.email if current_user else str(original_owner_id)
         await neo4j.ingest_transaction(
             tx_id=fabric_tx_id,
             asset_id=request.asset_id,
-            from_actor=from_dn,
+            from_actor=current_user.email if current_user else str(original_owner_id),
             to_actor=request.to_owner,
             amount=float(request.price),
             timestamp=asset.updated_at.isoformat() if asset.updated_at else "",
         )
-    except Exception as neo4j_exc:
-        logger.warning(f"[GRAPH] Neo4j sync failed (non-blocking): {neo4j_exc}")
-
-    # Publish Redis event for the event listener
-    try:
-        redis_gen = get_redis()
-        redis_conn = await redis_gen.__anext__()
-        await redis_conn.publish("asset:events", f"TRANSFER:{request.asset_id}")
-        await redis_gen.aclose()
     except Exception as exc:
-        logger.warning(f"Publication Redis échouée: {exc}")
+        logger.warning(f"[GRAPH] Neo4j sync failed (non-blocking): {exc}")
 
+    await _publish_event("asset:events", f"TRANSFER:{request.asset_id}")
     return AssetResponse.model_validate(asset)
+
 
 async def freeze(
     request: FreezeRequest,
@@ -233,13 +221,10 @@ async def freeze(
         raise ValueError("Réponse invalide du chaincode lors du gel.")
 
     fabric_tx_id = str(payload.get("txID", ""))
-    block_num_raw = payload.get("blockNumber")
-    block_num = int(block_num_raw) if block_num_raw else None
+    block_num = int(payload["blockNumber"]) if payload.get("blockNumber") else None
 
-    stmt = select(Asset).where(Asset.asset_id == request.asset_id)
-    result = await db.execute(stmt)
+    result = await db.execute(select(Asset).where(Asset.asset_id == request.asset_id))
     asset = result.scalar_one()
-
     initiator_id = current_user.id if current_user else asset.current_owner_id
 
     asset.status = "GELE"
@@ -262,7 +247,7 @@ async def freeze(
     try:
         await db.commit()
     except Exception as db_exc:
-        logger.error(f"[SAGA] DB commit failed after Fabric FreezeAsset succeeded. Initiating compensation: {db_exc}")
+        logger.error(f"[SAGA] DB commit failed after Fabric FreezeAsset. Compensating: {db_exc}")
         await db.rollback()
         try:
             await fabric.submit_transaction(
@@ -271,37 +256,29 @@ async def freeze(
                 "SAGA_COMPENSATION: DB commit failure rollback",
                 identity_label=identity_label,
             )
-            logger.info(f"[SAGA] Compensation Unfreeze successful for asset {request.asset_id}")
+            logger.info(f"[SAGA] Compensation UnfreezeAsset successful for asset {request.asset_id}")
         except Exception as comp_exc:
             logger.critical(
                 f"[SAGA] CRITICAL: Compensation UnfreezeAsset FAILED for asset {request.asset_id}. "
-                f"DB error: {db_exc}, Fabric comp error: {comp_exc}"
+                f"DB error: {db_exc}, comp error: {comp_exc}"
             )
         raise
     await db.refresh(asset)
 
-    # Sync freeze event to Neo4j graph (best-effort)
     try:
         neo4j = get_neo4j_client()
         await neo4j.connect()
-        actor_dn = current_user.email if current_user else str(initiator_id)
         await neo4j.ingest_freeze(
             asset_id=request.asset_id,
-            actor=actor_dn,
+            actor=current_user.email if current_user else str(initiator_id),
             tx_id=fabric_tx_id,
         )
-    except Exception as neo4j_exc:
-        logger.warning(f"[GRAPH] Neo4j freeze sync failed (non-blocking): {neo4j_exc}")
-
-    try:
-        redis_gen = get_redis()
-        redis_conn = await redis_gen.__anext__()
-        await redis_conn.publish("asset:events", f"FREEZE:{request.asset_id}")
-        await redis_gen.aclose()
     except Exception as exc:
-        logger.warning(f"Publication Redis échouée: {exc}")
+        logger.warning(f"[GRAPH] Neo4j freeze sync failed (non-blocking): {exc}")
 
+    await _publish_event("asset:events", f"FREEZE:{request.asset_id}")
     return AssetResponse.model_validate(asset)
+
 
 async def unfreeze_asset(
     request: UnfreezeRequest,
@@ -321,36 +298,33 @@ async def unfreeze_asset(
         raise ValueError("Réponse invalide du chaincode lors du dégel.")
 
     fabric_tx_id = str(payload.get("txID", ""))
-    block_num_raw = payload.get("blockNumber")
-    block_num = int(block_num_raw) if block_num_raw else None
+    block_num = int(payload["blockNumber"]) if payload.get("blockNumber") else None
 
-    stmt_un = select(Asset).where(Asset.asset_id == request.asset_id)
-    result_un = await db.execute(stmt_un)
-    asset_un = result_un.scalar_one()
+    result = await db.execute(select(Asset).where(Asset.asset_id == request.asset_id))
+    asset = result.scalar_one()
+    initiator_id = current_user.id if current_user else asset.current_owner_id
 
-    initiator_id_un = current_user.id if current_user else asset_un.current_owner_id
+    asset.status = "ACTIF"
+    asset.fabric_tx_id = fabric_tx_id
+    asset.fabric_block_number = block_num
 
-    asset_un.status = "ACTIF"
-    asset_un.fabric_tx_id = fabric_tx_id
-    asset_un.fabric_block_number = block_num
-
-    tx_un = Transaction(
+    tx = Transaction(
         tx_ref=f"TX-{uuid.uuid4()}",
         fabric_tx_id=fabric_tx_id,
         fabric_block_number=block_num,
         tx_type="DEGEL",
-        asset_id=asset_un.id,
-        initiator_id=initiator_id_un,
-        amount=asset_un.nominal_value,
-        settlement_date=asset_un.updated_at,
+        asset_id=asset.id,
+        initiator_id=initiator_id,
+        amount=asset.nominal_value,
+        settlement_date=asset.updated_at,
         regulatory_flag=True,
         justification=request.justification,
     )
-    db.add(tx_un)
+    db.add(tx)
     try:
         await db.commit()
     except Exception as db_exc:
-        logger.error(f"[SAGA] DB commit failed after Fabric UnfreezeAsset succeeded. Initiating compensation: {db_exc}")
+        logger.error(f"[SAGA] DB commit failed after Fabric UnfreezeAsset. Compensating: {db_exc}")
         await db.rollback()
         try:
             await fabric.submit_transaction(
@@ -364,17 +338,10 @@ async def unfreeze_asset(
         except Exception as comp_exc:
             logger.critical(
                 f"[SAGA] CRITICAL: Compensation FreezeAsset FAILED for asset {request.asset_id}. "
-                f"DB error: {db_exc}, Fabric comp error: {comp_exc}"
+                f"DB error: {db_exc}, comp error: {comp_exc}"
             )
         raise
-    await db.refresh(asset_un)
+    await db.refresh(asset)
 
-    try:
-        redis_gen = get_redis()
-        redis_conn = await redis_gen.__anext__()
-        await redis_conn.publish("asset:events", f"UNFREEZE:{request.asset_id}")
-        await redis_gen.aclose()
-    except Exception as exc:
-        logger.warning(f"Publication Redis échouée: {exc}")
-
-    return AssetResponse.model_validate(asset_un)
+    await _publish_event("asset:events", f"UNFREEZE:{request.asset_id}")
+    return AssetResponse.model_validate(asset)

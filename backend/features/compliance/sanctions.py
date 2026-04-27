@@ -1,77 +1,67 @@
-import json 
-import logging 
-from pathlib import Path 
-from dataclasses import dataclass 
-from uuid import UUID 
+from __future__ import annotations
 
-from rapidfuzz import fuzz 
-from backend .config import Settings 
-from backend .constants import SANCTION_MATCH_THRESHOLD 
+import logging
+from dataclasses import dataclass
+from uuid import UUID
 
-logger =logging .getLogger (__name__ )
+from rapidfuzz import fuzz
 
-@dataclass (slots =True )
-class SanctionMatch :
-    list_name :str 
-    matched_name :str 
-    match_score :float 
-    pep_level :int |None 
+from backend.config import Settings
+from backend.constants import SANCTION_MATCH_THRESHOLD
+from backend.features.compliance.fixtures_loader import get_sanctions_lists
 
-@dataclass (slots =True )
-class SanctionsResult :
-    hit :bool 
-    matches :list [SanctionMatch ]
-    screened_lists :list [str ]
+logger = logging.getLogger(__name__)
 
-class SanctionsScreener :
 
-    def __init__ (self ,settings :Settings )->None :
-        self .settings =settings 
-        self .fixtures_path =Path ("database/fixtures/json/compliance_kyc_aml.json").resolve ()
+@dataclass(slots=True)
+class SanctionMatch:
+    list_name: str
+    matched_name: str
+    match_score: float
+    pep_level: int | None
 
-    def _load_lists (self )->dict [str ,list [str ]]:
-        try :
-            raw_data =self .fixtures_path .read_text (encoding ="utf-8")
-            data =json .loads (raw_data )
-            return data .get ("sanctions_lists",{})
-        except json .JSONDecodeError as exc :
-            logger .error (f"Decoding target mapping structurally structurally failed: {exc }")
-            return {}
-        except FileNotFoundError as exc :
-            logger .warning (f"File payload directly bounded absent limits: {exc }")
-            return {}
 
-    async def screen (self ,user_id :UUID ,full_name :str ,nationality :str |None =None )->SanctionsResult :
-        sanctions_db =self ._load_lists ()
+@dataclass(slots=True)
+class SanctionsResult:
+    hit: bool
+    matches: list[SanctionMatch]
+    screened_lists: list[str]
 
-        lists_to_check =[
-        "OFAC_SDN","UN_CONSOLIDATED","EU_CONSOLIDATED",
-        "UK_HMT","PEP_LEVEL_1","PEP_LEVEL_2","PEP_LEVEL_3"
+
+class SanctionsScreener:
+    def __init__(self, settings: Settings) -> None:
+        self.settings = settings
+
+    def _load_lists(self) -> dict[str, list[str]]:
+        return get_sanctions_lists()
+
+    async def screen(self, user_id: UUID, full_name: str, nationality: str | None = None) -> SanctionsResult:
+        sanctions_db = self._load_lists()
+
+        lists_to_check = [
+            "OFAC_SDN", "UN_CONSOLIDATED", "EU_CONSOLIDATED",
+            "UK_HMT", "PEP_LEVEL_1", "PEP_LEVEL_2", "PEP_LEVEL_3",
         ]
 
-        matches :list [SanctionMatch ]=[]
-        name_lower =full_name .lower ()
-        hit =False 
+        matches: list[SanctionMatch] = []
+        name_lower = full_name.lower()
+        hit = False
 
-        for list_name in lists_to_check :
-            candidates =sanctions_db .get (list_name ,[])
-            pep_lvl =int (list_name [-1 ])if "PEP"in list_name else None 
+        for list_name in lists_to_check:
+            candidates = sanctions_db.get(list_name, [])
+            pep_level = int(list_name[-1]) if "PEP" in list_name else None
 
-            for candidate in candidates :
-                cand_str =candidate if isinstance (candidate ,str )else str (candidate )
+            for candidate in candidates:
+                cand_str = candidate if isinstance(candidate, str) else str(candidate)
 
-                if name_lower ==cand_str .lower ():
-                    matches .append (SanctionMatch (list_name ,cand_str ,100.0 ,pep_lvl ))
-                    hit =True 
-                    break 
+                if name_lower == cand_str.lower():
+                    matches.append(SanctionMatch(list_name, cand_str, 100.0, pep_level))
+                    hit = True
+                    break
 
-                ratio =fuzz .ratio (name_lower ,cand_str .lower ())
-                if ratio >SANCTION_MATCH_THRESHOLD :
-                    matches .append (SanctionMatch (list_name ,cand_str ,ratio ,pep_lvl ))
-                    hit =True 
+                ratio = fuzz.ratio(name_lower, cand_str.lower())
+                if ratio > SANCTION_MATCH_THRESHOLD:
+                    matches.append(SanctionMatch(list_name, cand_str, ratio, pep_level))
+                    hit = True
 
-        return SanctionsResult (
-        hit =hit ,
-        matches =matches ,
-        screened_lists =lists_to_check 
-        )
+        return SanctionsResult(hit=hit, matches=matches, screened_lists=lists_to_check)

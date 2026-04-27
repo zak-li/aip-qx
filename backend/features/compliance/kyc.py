@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, UTC
 from uuid import UUID
 
 from sqlalchemy import select
@@ -31,7 +31,7 @@ class KYCVerifier:
         result = await self.db.execute(stmt)
         record = result.scalar_one_or_none()
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         if not record:
             raise ValueError(f"Aucun dossier KYC trouvé pour l'utilisateur {user_id}")

@@ -44,7 +44,7 @@ class Transaction(Base, UUIDMixin, TimestampMixin):
     endorsing_orgs: Mapped[list[str] | None] = mapped_column(ArrayType, nullable=True)
     endorsement_count: Mapped[int | None] = mapped_column(Integer, nullable=True)
     justification: Mapped[str | None] = mapped_column(String, nullable=True)
-    
+
     regulatory_flag: Mapped[bool] = mapped_column(Boolean, server_default="false", nullable=False, default=False)
     sar_generated: Mapped[bool] = mapped_column(Boolean, server_default="false", nullable=False, default=False)
     status: Mapped[str] = mapped_column(String(30), server_default="'CONFIRME'", nullable=False, default="CONFIRME")

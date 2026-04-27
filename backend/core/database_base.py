@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 
 from sqlalchemy import MetaData, text
 from sqlalchemy.dialects.postgresql import UUID
@@ -36,6 +36,6 @@ class TimestampMixin:
 class TimestampUpdateMixin(TimestampMixin):
     updated_at: Mapped[datetime] = mapped_column(
         server_default=text("now()"),
-        onupdate=lambda: datetime.now(timezone.utc).replace(tzinfo=None),
+        onupdate=lambda: datetime.now(UTC).replace(tzinfo=None),
         nullable=False,
     )

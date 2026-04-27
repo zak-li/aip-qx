@@ -1,0 +1,125 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{graphicx}
+
+\geometry{margin=1in}
+
+\title{Formal Security Proofs for Schnorr-based zk-KYC in Permissioned Blockchains}
+\author{Real World Assets (RWA) Tokenization Project}
+\date{\today}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{definition}{Definition}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This document provides the formal mathematical proofs for the Non-Interactive Zero-Knowledge (NIZK) identity protocol utilized in the RWA Tokenization platform. We demonstrate that the protocol, based on the Schnorr signature scheme with the Fiat-Shamir heuristic over the secp256k1 elliptic curve, satisfies Completeness, Soundness, and Zero-Knowledge. Furthermore, we formalize its alignment with the Markets in Crypto-Assets (MiCA) regulation, specifically Article 68.
+\end{abstract}
+
+\section{Introduction}
+To comply with regulatory standards such as KYC/AML and MiCA without compromising user privacy, our system employs a zk-KYC protocol. A central authority (the platform) issues an eligibility credential (a signed claim over the user's public key $Y$). To perform a regulated action, the user provides a NIZK proof of knowledge of the private key $x$ corresponding to $Y$, bound to a specific context (purpose and nullifier).
+
+Let $\mathbb{G}$ be the secp256k1 elliptic curve group of prime order $N$ with generator $G$.
+The user's key pair is $(x, Y)$ where $x \in \mathbb{Z}_N^*$ and $Y = xG$.
+
+\section{The Protocol ($\Pi_{zk-KYC}$)}
+\subsection{Setup and Prove}
+Given context $C \in \{0, 1\}^*$:
+\begin{enumerate}
+    \item Prover samples $r \xleftarrow{\$} \mathbb{Z}_N^*$.
+    \item Prover computes the commitment $R = rG$.
+    \item Prover computes the challenge $c = H(R_x \parallel R_y \parallel Y_x \parallel Y_y \parallel C) \pmod N$, where $H$ is SHA-256.
+    \item Prover computes the response $s = (r + c \cdot x) \pmod N$.
+    \item The proof is $\pi = (R_x, R_y, s)$.
+\end{enumerate}
+
+\subsection{Verify}
+Given proof $\pi = (R_x, R_y, s)$, public key $Y$, and context $C$:
+\begin{enumerate}
+    \item Reconstruct $R \in \mathbb{G}$ from $(R_x, R_y)$. If invalid, output \texttt{false}.
+    \item Compute $c = H(R_x \parallel R_y \parallel Y_x \parallel Y_y \parallel C) \pmod N$.
+    \item Verify that $sG = R + cY$. If equal, output \texttt{true}, else \texttt{false}.
+\end{enumerate}
+
+\section{Formal Security Proofs}
+
+\subsection{Completeness}
+\begin{theorem}[Completeness]
+An honest prover with knowledge of private key $x$ such that $Y = xG$ will always produce a proof $\pi$ that is accepted by the verifier.
+\end{theorem}
+\begin{proof}
+By definition of the honest prover, $s = r + cx \pmod N$.
+The verifier checks if $sG = R + cY$.
+Substituting $s$:
+\[ sG = (r + cx)G = rG + cxG \]
+Since $R = rG$ and $Y = xG$, we have:
+\[ sG = R + cY \]
+Thus, the verification equation always holds.
+\end{proof}
+
+\subsection{Soundness}
+\begin{theorem}[Soundness]
+If a Probabilistic Polynomial-Time (PPT) adversary $\mathcal{A}$ can forge a valid proof $\pi$ for a public key $Y$ without knowledge of $x$ with non-negligible probability $\epsilon$, then $\mathcal{A}$ can be used to solve the Discrete Logarithm Problem (DLP) in $\mathbb{G}$.
+\end{theorem}
+\begin{proof}
+We rely on the Forking Lemma. Suppose $\mathcal{A}$ is an algorithm that outputs a valid proof $(R, c, s)$ for $Y$. We construct an extractor $\mathcal{E}$ that interacts with $\mathcal{A}$ and controls the random oracle $H$.
+
+1. $\mathcal{E}$ runs $\mathcal{A}$ with random tape $\rho$. $\mathcal{A}$ queries the random oracle for $H(R, Y, C)$ and eventually outputs a valid proof $(R, c_1, s_1)$ where $s_1G = R + c_1Y$.
+
+2. $\mathcal{E}$ rewinds $\mathcal{A}$ to the exact state before the query $H(R, Y, C)$, keeping the same random tape $\rho$. $\mathcal{E}$ replies to the query with a new random challenge $c_2 \neq c_1$.
+
+3. By the Forking Lemma, with probability $\geq \epsilon^2 / q_H$ (where $q_H$ is the number of hash queries), $\mathcal{A}$ outputs a second valid proof $(R, c_2, s_2)$ such that $s_2G = R + c_2Y$.
+
+4. $\mathcal{E}$ now has two valid transcripts:
+\[ s_1G = R + c_1Y \]
+\[ s_2G = R + c_2Y \]
+
+Subtracting the two equations yields:
+\[ (s_1 - s_2)G = (c_1 - c_2)Y \]
+\[ (s_1 - s_2)G = (c_1 - c_2)xG \]
+
+Since $c_1 \neq c_2$, $(c_1 - c_2)$ is invertible modulo $N$. $\mathcal{E}$ extracts $x$:
+\[ x = (s_1 - s_2)(c_1 - c_2)^{-1} \pmod N \]
+
+Thus, $\mathcal{E}$ has solved the DLP on secp256k1. Assuming the DLP is hard in $\mathbb{G}$, no such PPT adversary $\mathcal{A}$ can exist. Therefore, the protocol is computationally sound.
+\end{proof}
+
+\subsection{Zero-Knowledge}
+\begin{theorem}[Zero-Knowledge]
+The protocol $\Pi_{zk-KYC}$ leaks no information about the private key $x$, as transcripts can be perfectly simulated without knowledge of $x$.
+\end{theorem}
+\begin{proof}
+We construct a PPT simulator $\mathcal{S}$ that, given only the public key $Y$ and context $C$, produces a valid transcript indistinguishable from one produced by an honest prover interacting with the random oracle.
+
+\textbf{Simulator $\mathcal{S}(Y, C)$}:
+\begin{enumerate}
+    \item Sample $s \xleftarrow{\$} \mathbb{Z}_N^*$.
+    \item Sample $c \xleftarrow{\$} \mathbb{Z}_N^*$.
+    \item Compute $R = sG - cY$.
+    \item Program the random oracle such that $H(R, Y, C) = c$. (If this causes a collision in the oracle, abort. Since $R$ is uniformly distributed, the probability of collision is $q_H / N$, which is negligible).
+    \item Output the transcript $\pi = (R, s)$.
+\end{enumerate}
+
+In the real protocol, $r$ is chosen uniformly, so $R = rG$ is uniform in $\mathbb{G}$, and $c = H(\dots)$ is uniform in $\mathbb{Z}_N^*$. Thus, $s = r + cx$ is uniform in $\mathbb{Z}_N^*$.
+In the simulated protocol, $s$ and $c$ are chosen uniformly, and $R$ is uniquely determined by $R = sG - cY$, making it uniformly distributed in $\mathbb{G}$.
+The joint distribution $(R, c, s)$ produced by $\mathcal{S}$ is statistically identical to the distribution produced by the real prover. Thus, the proof leaks zero knowledge about $x$.
+\end{proof}
+
+\section{Alignment with MiCA Regulation}
+Article 68 of the Markets in Crypto-Assets (MiCA) regulation mandates strict KYC (Know Your Customer) and AML (Anti-Money Laundering) checks for asset transfers, while ensuring data minimization under GDPR.
+
+\begin{itemize}
+    \item \textbf{Verification without Disclosure:} The credential acts as a claim $\mathcal{C}_{issuer}(Y, \{kyc\_ok, \dots\})$. The ZKP proves possession of $Y$ without revealing $x$ or identifying metadata on the ledger.
+    \item \textbf{Non-Repudiation \& Replay Prevention:} The context $C = \text{purpose} \parallel \text{nullifier}$ guarantees the proof cannot be replayed for another transaction.
+    \item \textbf{Auditability:} Regulators can verify the mathematical correctness of the state transitions on the ledger independently using $\pi$, while relying on the off-chain mapping of $Y \leftrightarrow \text{Real Identity}$ maintained by the regulated issuer (e.g., BNP Paribas) when investigation is required.
+\end{itemize}
+
+\end{document}

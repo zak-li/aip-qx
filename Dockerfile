@@ -25,6 +25,8 @@ COPY --from=builder /install /usr/local
 
 COPY backend/ ./backend/
 COPY network/ ./network/
+COPY database/migrations/ ./database/migrations/
+COPY alembic.ini ./
 
 RUN chown -R rwa:rwa /app
 

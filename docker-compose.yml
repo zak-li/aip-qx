@@ -31,7 +31,7 @@ services:
       dockerfile: Dockerfile
     container_name: rwa-celery-worker
     restart: unless-stopped
-    command: celery -A backend.tasks.celery_app worker -l INFO --concurrency=2
+    command: celery -A backend.core.celery_app worker -l INFO --concurrency=2
     env_file:
       - .env
     environment:

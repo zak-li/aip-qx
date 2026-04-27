@@ -1,5 +1,5 @@
 import json
-from typing import Mapping
+from collections.abc import Mapping
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import TypeAdapter

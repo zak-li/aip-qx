@@ -1,5 +1,5 @@
 import logging
-from datetime import date, datetime, timezone
+from datetime import date, datetime, UTC
 from decimal import Decimal
 
 from sqlalchemy import select
@@ -40,7 +40,7 @@ async def record_valuation(
     db.add(valuation)
 
     asset.current_value = current_value
-    asset.updated_at = datetime.now(timezone.utc).replace(tzinfo=None)
+    asset.updated_at = datetime.now(UTC).replace(tzinfo=None)
 
     await db.commit()
     await db.refresh(valuation)

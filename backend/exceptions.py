@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
@@ -45,7 +45,7 @@ def _format_error(error_type: str, message: str) -> dict[str, str]:
     return {
         "error": error_type,
         "message": message,
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": datetime.now(UTC).isoformat(),
     }
 
 def setup_global_exception_handlers(app: FastAPI) -> None:

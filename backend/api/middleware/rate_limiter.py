@@ -1,12 +1,13 @@
 import hashlib
 import logging
 import time
-from typing import Awaitable, Callable
+from collections.abc import Awaitable, Callable
 
 from fastapi import Request, Response
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 
+from backend.core.client_ip import extract_client_ip
 from backend.core.redis_client import get_redis
 
 logger = logging.getLogger(__name__)
@@ -24,7 +25,7 @@ class RateLimiterMiddleware(BaseHTTPMiddleware):
             return await call_next(request)
 
         method = request.method
-        ip = request.client.host if request.client else "127.0.0.1"
+        ip = getattr(request.state, "client_ip", None) or extract_client_ip(request)
 
         ip_hash = hashlib.sha256(ip.encode("utf-8")).hexdigest()[:16]
         key = f"rate:{ip_hash}:{method}"

@@ -3,6 +3,7 @@ import os
 
 from neo4j import AsyncGraphDatabase
 
+from backend.core.circuit_breaker import CircuitBreakerOpenError, neo4j_breaker
 from backend.features.fraud_detection.fraud_detection import FraudDetector
 
 logger = logging.getLogger(__name__)
@@ -34,6 +35,10 @@ class Neo4jClient:
             await self._driver.close()
             self._driver = None
 
+    async def _run_query(self, cypher: str, **params) -> None:
+        async with self._driver.session() as session:
+            await session.run(cypher, **params)
+
     async def ingest_transaction(self, tx_id: str, asset_id: str, from_actor: str, to_actor: str, amount: float, timestamp: str) -> None:
         if not self._driver:
             return
@@ -50,20 +55,22 @@ class Neo4jClient:
         RETURN r
         """
 
-        async with self._driver.session() as session:
-            try:
-                await session.run(
-                    cypher_query,
-                    from_actor=from_actor,
-                    to_actor=to_actor,
-                    tx_id=tx_id,
-                    asset_id=asset_id,
-                    amount=amount,
-                    timestamp=timestamp,
-                )
-                logger.info(f"[GRAPH] Transaction {tx_id[:8]} synchronisée avec Neo4j.")
-            except Exception as e:
-                logger.error(f"[GRAPH] Echec de synchronisation Neo4j: {e}")
+        try:
+            await neo4j_breaker.call(
+                self._run_query,
+                cypher_query,
+                from_actor=from_actor,
+                to_actor=to_actor,
+                tx_id=tx_id,
+                asset_id=asset_id,
+                amount=amount,
+                timestamp=timestamp,
+            )
+            logger.info(f"[GRAPH] Transaction {tx_id[:8]} synchronisée avec Neo4j.")
+        except CircuitBreakerOpenError:
+            logger.warning("[GRAPH] Neo4j circuit open — ingest skipped (will resync later).")
+        except Exception as e:
+            logger.error(f"[GRAPH] Echec de synchronisation Neo4j: {e}")
 
     async def ingest_freeze(self, asset_id: str, actor: str, tx_id: str) -> None:
         if not self._driver:
@@ -77,11 +84,14 @@ class Neo4jClient:
             reason: 'AMF_REGULATORY_FREEZE'
         }]->(a)
         """
-        async with self._driver.session() as session:
-            try:
-                await session.run(cypher_query, actor=actor, asset_id=asset_id, tx_id=tx_id)
-            except Exception as e:
-                logger.error(f"[GRAPH] Echec ingest_freeze Neo4j: {e}")
+        try:
+            await neo4j_breaker.call(
+                self._run_query, cypher_query, actor=actor, asset_id=asset_id, tx_id=tx_id,
+            )
+        except CircuitBreakerOpenError:
+            logger.warning("[GRAPH] Neo4j circuit open — freeze ingest skipped.")
+        except Exception as e:
+            logger.error(f"[GRAPH] Echec ingest_freeze Neo4j: {e}")
 
     async def run_fraud_scan(self) -> dict[str, list[dict]]:
         """Run full fraud detection scan and return all anomalies found."""

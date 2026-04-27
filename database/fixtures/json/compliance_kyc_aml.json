@@ -67,7 +67,7 @@
   "kyc_submissions": [
     {
       "submission_id": "KYC-SUB-2025-BNP-TM-001",
-      "participant_ref": "u0000001-0001-0001-0001-000000000001",
+      "participant_ref": "a0000001-0001-0001-0001-000000000001",
       "participant_name": "Thomas Martin",
       "organisation": "BNP Paribas",
       "submitted_at": "2025-03-01 09:00:00",
@@ -132,7 +132,7 @@
     },
     {
       "submission_id": "KYC-SUB-2025-NW-JW-001",
-      "participant_ref": "u0000009-0009-0009-0009-000000000009",
+      "participant_ref": "a0000009-0009-0009-0009-000000000009",
       "participant_name": "Jamez Wilzon",
       "organisation": "NatWest Markets",
       "submitted_at": "2025-02-28 09:00:00",
@@ -194,12 +194,322 @@
         "monitoring_level": "ENHANCED",
         "approved_at": "2025-02-28 11:00:00"
       }
+    },
+    {
+      "submission_id": "KYC-SUB-2025-ATW-ZR-001",
+      "participant_ref": "a0000011-0011-0011-0011-000000000011",
+      "participant_name": "Zakaria Rahali",
+      "organisation": "Attijariwafa Bank",
+      "submitted_at": "2025-01-20 10:00:00",
+      "provider": "LexisNexis Risk Solutions",
+      "provider_ref": "LNRS-KYC-2025-ATW-ZR-000101",
+      "kyc_level": 3,
+      "identity": {
+        "legal_name": "Zakaria Rahali",
+        "date_of_birth": "1988-03-15",
+        "nationality": "MA",
+        "place_of_birth": "Casablanca",
+        "address": {
+          "street": "2 Boulevard Zerktouni",
+          "city": "Casablanca",
+          "postal_code": "20000",
+          "country": "MA"
+        }
+      },
+      "documents": [
+        {
+          "type": "NATIONAL_ID",
+          "number": "BE123456",
+          "issuing_authority": "Direction Generale de la Surete Nationale",
+          "issue_date": "2021-04-10",
+          "expiry_date": "2031-04-10",
+          "issuing_country": "MA",
+          "verified": true,
+          "verification_method": "OCR_BIOMETRIC"
+        },
+        {
+          "type": "PROOF_OF_ADDRESS",
+          "subtype": "UTILITY_BILL",
+          "issue_date": "2025-01-01",
+          "verified": true
+        },
+        {
+          "type": "EMPLOYMENT_CONTRACT",
+          "issuer": "Attijariwafa Bank S.A.",
+          "issue_date": "2022-07-01",
+          "verified": true
+        }
+      ],
+      "employer_verification": {
+        "employer": "Attijariwafa Bank S.A.",
+        "lei": "XKZZ2JZF41MRHTR1V493",
+        "department": "Digital Assets & Tokenization",
+        "position": "Head of Asset Tokenization",
+        "employee_since": "2022-07-01",
+        "annual_income_range": "MAD_600K_1200K",
+        "verified": true,
+        "verification_method": "DIRECT_EMPLOYER_CONFIRMATION"
+      },
+      "result": {
+        "status": "APPROUVE",
+        "risk_score": 0.073,
+        "risk_category": "FAIBLE",
+        "expires_at": "2026-01-20",
+        "flags": ["CROSS_BORDER_ACTIVITY"],
+        "monitoring_level": "ENHANCED",
+        "approved_at": "2025-01-22 10:30:00"
+      }
+    },
+    {
+      "submission_id": "KYC-SUB-2025-AMMC-AB-001",
+      "participant_ref": "a0000012-0012-0012-0012-000000000012",
+      "participant_name": "Aya Belakhouad",
+      "organisation": "AMMC",
+      "submitted_at": "2025-01-20 10:30:00",
+      "provider": "Acuris Risk Intelligence",
+      "provider_ref": "ARI-KYC-2025-AMMC-AB-000201",
+      "kyc_level": 3,
+      "identity": {
+        "legal_name": "Aya Belakhouad",
+        "date_of_birth": "1991-09-22",
+        "nationality": "MA",
+        "place_of_birth": "Rabat",
+        "address": {
+          "street": "Avenue Mohammed VI",
+          "city": "Rabat",
+          "postal_code": "10000",
+          "country": "MA"
+        }
+      },
+      "documents": [
+        {
+          "type": "NATIONAL_ID",
+          "number": "CD987654",
+          "issuing_authority": "Direction Generale de la Surete Nationale",
+          "issue_date": "2022-06-15",
+          "expiry_date": "2032-06-15",
+          "issuing_country": "MA",
+          "verified": true,
+          "verification_method": "OCR_BIOMETRIC"
+        },
+        {
+          "type": "PROOF_OF_ADDRESS",
+          "subtype": "BANK_STATEMENT",
+          "issue_date": "2025-01-05",
+          "verified": true
+        },
+        {
+          "type": "REGULATORY_APPOINTMENT",
+          "issuer": "AMMC",
+          "issue_date": "2023-03-01",
+          "verified": true
+        }
+      ],
+      "employer_verification": {
+        "employer": "Autorite Marocaine du Marche des Capitaux",
+        "lei": "H3EZTQ2ZKBQP8MA00001",
+        "department": "Division Innovation Financiere",
+        "position": "Regulatory Analyst — Digital Assets",
+        "employee_since": "2023-03-01",
+        "annual_income_range": "MAD_300K_600K",
+        "verified": true,
+        "verification_method": "DIRECT_EMPLOYER_CONFIRMATION"
+      },
+      "result": {
+        "status": "APPROUVE",
+        "risk_score": 0.038,
+        "risk_category": "TRES_FAIBLE",
+        "expires_at": "2026-01-20",
+        "flags": [],
+        "approved_at": "2025-01-22 11:00:00"
+      }
+    },
+    {
+      "submission_id": "KYC-SUB-2025-ATW-YA-001",
+      "participant_ref": "a0000013-0013-0013-0013-000000000013",
+      "participant_name": "Youssef Alami",
+      "organisation": "Attijariwafa Bank",
+      "submitted_at": "2025-01-20 11:00:00",
+      "provider": "LexisNexis Risk Solutions",
+      "provider_ref": "LNRS-KYC-2025-ATW-YA-000301",
+      "kyc_level": 3,
+      "identity": {
+        "legal_name": "Youssef Alami",
+        "date_of_birth": "1986-12-05",
+        "nationality": "MA",
+        "place_of_birth": "Casablanca",
+        "address": {
+          "street": "Boulevard Anfa",
+          "city": "Casablanca",
+          "postal_code": "20100",
+          "country": "MA"
+        }
+      },
+      "documents": [
+        {
+          "type": "NATIONAL_ID",
+          "number": "AB567890",
+          "issuing_authority": "Direction Generale de la Surete Nationale",
+          "issue_date": "2020-08-20",
+          "expiry_date": "2030-08-20",
+          "issuing_country": "MA",
+          "verified": true,
+          "verification_method": "OCR_BIOMETRIC"
+        },
+        {
+          "type": "PROOF_OF_ADDRESS",
+          "subtype": "UTILITY_BILL",
+          "issue_date": "2025-01-02",
+          "verified": true
+        },
+        {
+          "type": "EMPLOYMENT_CONTRACT",
+          "issuer": "Attijariwafa Bank S.A.",
+          "issue_date": "2021-01-15",
+          "verified": true
+        }
+      ],
+      "employer_verification": {
+        "employer": "Attijariwafa Bank S.A.",
+        "lei": "XKZZ2JZF41MRHTR1V493",
+        "department": "Fixed Income & Sukuk Trading",
+        "position": "Senior Sukuk Trader",
+        "employee_since": "2021-01-15",
+        "annual_income_range": "MAD_500K_900K",
+        "verified": true,
+        "verification_method": "DIRECT_EMPLOYER_CONFIRMATION"
+      },
+      "result": {
+        "status": "APPROUVE",
+        "risk_score": 0.082,
+        "risk_category": "FAIBLE",
+        "expires_at": "2026-01-20",
+        "flags": ["CROSS_BORDER_ACTIVITY", "HIGH_VALUE_TRANSACTIONS"],
+        "monitoring_level": "ENHANCED",
+        "approved_at": "2025-01-22 11:30:00"
+      }
+    },
+    {
+      "submission_id": "KYC-SUB-2025-ATW-FB-001",
+      "participant_ref": "a0000014-0014-0014-0014-000000000014",
+      "participant_name": "Fatima Zahra Benali",
+      "organisation": "Attijariwafa Bank",
+      "submitted_at": "2025-01-20 11:30:00",
+      "provider": "Acuris Risk Intelligence",
+      "provider_ref": "ARI-KYC-2025-ATW-FB-000401",
+      "kyc_level": 2,
+      "identity": {
+        "legal_name": "Fatima Zahra Benali",
+        "date_of_birth": "1990-05-18",
+        "nationality": "MA",
+        "place_of_birth": "Marrakech",
+        "address": {
+          "street": "Rue Ibn Sina",
+          "city": "Casablanca",
+          "postal_code": "20300",
+          "country": "MA"
+        }
+      },
+      "documents": [
+        {
+          "type": "NATIONAL_ID",
+          "number": "EF234567",
+          "issuing_authority": "Direction Generale de la Surete Nationale",
+          "issue_date": "2023-02-10",
+          "expiry_date": "2033-02-10",
+          "issuing_country": "MA",
+          "verified": true,
+          "verification_method": "OCR_BIOMETRIC"
+        },
+        {
+          "type": "PROOF_OF_ADDRESS",
+          "subtype": "BANK_STATEMENT",
+          "issue_date": "2025-01-03",
+          "verified": true
+        }
+      ],
+      "employer_verification": {
+        "employer": "Attijariwafa Bank S.A.",
+        "lei": "XKZZ2JZF41MRHTR1V493",
+        "department": "Conformite et LAB",
+        "position": "AML Compliance Officer",
+        "employee_since": "2020-09-01",
+        "annual_income_range": "MAD_350K_650K",
+        "verified": true,
+        "verification_method": "DIRECT_EMPLOYER_CONFIRMATION"
+      },
+      "result": {
+        "status": "APPROUVE",
+        "risk_score": 0.031,
+        "risk_category": "TRES_FAIBLE",
+        "expires_at": "2026-01-20",
+        "flags": [],
+        "approved_at": "2025-01-22 12:00:00"
+      }
+    },
+    {
+      "submission_id": "KYC-SUB-2025-AMMC-MT-001",
+      "participant_ref": "a0000015-0015-0015-0015-000000000015",
+      "participant_name": "Mehdi Tahiri",
+      "organisation": "AMMC",
+      "submitted_at": "2025-01-20 12:00:00",
+      "provider": "Acuris Risk Intelligence",
+      "provider_ref": "ARI-KYC-2025-AMMC-MT-000501",
+      "kyc_level": 2,
+      "identity": {
+        "legal_name": "Mehdi Tahiri",
+        "date_of_birth": "1993-07-30",
+        "nationality": "MA",
+        "place_of_birth": "Rabat",
+        "address": {
+          "street": "Avenue Hassan II",
+          "city": "Rabat",
+          "postal_code": "10020",
+          "country": "MA"
+        }
+      },
+      "documents": [
+        {
+          "type": "NATIONAL_ID",
+          "number": "GH345678",
+          "issuing_authority": "Direction Generale de la Surete Nationale",
+          "issue_date": "2022-11-05",
+          "expiry_date": "2032-11-05",
+          "issuing_country": "MA",
+          "verified": true,
+          "verification_method": "OCR_BIOMETRIC"
+        },
+        {
+          "type": "PROOF_OF_ADDRESS",
+          "subtype": "UTILITY_BILL",
+          "issue_date": "2025-01-04",
+          "verified": true
+        }
+      ],
+      "employer_verification": {
+        "employer": "Autorite Marocaine du Marche des Capitaux",
+        "lei": "H3EZTQ2ZKBQP8MA00001",
+        "department": "Audit et Surveillance des Marches",
+        "position": "Market Surveillance Auditor",
+        "employee_since": "2023-09-01",
+        "annual_income_range": "MAD_280K_500K",
+        "verified": true,
+        "verification_method": "DIRECT_EMPLOYER_CONFIRMATION"
+      },
+      "result": {
+        "status": "APPROUVE",
+        "risk_score": 0.028,
+        "risk_category": "TRES_FAIBLE",
+        "expires_at": "2026-01-20",
+        "flags": [],
+        "approved_at": "2025-01-22 12:30:00"
+      }
     }
   ],
   "aml_screenings": [
     {
       "screening_id": "AML-SCR-2025-BNP-TM-003841",
-      "participant_ref": "u0000001-0001-0001-0001-000000000001",
+      "participant_ref": "a0000001-0001-0001-0001-000000000001",
       "participant_name": "Thomas Martin",
       "screened_at": "2025-03-01 10:00:00",
       "provider": "Acuris Risk Intelligence",
@@ -230,7 +540,7 @@
     },
     {
       "screening_id": "AML-SCR-2025-NW-JW-002219",
-      "participant_ref": "u0000009-0009-0009-0009-000000000009",
+      "participant_ref": "a0000009-0009-0009-0009-000000000009",
       "participant_name": "Jamez Wilzon",
       "screened_at": "2025-02-28 09:00:00",
       "provider": "LexisNexis Risk Solutions",
@@ -310,6 +620,91 @@
       "risk_category": "TRES_FAIBLE",
       "recommendation": "APPROVE",
       "next_review_date": "2026-01-22"
+    },
+    {
+      "screening_id": "AML-SCR-2025-ATW-YA-000301",
+      "participant_ref": "a0000013-0013-0013-0013-000000000013",
+      "participant_name": "Youssef Alami",
+      "screened_at": "2025-01-22 11:00:00",
+      "provider": "LexisNexis Risk Solutions",
+      "screening_type": "FULL_REFRESH",
+      "lists_checked": [
+        {"list": "OFAC_SDN",                    "version": "2025-01-21", "hit": false},
+        {"list": "OFAC_CONSOLIDATED",            "version": "2025-01-21", "hit": false},
+        {"list": "UN_CONSOLIDATED",              "version": "2025-01-20", "hit": false},
+        {"list": "EU_CONSOLIDATED",              "version": "2025-01-20", "hit": false},
+        {"list": "GAFI_HIGH_RISK",               "version": "2025-01-15", "hit": false},
+        {"list": "PEP_TIER_1",                   "hit": false},
+        {"list": "PEP_TIER_2",                   "hit": false},
+        {"list": "ADVERSE_MEDIA_FINANCIAL_CRIME","hit": false},
+        {"list": "ADVERSE_MEDIA_REGULATORY",     "hit": false}
+      ],
+      "risk_indicators": {
+        "high_risk_jurisdiction": false,
+        "cross_border_activity": true,
+        "politically_exposed_person": false,
+        "state_owned_entity": false
+      },
+      "final_risk_score": 0.082,
+      "risk_category": "FAIBLE",
+      "recommendation": "APPROVE_ENHANCED_MONITORING",
+      "enhanced_monitoring_reason": "Cross-border Sukuk trading activity MA-EU, high nominal value transactions",
+      "next_review_date": "2025-07-22"
+    },
+    {
+      "screening_id": "AML-SCR-2025-ATW-FB-000401",
+      "participant_ref": "a0000014-0014-0014-0014-000000000014",
+      "participant_name": "Fatima Zahra Benali",
+      "screened_at": "2025-01-22 11:30:00",
+      "provider": "Acuris Risk Intelligence",
+      "screening_type": "FULL_REFRESH",
+      "lists_checked": [
+        {"list": "OFAC_SDN",                    "version": "2025-01-21", "hit": false},
+        {"list": "UN_CONSOLIDATED",              "version": "2025-01-20", "hit": false},
+        {"list": "EU_CONSOLIDATED",              "version": "2025-01-20", "hit": false},
+        {"list": "GAFI_HIGH_RISK",               "version": "2025-01-15", "hit": false},
+        {"list": "PEP_TIER_1",                   "hit": false},
+        {"list": "PEP_TIER_2",                   "hit": false},
+        {"list": "ADVERSE_MEDIA_FINANCIAL_CRIME","hit": false}
+      ],
+      "risk_indicators": {
+        "high_risk_jurisdiction": false,
+        "cross_border_activity": false,
+        "politically_exposed_person": false,
+        "state_owned_entity": false
+      },
+      "final_risk_score": 0.031,
+      "risk_category": "TRES_FAIBLE",
+      "recommendation": "APPROVE",
+      "next_review_date": "2026-01-22"
+    },
+    {
+      "screening_id": "AML-SCR-2025-AMMC-MT-000501",
+      "participant_ref": "a0000015-0015-0015-0015-000000000015",
+      "participant_name": "Mehdi Tahiri",
+      "screened_at": "2025-01-22 12:00:00",
+      "provider": "Acuris Risk Intelligence",
+      "screening_type": "FULL_REFRESH",
+      "lists_checked": [
+        {"list": "OFAC_SDN",                    "version": "2025-01-21", "hit": false},
+        {"list": "UN_CONSOLIDATED",              "version": "2025-01-20", "hit": false},
+        {"list": "EU_CONSOLIDATED",              "version": "2025-01-20", "hit": false},
+        {"list": "GAFI_HIGH_RISK",               "version": "2025-01-15", "hit": false},
+        {"list": "PEP_TIER_1",                   "hit": false},
+        {"list": "PEP_TIER_2",                   "hit": false},
+        {"list": "ADVERSE_MEDIA_FINANCIAL_CRIME","hit": false},
+        {"list": "ADVERSE_MEDIA_REGULATORY",     "hit": false}
+      ],
+      "risk_indicators": {
+        "high_risk_jurisdiction": false,
+        "cross_border_activity": false,
+        "politically_exposed_person": false,
+        "state_owned_entity": false
+      },
+      "final_risk_score": 0.028,
+      "risk_category": "TRES_FAIBLE",
+      "recommendation": "APPROVE",
+      "next_review_date": "2026-01-22"
     }
   ],
   "transaction_monitoring_alerts": [
@@ -318,7 +713,7 @@
       "alert_type": "LARGE_TRANSACTION",
       "triggered_at": "2025-03-16 09:14:22",
       "transaction_ref": "TXN-2025-BNP-00001",
-      "participant_ref": "u0000001-0001-0001-0001-000000000001",
+      "participant_ref": "a0000001-0001-0001-0001-000000000001",
       "participant_name": "Thomas Martin",
       "amount": 50000000.00,
       "currency": "EUR",
@@ -336,7 +731,7 @@
       "alert_type": "REGULATORY_FLAG",
       "triggered_at": "2025-03-10 16:48:30",
       "transaction_ref": "TXN-2025-AMF-00001",
-      "participant_ref": "u0000009-0009-0009-0009-000000000009",
+      "participant_ref": "a0000009-0009-0009-0009-000000000009",
       "participant_name": "Jamez Wilzon",
       "asset_ref": "RWA-DRV-BNP-2025-006",
       "rule_id": "RULE-EMIR-DERIV-002",

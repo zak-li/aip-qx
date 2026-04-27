@@ -6,6 +6,7 @@ from backend.features.transactions import router as transactions
 from backend.features.audit import router as audit
 from backend.features.compliance import router as compliance
 from backend.features.agent import router as agent
+from backend.features.zkp import router as zkp
 
 api_router = APIRouter()
 
@@ -16,3 +17,4 @@ api_router.include_router(organizations.router, prefix="/organizations", tags=["
 api_router.include_router(audit.router, prefix="/audit", tags=["Regulatory Audit"])
 api_router.include_router(compliance.router, prefix="/compliance", tags=["AML / KYC Compliance"])
 api_router.include_router(agent.router, prefix="/agent", tags=["RAG Agent"])
+api_router.include_router(zkp.router, prefix="/zkp", tags=["ZKP zk-KYC"])

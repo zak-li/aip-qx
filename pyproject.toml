@@ -1,0 +1,48 @@
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning"]
+
+
+[tool.coverage.run]
+source = ["backend"]
+omit = ["backend/**/tasks.py", "tests/*"]
+
+
+[tool.coverage.report]
+fail_under = 70
+show_missing = true
+
+
+[tool.ruff]
+target-version = "py312"
+line-length = 110
+extend-exclude = [
+    ".venv",
+    "venv",
+    "ENV",
+    "database/migrations/versions",
+]
+
+[tool.ruff.lint]
+# Enable the rule sets that actually catch bugs, not stylistic noise.
+select = [
+    "E",    # pycodestyle errors
+    "F",    # pyflakes
+    "I",    # isort
+    "B",    # bugbear (likely bugs)
+    "S",    # bandit-style security checks
+    "ASYNC",
+    "UP",   # pyupgrade
+    "RUF",
+]
+# B008: FastAPI Depends(...) defaults are idiomatic.
+# S101: assert is fine in tests.
+# S104: bind 0.0.0.0 — only used in dev (vite proxy).
+# S311: random is used for jitter, not crypto.
+ignore = ["B008", "S101", "S104", "S311", "E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"backend/features/agent/groq_client.py" = ["E501"]   # long prompt strings
+"backend/features/zkp/*"                = ["S324"]   # SHA-1 not used; SHA-256/SHA-512 only
+"tests/**"                              = ["S", "B"]

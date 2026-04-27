@@ -59,16 +59,12 @@ export default function InputBar({ onSend, busy }) {
 
         {/* Terminal bar */}
         <div className="terminal-bar">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span className="status-dot" />
-            <span>ONLINE</span>
-          </div>
           <span>RAG_CONSOLE // LLAMA-3.3-70B</span>
         </div>
 
         {/* Input row */}
         <div className="input-main">
-          <div className="term-indicator">HET-X &gt;</div>
+          <div className="term-indicator">HET-X $</div>
           <textarea
             ref={textareaRef}
             rows={1}
@@ -80,7 +76,7 @@ export default function InputBar({ onSend, busy }) {
             onKeyDown={handleKey}
           />
           <button className="btn-send" onClick={submit} disabled={busy || !text.trim()}>
-            <svg viewBox="0 0 24 24">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="12" y1="19" x2="12" y2="5" />
               <polyline points="5 12 12 5 19 12" />
             </svg>
@@ -105,13 +101,13 @@ export default function InputBar({ onSend, busy }) {
             onClick={() => setOptsOpen(o => !o)}
             title="Options"
           >
-            <svg viewBox="0 0 16 16">
-              <line x1="2" y1="4"  x2="14" y2="4"  />
-              <line x1="2" y1="8"  x2="14" y2="8"  />
-              <line x1="2" y1="12" x2="14" y2="12" />
-              <circle cx="5"  cy="4"  r="1.5" fill="currentColor" stroke="none" />
-              <circle cx="10" cy="8"  r="1.5" fill="currentColor" stroke="none" />
-              <circle cx="6"  cy="12" r="1.5" fill="currentColor" stroke="none" />
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M4 8H13" />
+              <path d="M17 8L20 8" />
+              <path d="M11 16L20 16" />
+              <path d="M4 16H7" />
+              <circle cx="9" cy="16" r="2" />
+              <circle cx="15" cy="8" r="2" />
             </svg>
           </button>
         </div>

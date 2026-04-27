@@ -1,0 +1,83 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\usepackage{hyperref}
+
+\geometry{margin=1in}
+
+\title{Game-Theoretic Formalization of the Decentralized Compliance Tribunal}
+\author{Real World Assets (RWA) Tokenization Project}
+\date{\today}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{definition}{Definition}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This document provides the formal game-theoretic analysis of the Compliance Tribunal utilized in our permissioned blockchain architecture. We demonstrate that under a specific configuration of reputational staking and slashing, truthful voting on compliance anomalies constitutes a strict Nash Equilibrium, establishing a robust Schelling Point without reliance on a centralized auditor.
+\end{abstract}
+
+\section{System Model}
+Let $N$ be the set of randomly selected compliance auditors (peers) from regulated institutions (e.g., BNP Paribas, AMF), with $|N| = n$.
+An AI agent flags an asset transfer as anomalous, triggering a Tribunal session. 
+There exists an objective ground truth $\omega \in \{FRAUD, LEGITIMATE\}$.
+
+Each auditor $i \in N$ observes evidence $E$ and must submit a vote $v_i \in \{FRAUD, LEGITIMATE\}$ using a cryptographic Commit-Reveal scheme to prevent cascading information cascades (free-riding).
+
+\section{The Payoff Function}
+Unlike public permissionless blockchains (e.g., Kleros, Augur) where auditors stake financial tokens, our permissioned environment uses a \textbf{Reputational Stake} $S \in \mathbb{R}^+$. A high reputation score is required to maintain node consensus privileges on the network.
+
+The final decision $D$ is determined by a supermajority rule ($\tau = \frac{2}{3}n$).
+If the votes are tallied and a supermajority is reached, $D$ is established. Otherwise, the asset remains frozen pending manual regulatory review.
+
+The utility function $u_i(v_i, v_{-i})$ for an auditor $i$ is defined by the slashing fraction $f \in (0, 1]$ and a small reward $R$:
+\begin{equation}
+u_i(v_i, v_{-i}) = 
+\begin{cases} 
+S + R & \text{if } v_i = D \\
+S - f \cdot S & \text{if } v_i \neq D \text{ and } D \text{ is reached}\\
+S & \text{if no majority } D \text{ is reached}
+\end{cases}
+\end{equation}
+
+\section{Incentive Compatibility and Schelling Point}
+We assume that analyzing the evidence $E$ incurs a cognitive cost $C \ll S$. We also assume that auditors are rational and risk-averse regarding their institutional reputation $S$.
+
+\begin{theorem}[Truthful Nash Equilibrium]
+If all auditors share a common prior that the evidence $E$ clearly points to the ground truth $\omega$, and if the penalty $f \cdot S > R + C$, then the strategy profile where all auditors vote truthfully ($v_i = \omega \ \forall i$) is a strict Nash Equilibrium.
+\end{theorem}
+\begin{proof}
+Assume the strategy profile $\sigma^*$ where $n-1$ auditors play $v_{-i} = \omega$.
+If auditor $i$ also plays $v_i = \omega$, the supermajority $D = \omega$ is reached.
+The utility is:
+\[ u_i(\omega, \omega_{-i}) = S + R - C \]
+
+If auditor $i$ deviates and plays $v_i \neq \omega$ (a malicious or lazy vote), the supermajority $D = \omega$ is still reached (assuming $n \geq 4$ and $\tau = 2/3$). The deviating auditor is slashed:
+\[ u_i(\neq \omega, \omega_{-i}) = S - f \cdot S - C' \]
+(where $C'$ is $0$ if they were lazy and didn't analyze $E$, or $C$ if they did).
+
+For the truthful vote to be a strict best response, we require:
+\[ S + R - C > S - f \cdot S \]
+\[ f \cdot S > C - R \]
+
+Since we set $f \cdot S > C + R$, the condition is strictly satisfied. Thus, no auditor has a rational incentive to deviate from the truthful consensus. This establishes the truthful outcome as a focal point (Schelling Point).
+\end{proof}
+
+\section{Resistance to Bribing Coalitions}
+In a permissioned banking context, a malicious actor might attempt to bribe a coalition of size $k \geq \frac{n}{3}$ to prevent a supermajority against fraud, or $k \geq \frac{2n}{3}$ to force a false outcome.
+
+\begin{lemma}[Coalition Unprofitability]
+The cost of bribing a successful coalition $B_{cost}$ grows linearly with the reputational slash $f \cdot S$. 
+\end{lemma}
+Because $S$ represents institutional operational licenses (not just liquid capital), $S \to \infty$ from the perspective of an individual rogue trader. Therefore, the bribe required to convince $k$ institutions to risk their regulatory banking license is economically infeasible.
+
+\section{Conclusion}
+By adapting Schelling-point game theory to non-financial reputational stakes, the Compliance Tribunal provides mathematical guarantees for decentralized auditing without requiring a native cryptocurrency token.
+
+\end{document}

@@ -1,18 +1,25 @@
 import logging
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, UTC
 
 import pyotp
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from fastapi.responses import JSONResponse
 from redis.asyncio import Redis
 from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.config import settings
+from backend.core.auth_cookies import (
+    clear_session_cookies,
+    issue_csrf_token,
+    set_session_cookies,
+)
 from backend.core.security import create_access_token, decode_token, verify_password
 from backend.dependencies import get_current_user, get_db, get_redis
 from backend.features.auth.models import User
 from backend.features.compliance.models import ComplianceRecord, KYCDocument, AuditLog
+from backend.features.transactions.models import Transaction
+from backend.features.zkp.models import ZKPCredential
 from backend.features.auth.schemas import (
     LoginRequest,
     MFASetupResponse,
@@ -29,7 +36,11 @@ MAX_FAILED_ATTEMPTS = 5
 LOCKOUT_DURATION_MINUTES = 15
 
 @router.post("/login", response_model=TokenResponse)
-async def login_access_token(request: LoginRequest, db: AsyncSession = Depends(get_db)) -> TokenResponse:
+async def login_access_token(
+    request: LoginRequest,
+    response: Response,
+    db: AsyncSession = Depends(get_db),
+) -> TokenResponse:
     stmt = select(User).where(User.email == request.email)
     result = await db.execute(stmt)
     user = result.scalar_one_or_none()
@@ -38,7 +49,7 @@ async def login_access_token(request: LoginRequest, db: AsyncSession = Depends(g
         if user:
             user.failed_login_count = (user.failed_login_count or 0) + 1
             if user.failed_login_count >= MAX_FAILED_ATTEMPTS:
-                user.locked_until = datetime.utcnow() + timedelta(minutes=LOCKOUT_DURATION_MINUTES)
+                user.locked_until = datetime.now(UTC) + timedelta(minutes=LOCKOUT_DURATION_MINUTES)
                 logger.warning(f"Compte verrouillé pour {user.email} après {user.failed_login_count} tentatives")
             await db.commit()
         raise HTTPException(
@@ -71,7 +82,7 @@ async def login_access_token(request: LoginRequest, db: AsyncSession = Depends(g
 
     user.failed_login_count = 0
     user.locked_until = None
-    user.last_login = datetime.utcnow()
+    user.last_login = datetime.now(UTC)
     await db.commit()
 
     token_data = {
@@ -85,10 +96,13 @@ async def login_access_token(request: LoginRequest, db: AsyncSession = Depends(g
         expires_delta=timedelta(minutes=settings.access_token_expire_minutes),
     )
 
+    expires_in = settings.access_token_expire_minutes * 60
+    set_session_cookies(response, access_token, issue_csrf_token(), expires_in)
+
     return TokenResponse(
         access_token=access_token,
         token_type="bearer",
-        expires_in=settings.access_token_expire_minutes * 60,
+        expires_in=expires_in,
         mfa_required=False,
     )
 
@@ -99,26 +113,40 @@ async def read_current_user(current_user: User = Depends(get_current_user)) -> U
 @router.post("/logout")
 async def logout(
     request: Request,
+    response: Response,
     current_user: User = Depends(get_current_user),
     redis_conn: Redis = Depends(get_redis),
 ) -> dict[str, str]:
+    # Pull the token from the same place auth middleware did — header or cookie.
     auth_header = request.headers.get("Authorization")
-    if not auth_header or not auth_header.startswith("Bearer "):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing bearer token")
+    if auth_header and auth_header.startswith("Bearer "):
+        token = auth_header.split(" ", 1)[1]
+    else:
+        from backend.core.auth_cookies import SESSION_COOKIE
+        token = request.cookies.get(SESSION_COOKIE) or ""
 
-    token = auth_header.split(" ")[1]
-    payload = decode_token(token)
+    if not token:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing session token")
+
+    try:
+        payload = decode_token(token)
+    except ValueError:
+        clear_session_cookies(response)
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+
     exp = int(payload.get("exp", 0))
-    now = int(datetime.now(timezone.utc).timestamp())
+    now = int(datetime.now(UTC).timestamp())
     ttl = max(exp - now, 1)
 
     await redis_conn.setex(f"blacklist:{token}", ttl, "1")
     await redis_conn.setex(f"token:invalidated:{current_user.id}", ttl, str(now))
 
+    clear_session_cookies(response)
     return {"message": "Déconnexion réussie."}
 
 @router.post("/refresh", response_model=TokenResponse)
 async def refresh_token(
+    response: Response,
     current_user: User = Depends(get_current_user),
     redis_conn: Redis = Depends(get_redis),
 ) -> TokenResponse:
@@ -137,10 +165,13 @@ async def refresh_token(
         expires_delta=timedelta(minutes=settings.access_token_expire_minutes),
     )
 
+    expires_in = settings.access_token_expire_minutes * 60
+    set_session_cookies(response, access_token, issue_csrf_token(), expires_in)
+
     return TokenResponse(
         access_token=access_token,
         token_type="bearer",
-        expires_in=settings.access_token_expire_minutes * 60,
+        expires_in=expires_in,
     )
 
 @router.post("/mfa/setup", response_model=MFASetupResponse)
@@ -276,6 +307,52 @@ async def export_my_data(
         for lg in log_res.scalars().all()
     ]
 
+    # Transactions (Article 15 — also "personal data" because the user appears as
+    # initiator / from_owner / to_owner; the financial detail is part of the
+    # data we hold on them).
+    from sqlalchemy import or_
+    tx_stmt = (
+        select(Transaction)
+        .where(or_(
+            Transaction.initiator_id == current_user.id,
+            Transaction.from_owner_id == current_user.id,
+            Transaction.to_owner_id == current_user.id,
+        ))
+        .order_by(Transaction.created_at.desc())
+        .limit(500)
+    )
+    tx_res = await db.execute(tx_stmt)
+    transactions = [
+        {
+            "tx_ref": t.tx_ref,
+            "fabric_tx_id": t.fabric_tx_id,
+            "tx_type": t.tx_type,
+            "amount": float(t.amount) if t.amount is not None else None,
+            "currency": t.currency,
+            "role": (
+                "initiator" if t.initiator_id == current_user.id
+                else "sender" if t.from_owner_id == current_user.id
+                else "recipient"
+            ),
+            "timestamp": t.created_at.isoformat() if t.created_at else None,
+        }
+        for t in tx_res.scalars().all()
+    ]
+
+    # ZKP credentials issued for this user
+    zkp_stmt = select(ZKPCredential).where(ZKPCredential.user_id == current_user.id)
+    zkp_res = await db.execute(zkp_stmt)
+    zkp_credentials = [
+        {
+            "credential_id": str(c.id),
+            "kyc_level": c.kyc_level,
+            "issued_at": c.issued_at.isoformat() if c.issued_at else None,
+            "expires_at": c.expires_at.isoformat() if c.expires_at else None,
+            "revoked": c.revoked,
+        }
+        for c in zkp_res.scalars().all()
+    ]
+
     return JSONResponse(content={
         "user": {
             "id": str(current_user.id),
@@ -291,6 +368,8 @@ async def export_my_data(
         "compliance_records": compliance,
         "kyc_documents": documents,
         "audit_logs": audit,
+        "transactions": transactions,
+        "zkp_credentials": zkp_credentials,
     })
 
 
@@ -323,7 +402,17 @@ async def delete_my_account(
     # Hard-delete KYC documents (personal identity papers)
     await db.execute(delete(KYCDocument).where(KYCDocument.user_id == user_id))
 
+    # Revoke any ZKP credential issued to this user — the cryptographic claim
+    # is itself a piece of personal data that must not remain usable.
+    from sqlalchemy import update
+    now = datetime.now(UTC)
+    await db.execute(
+        update(ZKPCredential)
+        .where(ZKPCredential.user_id == user_id, ZKPCredential.revoked == False)
+        .values(revoked=True, revoked_at=now, revoked_reason="gdpr_erasure")
+    )
+
     await db.commit()
 
     # Invalidate all active sessions for this user
-    await redis_conn.setex(f"token:invalidated:{user_id}", 86400 * 30, str(datetime.utcnow().timestamp()))
+    await redis_conn.setex(f"token:invalidated:{user_id}", 86400 * 30, str(now.timestamp()))

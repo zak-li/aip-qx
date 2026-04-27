@@ -1,14 +1,14 @@
-import asyncio 
-import json 
-import logging 
+import asyncio
+import json
+import logging
 import os
-from typing import TypeAlias 
+from typing import TypeAlias
 
-import yaml 
+import yaml
 
-from backend.config import FabricSettings 
-from .retry import fabric_retry 
-from .wallet import FabricWallet 
+from backend.config import FabricSettings
+from .retry import fabric_retry
+from .wallet import FabricWallet
 
 logger = logging.getLogger(__name__)
 
@@ -26,16 +26,16 @@ class AssetFrozenError(Exception):
         super().__init__(f"Asset is frozen: {regulatory_ref}")
 
 class FabricClient:
-    
+
     def __init__(self, settings: FabricSettings, wallet: FabricWallet) -> None:
-        self.settings = settings 
-        self.wallet = wallet 
-        self.channel_name = self.settings.fabric_channel 
-        self.chaincode_name = self.settings.fabric_chaincode 
+        self.settings = settings
+        self.wallet = wallet
+        self.channel_name = self.settings.fabric_channel
+        self.chaincode_name = self.settings.fabric_chaincode
 
         self._network_config: dict[str, dict[str, str | dict[str, str]]] = {}
         self._peers: list[dict[str, str]] = []
-        
+
         self.crypto_base = os.path.expanduser("~/rwa-platform/crypto-config")
         self.fabric_cfg = os.path.expanduser("~/go/src/github.com/hyperledger/fabric-samples/config")
         self.peer_bin = os.path.expanduser("~/go/src/github.com/hyperledger/fabric-samples/bin/peer")
@@ -68,17 +68,17 @@ class FabricClient:
             peers = {}
 
         for peer_id, peer_ext in peers.items():
-            if not isinstance(peer_ext, dict): continue 
-            
+            if not isinstance(peer_ext, dict): continue
+
             url_raw = str(peer_ext.get("url", ""))
             addr = url_raw.replace("grpcs://", "").replace("grpc://", "")
             port = addr.split(":")[-1] if ":" in addr else "7051"
-            
+
             tls_certs = peer_ext.get("tlsCACerts", {})
             cert_rel = str(tls_certs.get("path", "")) if isinstance(tls_certs, dict) else ""
-            
+
             cert_abs = cert_rel.replace("./crypto-config", self.crypto_base)
-            
+
             self._peers.append({
                 "address": f"{peer_id}:{port}",
                 "tlsRoot": cert_abs
@@ -90,7 +90,7 @@ class FabricClient:
     def _get_env_for_identity(self, identity_label: str) -> dict[str, str]:
         env = os.environ.copy()
         env["FABRIC_CFG_PATH"] = self.fabric_cfg
-        
+
         if "bnp" in identity_label.lower():
             env["CORE_PEER_LOCALMSPID"] = "BNPParibasMSP"
             env["CORE_PEER_ADDRESS"] = "peer0.bnpparibas.finance-trust.com:7051"
@@ -107,7 +107,7 @@ class FabricClient:
             env["CORE_PEER_TLS_ROOTCERT_FILE"] = f"{self.crypto_base}/peerOrganizations/amf-regulateur.finance-trust.com/peers/peer0.amf-regulateur.finance-trust.com/tls/ca.crt"
         else:
             raise ValueError(f"Unknown identity mapping {identity_label}")
-            
+
         env["CORE_PEER_TLS_ENABLED"] = "true"
         return env
 
@@ -119,30 +119,38 @@ class FabricClient:
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE
             )
-            
-            try:
-                stdout, stderr = await asyncio.wait_for(process.communicate(), timeout=self.settings.fabric_grpc_timeout)
-            except asyncio.TimeoutError:
-                process.kill()
-                raise FabricEndorsementError("Fabric CLI subprocess explicitly timed out boundary limit.")
-                
-            stdout_dec = stdout.decode('utf-8').strip()
-            stderr_dec = stderr.decode('utf-8').strip()
-            
-            if process.returncode != 0:
-                if "introuvable sur le ledger" in stderr_dec:
-                    raise AssetNotFoundException("Specifically missing required structural matching parameters dynamically.")
-                if "gelé" in stderr_dec:
-                    import re
-                    match = re.search(r"ref:\s*([A-Z0-9_-]+)", stderr_dec)
-                    ref = match.group(1) if match else "UNKNOWN_REF"
-                    raise AssetFrozenError(ref)
-                raise FabricEndorsementError(f"CLI error {process.returncode}: {stderr_dec}")
-                
-            return stdout_dec, stderr_dec
-        except FileNotFoundError:
-            logger.warning(f"Fabric CLI not found at {self.peer_bin}. Mocking response for Windows simulation.")
-            return 'payload:"{\\"status\\": 200, \\"message\\": \\"ok\\"}"', ""
+        except FileNotFoundError as exc:
+            # Refuse to silently mock — a missing peer binary in production would
+            # result in fake "successful" transactions that never hit the ledger.
+            logger.error(f"Fabric peer binary not found at {self.peer_bin}")
+            raise FabricEndorsementError(
+                f"Fabric peer binary not available at {self.peer_bin}. "
+                "Refusing to fabricate a successful response."
+            ) from exc
+
+        try:
+            stdout, stderr = await asyncio.wait_for(
+                process.communicate(),
+                timeout=self.settings.fabric_grpc_timeout,
+            )
+        except TimeoutError:
+            process.kill()
+            raise FabricEndorsementError("Fabric CLI subprocess explicitly timed out boundary limit.")
+
+        stdout_dec = stdout.decode('utf-8').strip()
+        stderr_dec = stderr.decode('utf-8').strip()
+
+        if process.returncode != 0:
+            if "introuvable sur le ledger" in stderr_dec:
+                raise AssetNotFoundException("Specifically missing required structural matching parameters dynamically.")
+            if "gelé" in stderr_dec:
+                import re
+                match = re.search(r"ref:\s*([A-Z0-9_-]+)", stderr_dec)
+                ref = match.group(1) if match else "UNKNOWN_REF"
+                raise AssetFrozenError(ref)
+            raise FabricEndorsementError(f"CLI error {process.returncode}: {stderr_dec}")
+
+        return stdout_dec, stderr_dec
 
     @fabric_retry()
     async def submit_transaction(
@@ -154,9 +162,9 @@ class FabricClient:
         self._sanitize_arguments(args)
 
         env = self._get_env_for_identity(identity_label)
-        
+
         payload = {"Args": [function] + list(args)}
-        
+
         cmd = [
             self.peer_bin, "chaincode", "invoke",
             "-o", "orderer.finance-trust.com:7050",
@@ -164,12 +172,12 @@ class FabricClient:
             "-C", self.channel_name,
             "-n", self.chaincode_name,
         ]
-        
+
         for p in self._peers:
             cmd.extend(["--peerAddresses", p["address"], "--tlsRootCertFiles", p["tlsRoot"]])
-            
+
         cmd.extend(["-c", json.dumps(payload), "--waitForEvent"])
-        
+
         stdout, stderr = await self._exec_cli(cmd, env)
 
         try:
@@ -186,25 +194,20 @@ class FabricClient:
             raise FabricEndorsementError(f"Réponse Fabric illisible: {stdout[:200]}") from exc
 
     def _convert_keys(self, obj):
+        """Recursively convert camelCase keys to snake_case in a nested structure.
+
+        Strict: never invents missing fields. If the chaincode response is
+        incomplete, the downstream Pydantic validator will surface the error
+        rather than silently materialising fabricated UUIDs and values.
+        """
         import re
-        if isinstance(obj, list): return [self._convert_keys(i) for i in obj]
+        if isinstance(obj, list):
+            return [self._convert_keys(i) for i in obj]
         if isinstance(obj, dict):
-            res = {}
-            for k, v in obj.items():
-                new_k = re.sub('([a-z0-9])([A-Z])', r'\1_\2', k).lower()
-                res[new_k] = self._convert_keys(v)
-            if 'asset_id' in res and 'issuer_org_id' not in res:
-                import uuid
-                import datetime
-                res['issuer_org_id'] = str(uuid.uuid4())
-                res['current_owner_id'] = str(uuid.uuid4())
-                res['nominal_value'] = 1000.0
-                res['current_value'] = 1000.0
-                res['created_at'] = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None).isoformat()
-                res['updated_at'] = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None).isoformat()
-                if 'status' not in res: res['status'] = "ACTIF"
-                if 'currency' not in res: res['currency'] = "EUR"
-            return res
+            return {
+                re.sub('([a-z0-9])([A-Z])', r'\1_\2', k).lower(): self._convert_keys(v)
+                for k, v in obj.items()
+            }
         return obj
 
     @fabric_retry()
@@ -218,16 +221,16 @@ class FabricClient:
 
         env = self._get_env_for_identity(identity_label)
         payload = {"Args": [function] + list(args)}
-        
+
         cmd = [
             self.peer_bin, "chaincode", "query",
             "-C", self.channel_name,
             "-n", self.chaincode_name,
             "-c", json.dumps(payload)
         ]
-        
+
         stdout, stderr = await self._exec_cli(cmd, env)
-        
+
         try:
             return self._convert_keys(json.loads(stdout))
         except (json.JSONDecodeError, ValueError) as exc:
