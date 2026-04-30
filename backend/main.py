@@ -74,7 +74,7 @@ SECURITY_HEADERS = {
     ),
 }
 
-_dist = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend", "dist"))
+_dist = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend", "dist", "frontend", "browser"))
 
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
@@ -206,23 +206,9 @@ Instrumentator().instrument(app)
 setup_global_exception_handlers(app)
 app.include_router(api_router, prefix="/api/v1")
 
-app.mount("/assets", StaticFiles(directory=os.path.join(_dist, "assets")), name="spa-assets")
-app.mount("/animations", StaticFiles(directory=os.path.join(_dist, "animations")), name="spa-animations")
-
-
-@app.get("/favicon.svg", include_in_schema=False)
-async def _favicon() -> FileResponse:
-    return FileResponse(os.path.join(_dist, "favicon.svg"))
-
-
-@app.get("/robots.txt", include_in_schema=False)
-async def _robots() -> FileResponse:
-    return FileResponse(os.path.join(_dist, "robots.txt"))
-
-
-@app.get("/site.webmanifest", include_in_schema=False)
-async def _manifest() -> FileResponse:
-    return FileResponse(os.path.join(_dist, "site.webmanifest"))
+_assets_dir = os.path.join(_dist, "assets")
+if os.path.isdir(_assets_dir):
+    app.mount("/assets", StaticFiles(directory=_assets_dir), name="spa-assets")
 
 
 @app.exception_handler(Exception)
