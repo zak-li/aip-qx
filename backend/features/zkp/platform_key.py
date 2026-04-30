@@ -26,7 +26,7 @@ from backend.config import settings
 # secp256k1 curve order
 _N = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141
 
-_DEV_DEFAULT_SECRET = "dev-platform-zkp-secret-change-in-prod"
+_DEV_DEFAULT_SECRET = "dev-platform-zkp-secret-change-in-prod"  # noqa: S105
 
 
 def _load_secret() -> str:

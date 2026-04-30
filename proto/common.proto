@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package rwa.common;
+
+
+// Pagination parameters shared by every list RPC.
+message PaginationRequest {
+  int32 limit  = 1;
+  int32 offset = 2;
+}
+
+// Generic single-field text reply used when there is nothing else to return.
+message MessageResponse {
+  string message = 1;
+}

@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import uuid
-from datetime import datetime, UTC
+from datetime import UTC, datetime
+from typing import ClassVar
 
 from sqlalchemy import MetaData, text
 from sqlalchemy.dialects.postgresql import UUID
@@ -19,7 +20,7 @@ metadata = MetaData(naming_convention=convention)
 
 class Base(DeclarativeBase):
     metadata = metadata
-    type_annotation_map = {
+    type_annotation_map: ClassVar[dict] = {
         uuid.UUID: UUID(as_uuid=True)
     }
 

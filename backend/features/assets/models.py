@@ -4,12 +4,13 @@ import uuid
 from datetime import date
 from decimal import Decimal
 
-from sqlalchemy import Date, Enum, ForeignKey, Numeric, String, Boolean, Integer, Text, text
+from sqlalchemy import Boolean, Date, Enum, ForeignKey, Integer, Numeric, String, Text, text
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.core.database_base import Base, TimestampUpdateMixin, UUIDMixin
 from backend.features.auth.models import Organization, User
+
 
 class Asset(Base, UUIDMixin, TimestampUpdateMixin):
     __tablename__ = "assets"

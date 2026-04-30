@@ -1,16 +1,15 @@
 import asyncio
 import logging
 import os
-from collections.abc import AsyncGenerator
+from collections.abc import AsyncGenerator, Awaitable, Callable
 from contextlib import asynccontextmanager
-from collections.abc import Awaitable, Callable
 
 import hvac
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
-from prometheus_client import Counter, Gauge, Histogram, generate_latest, CONTENT_TYPE_LATEST
+from prometheus_client import CONTENT_TYPE_LATEST, Counter, Gauge, Histogram, generate_latest
 from prometheus_fastapi_instrumentator import Instrumentator
 from sqlalchemy import text
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -40,11 +39,11 @@ RWA_ASSETS_BY_STATUS = Gauge("rwa_assets_by_status", "Actifs par statut", ["stat
 RWA_KYC_EXPIRING = Gauge("rwa_kyc_expiring_count", "KYC expirant")
 RWA_AML_SCORE = Gauge("rwa_aml_score_avg", "AML score", ["risk_category"])
 RWA_COMPLIANCE_BLOCKS = Counter("rwa_compliance_blocks_total", "Compliance Blocks", ["blocked_by"])
-RWA_CIRCUIT_BREAKER = Gauge("rwa_circuit_breaker_state", "Circuit breaker", ["component"])
 RWA_CELERY_TASKS = Counter("rwa_celery_tasks_total", "Taches Celery", ["task_name", "status"])
 
-# Initialise label combinations so they appear in /metrics from startup
-RWA_CIRCUIT_BREAKER.labels(component="fabric_gateway").set(0)
+# Initialise label combinations so they appear in /metrics from startup.
+# Circuit-breaker state is declared and labelled in backend/core/circuit_breaker.py
+# (and the legacy fabric_client retry decorator), so we no longer touch it here.
 RWA_COMPLIANCE_BLOCKS.labels(blocked_by="aml_screening").inc(0)
 RWA_COMPLIANCE_BLOCKS.labels(blocked_by="kyc_expired").inc(0)
 RWA_CELERY_TASKS.labels(task_name="generate_audit_report", status="success").inc(0)
@@ -164,7 +163,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         if _event_listener_instance:
             try:
                 await _event_listener_instance.stop()
-            except Exception:
+            except Exception:  # noqa: S110
                 pass
 
         for cleanup in (

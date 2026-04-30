@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import logging
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from uuid import UUID
 
 from sqlalchemy import select
@@ -97,7 +97,7 @@ class TribunalService:
         """Phase 3: Tally votes, determine supermajority, apply Game Theory slashing."""
         stmt = select(TribunalVote).where(
             TribunalVote.session_id == session_id,
-            TribunalVote.revealed_vote != None
+            TribunalVote.revealed_vote.is_not(None)
         )
         result = await self.db.execute(stmt)
         votes = result.scalars().all()

@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package rwa.audit;
+
+
+service AuditService {
+  rpc ListAuditLogs        (AuditListRequest)    returns (AuditLogList);
+  rpc FetchAssetTrail      (AssetTrailRequest)   returns (AssetTrailResponse);
+  rpc GenerateReport       (GenerateReportReq)   returns (TaskResponse);
+  rpc GetReportStatus      (TaskIdRequest)       returns (TaskStatusResponse);
+  rpc TriggerFraudScan     (FraudScanRequest)    returns (TaskResponse);
+}
+
+// ---------------------------------------------------------------------------
+
+message AuditListRequest {
+  int32 limit  = 1;
+  int32 offset = 2;
+}
+
+message AuditLogEntry {
+  string id          = 1;
+  string user_id     = 2;
+  string endpoint    = 3;
+  string method      = 4;
+  int32  status_code = 5;
+  int32  duration_ms = 6;
+  string created_at  = 7;
+}
+
+message AuditLogList { repeated AuditLogEntry entries = 1; }
+
+message AssetTrailRequest { string asset_id = 1; }
+
+message AssetTrailResponse {
+  string asset_id             = 1;
+  bool   verified             = 2;
+  string blockchain_provenance = 3;  // JSON-serialised provenance list
+}
+
+message GenerateReportReq { string asset_id = 1; }
+
+message TaskResponse {
+  string task_id = 1;
+  string status  = 2;
+  string message = 3;
+}
+
+message TaskIdRequest { string task_id = 1; }
+
+message TaskStatusResponse {
+  string task_id   = 1;
+  string status    = 2;
+  string file_path = 3;
+  string error     = 4;
+}
+
+message FraudScanRequest {}

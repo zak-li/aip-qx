@@ -6,7 +6,7 @@ import logging
 import re
 from collections.abc import AsyncGenerator
 
-from groq import AsyncGroq, APIStatusError, APIConnectionError
+from groq import APIConnectionError, APIStatusError, AsyncGroq
 
 from backend.config import settings
 from backend.core.circuit_breaker import CircuitBreakerOpenError, groq_breaker

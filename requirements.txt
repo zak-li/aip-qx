@@ -20,10 +20,10 @@ redis==7.3.0
 celery==5.6.2
 
 grpcio==1.78.0
-# grpcio-tools is a build-time codegen tool (not a runtime dep) and pins
-# protobuf to a different major than what the rest of the stack needs.
-# Install it ad-hoc when regenerating .proto stubs, not in production.
-protobuf==5.29.6
+grpcio-reflection==1.78.0
+# grpcio-tools is a build-time codegen tool — install ad-hoc to regenerate stubs:
+#   pip install grpcio-tools && bash scripts/generate_protos.sh
+protobuf==6.31.1
 PyYAML==6.0.3
 
 reportlab==4.4.10
@@ -41,6 +41,6 @@ groq==1.2.0
 py_ecc==8.0.0
 pyotp==2.9.0
 
-# Homomorphic encryption (used by features/fhe/* — was previously a hidden
-# runtime dependency that crashed at import time when missing).
-tenseal==0.3.16
+# pybind11 is required to build the helib_ckks native extension.
+# HElib itself is a C++ library installed separately (see backend/features/fhe/CMakeLists.txt).
+pybind11>=2.13.0

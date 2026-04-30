@@ -4,6 +4,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
 
+
 class TransactionResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

@@ -14,12 +14,12 @@ from __future__ import annotations
 import json
 import logging
 import uuid
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.features.zkp.crypto import SchnorrProof, is_on_curve, schnorr_verify, point_from_hex
+from backend.features.zkp.crypto import SchnorrProof, is_on_curve, point_from_hex, schnorr_verify
 from backend.features.zkp.models import ZKPCredential, ZKPNullifier
 from backend.features.zkp.platform_key import get_verification_key
 
@@ -48,8 +48,8 @@ def _verify_issuer_sig(claim: dict, sig_hex: str) -> bool:
     to the private key.
     """
     try:
-        from cryptography.hazmat.primitives.asymmetric.ec import ECDSA
         from cryptography.hazmat.primitives import hashes
+        from cryptography.hazmat.primitives.asymmetric.ec import ECDSA
 
         payload = _canonical_json(claim)
         get_verification_key().verify(bytes.fromhex(sig_hex), payload, ECDSA(hashes.SHA256()))
@@ -114,7 +114,7 @@ async def verify_proof(
     # 4. Check revocation in DB
     stmt = select(ZKPCredential).where(
         ZKPCredential.public_key_x == public_key_x,
-        ZKPCredential.revoked == True,
+        ZKPCredential.revoked.is_(True),
     ).limit(1)
     revoked = (await db.execute(stmt)).scalar_one_or_none()
     if revoked:

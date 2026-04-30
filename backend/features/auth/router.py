@@ -1,11 +1,11 @@
 import logging
-from datetime import datetime, timedelta, UTC
+from datetime import UTC, datetime, timedelta
 
 import pyotp
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from fastapi.responses import JSONResponse
 from redis.asyncio import Redis
-from sqlalchemy import select, delete
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.config import settings
@@ -17,9 +17,6 @@ from backend.core.auth_cookies import (
 from backend.core.security import create_access_token, decode_token, verify_password
 from backend.dependencies import get_current_user, get_db, get_redis
 from backend.features.auth.models import User
-from backend.features.compliance.models import ComplianceRecord, KYCDocument, AuditLog
-from backend.features.transactions.models import Transaction
-from backend.features.zkp.models import ZKPCredential
 from backend.features.auth.schemas import (
     LoginRequest,
     MFASetupResponse,
@@ -27,6 +24,9 @@ from backend.features.auth.schemas import (
     TokenResponse,
     UserProfile,
 )
+from backend.features.compliance.models import AuditLog, ComplianceRecord, KYCDocument
+from backend.features.transactions.models import Transaction
+from backend.features.zkp.models import ZKPCredential
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +68,7 @@ async def login_access_token(
         if not request.mfa_code:
             return TokenResponse(
                 access_token="",
-                token_type="bearer",
+                token_type="bearer",  # noqa: S106
                 expires_in=0,
                 mfa_required=True,
             )
@@ -101,7 +101,7 @@ async def login_access_token(
 
     return TokenResponse(
         access_token=access_token,
-        token_type="bearer",
+        token_type="bearer",  # noqa: S106
         expires_in=expires_in,
         mfa_required=False,
     )
@@ -130,9 +130,9 @@ async def logout(
 
     try:
         payload = decode_token(token)
-    except ValueError:
+    except ValueError as exc:
         clear_session_cookies(response)
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token") from exc
 
     exp = int(payload.get("exp", 0))
     now = int(datetime.now(UTC).timestamp())
@@ -170,7 +170,7 @@ async def refresh_token(
 
     return TokenResponse(
         access_token=access_token,
-        token_type="bearer",
+        token_type="bearer",  # noqa: S106
         expires_in=expires_in,
     )
 
@@ -408,7 +408,7 @@ async def delete_my_account(
     now = datetime.now(UTC)
     await db.execute(
         update(ZKPCredential)
-        .where(ZKPCredential.user_id == user_id, ZKPCredential.revoked == False)
+        .where(ZKPCredential.user_id == user_id, ~ZKPCredential.revoked)
         .values(revoked=True, revoked_at=now, revoked_reason="gdpr_erasure")
     )
 

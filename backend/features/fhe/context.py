@@ -1,36 +1,27 @@
-"""FHE Context and Key Management using TenSEAL (CKKS).
+"""FHE session management using HElib CKKS via pybind11 bindings.
 
-CKKS (Cheon-Kim-Kim-Song) is the preferred homomorphic encryption scheme
-for approximate floating-point arithmetic.
+The HElibCKKSSession object owns both the helib::Context and the
+helib::SecKey.  It is intentionally constructed once at process startup
+(see get_session()) and reused for every scoring call — key generation
+is expensive (~1-2 s) and the context is thread-safe for concurrent
+encrypt/score operations.
+
+Build the native extension before running:
+    cd backend/features/fhe && python setup.py build_ext --inplace
+Or via CMake directly — see CMakeLists.txt.
 """
-import tenseal as ts
 
-def create_ckks_context() -> ts.Context:
-    """Create a TenSEAL context for CKKS.
-    
-    Security parameters:
-    - poly_modulus_degree = 8192 (Provides ~128 bits of security)
-    - coeff_mod_bit_sizes = [60, 40, 40, 60] (Suitable for our depth of multiplications)
-    - global_scale = 2**40 (Precision for floats)
-    """
-    context = ts.context(
-        ts.SCHEME_TYPE.CKKS,
-        poly_modulus_degree=8192,
-        coeff_mod_bit_sizes=[60, 40, 40, 60]
-    )
+from __future__ import annotations
 
-    context.global_scale = 2**40
+import functools
 
-    # We generate Galois keys for vector rotations (not strictly needed for just scalar mults,
-    # but good practice for full vectors)
-    context.generate_galois_keys()
+# helib_ckks is the compiled pybind11 module produced by helib_ckks.cpp.
+# Import error is intentional here: if the .so/.pyd is missing the caller
+# gets a clear ImportError rather than a silent runtime crash.
+from backend.features.fhe.helib_ckks import HElibCKKSSession
 
-    return context
 
-def serialize_context(context: ts.Context, save_secret_key: bool = False) -> bytes:
-    """Serialize the context to send it over the network."""
-    return context.serialize(save_secret_key=save_secret_key)
-
-def deserialize_context(data: bytes) -> ts.Context:
-    """Load the context from bytes."""
-    return ts.context_from(data)
+@functools.lru_cache(maxsize=1)
+def get_session() -> HElibCKKSSession:
+    """Return the process-wide HElib CKKS session (lazy, cached)."""
+    return HElibCKKSSession()

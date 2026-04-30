@@ -3,20 +3,22 @@ from __future__ import annotations
 
 import logging
 import uuid
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.dependencies import get_db, get_current_user
+from backend.dependencies import get_current_user, get_db
 from backend.features.auth.models import User
-from backend.features.zkp.issuer import issue_credential, build_claim_dict
+from backend.features.zkp.issuer import build_claim_dict, issue_credential
 from backend.features.zkp.merkle import get_sanctions_tree
 from backend.features.zkp.models import ZKPCredential
 from backend.features.zkp.schemas import (
-    SetupKeyRequest, SetupKeyResponse,
-    ProofRequest, ProofResponse,
+    ProofRequest,
+    ProofResponse,
+    SetupKeyRequest,
+    SetupKeyResponse,
     ZKPStatusResponse,
 )
 from backend.features.zkp.verifier import verify_proof
@@ -45,7 +47,7 @@ async def setup_key(
         )
     except Exception as exc:
         logger.error(f"[ZKP] Credential issuance failed for {current_user.id}: {exc}")
-        raise HTTPException(status_code=500, detail=f"Credential issuance failed: {exc}")
+        raise HTTPException(status_code=500, detail=f"Credential issuance failed: {exc}") from exc
 
     tree = get_sanctions_tree()
     claim = build_claim_dict(credential)

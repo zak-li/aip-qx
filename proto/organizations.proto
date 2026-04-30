@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package rwa.organizations;
+
+
+service OrganizationsService {
+  rpc ListOrganizations  (ListOrgsRequest)    returns (OrgList);
+  rpc ListUsers          (ListUsersRequest)   returns (UserList);
+  rpc GetPortfolio       (PortfolioRequest)   returns (PortfolioResponse);
+}
+
+// ---------------------------------------------------------------------------
+
+message ListOrgsRequest {
+  int32 limit  = 1;
+  int32 offset = 2;
+}
+
+message OrgResponse {
+  string id     = 1;
+  string name   = 2;
+  string msp_id = 3;
+  string status = 4;
+}
+
+message OrgList { repeated OrgResponse organizations = 1; }
+
+message ListUsersRequest {
+  int32  limit  = 1;
+  int32  offset = 2;
+  string role   = 3;
+  string country = 4;
+}
+
+message UserSummary {
+  string id          = 1;
+  string email       = 2;
+  string first_name  = 3;
+  string last_name   = 4;
+  string role        = 5;
+  string department  = 6;
+  string employee_id = 7;
+  string phone       = 8;
+  string msp_id      = 9;
+  bool   mfa_enabled = 10;
+  bool   is_active   = 11;
+  string org_id      = 12;
+  string org_name    = 13;
+  string org_country = 14;
+}
+
+message UserList { repeated UserSummary users = 1; }
+
+message PortfolioRequest { string org_id = 1; }
+
+message PortfolioResponse {
+  string org_id             = 1;
+  double total_assets_value = 2;
+  int32  active_assets_count = 3;
+}

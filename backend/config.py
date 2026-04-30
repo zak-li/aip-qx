@@ -60,6 +60,12 @@ class Settings(FabricSettings):
     allowed_origins: str
     log_level: str = "INFO"
 
+    # gRPC server
+    grpc_port: int = Field(default=50051)
+    grpc_server_cert: str = Field(default="")   # path to PEM cert (production)
+    grpc_server_key: str = Field(default="")    # path to PEM private key
+    grpc_ca_cert: str = Field(default="")       # path to CA cert for mTLS
+
     @model_validator(mode="after")
     def validate_production_security(self) -> "Settings":
         if self.environment == "production":

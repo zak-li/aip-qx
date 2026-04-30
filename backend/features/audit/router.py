@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, Query
+from fastapi.responses import JSONResponse
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from fastapi.responses import JSONResponse
-from backend.dependencies import get_db, get_current_user, get_fabric, require_role, resolve_identity
+from backend.dependencies import get_current_user, get_db, get_fabric, require_role, resolve_identity
+from backend.features.audit.tasks import generate_audit_report as task_generate
 from backend.features.auth.models import User
 from backend.features.compliance.models import AuditLog
-from backend.features.audit.tasks import generate_audit_report as task_generate
 
 router = APIRouter()
 
@@ -68,6 +68,7 @@ async def get_report_status(
     current_user: User = Depends(require_role("AUDITEUR")),
 ) -> dict[str, str]:
     from celery.result import AsyncResult
+
     from backend.core.celery_app import celery_app
 
     result = AsyncResult(task_id, app=celery_app)

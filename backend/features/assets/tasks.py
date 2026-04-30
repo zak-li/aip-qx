@@ -1,10 +1,13 @@
 import asyncio
+
 from celery import Task
-from backend.core.celery_app import celery_app
-from backend.dependencies import get_fabric
-from backend.core.database import AsyncSessionLocal
 from sqlalchemy import text
+
+from backend.core.celery_app import celery_app
+from backend.core.database import AsyncSessionLocal
 from backend.core.redis_client import get_redis
+from backend.dependencies import get_fabric
+
 
 async def _log_audit_result(task_name: str, payload: dict) -> None:
     async with AsyncSessionLocal() as session:
@@ -52,7 +55,7 @@ async def _do_sync_fabric_state(asset_id: str) -> dict:
         if upd:
             sets = ", ".join([f"{k} = :{k}" for k in upd])
             upd["aid"] = asset_id
-            ustmt = text(f"UPDATE assets SET {sets} WHERE asset_id = :aid")
+            ustmt = text(f"UPDATE assets SET {sets} WHERE asset_id = :aid")  # noqa: S608  # nosec B608
             await session.execute(ustmt, upd)
             await session.commit()
 

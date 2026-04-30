@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package rwa.transactions;
+
+
+service TransactionsService {
+  rpc ListTransactions     (ListRequest)    returns (TransactionList);
+  rpc GetTransactionStats  (StatsRequest)   returns (TransactionStats);
+  rpc GetTransaction       (TxRefRequest)   returns (TransactionResponse);
+}
+
+// ---------------------------------------------------------------------------
+
+message ListRequest {
+  string tx_type         = 1;
+  string org_id          = 2;
+  bool   regulatory_flag = 3;
+  bool   has_regulatory  = 4;  // true when regulatory_flag is explicitly set
+  int32  limit           = 5;
+  int32  offset          = 6;
+}
+
+message StatsRequest {}
+
+message TxRefRequest { string tx_ref = 1; }
+
+message TransactionResponse {
+  string tx_ref          = 1;
+  string fabric_tx_id    = 2;
+  string tx_type         = 3;
+  double amount          = 4;
+  string currency        = 5;
+  string initiator_id    = 6;
+  string from_owner_id   = 7;
+  string to_owner_id     = 8;
+  bool   regulatory_flag = 9;
+  string status          = 10;
+  string created_at      = 11;
+}
+
+message TransactionList { repeated TransactionResponse transactions = 1; }
+
+message TransactionStats {
+  int64  total_transactions = 1;
+  double volume_frozen      = 2;
+}

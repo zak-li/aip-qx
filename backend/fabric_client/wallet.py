@@ -2,10 +2,10 @@ import datetime
 import gc
 import json
 import logging
+from collections.abc import Generator
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
-from collections.abc import Generator
 
 import hvac
 from cryptography import x509
@@ -127,7 +127,7 @@ class FabricWallet:
         except Exception as e:
             self._log_op(logging.ERROR, f"Vault write failed: {e}", {"label": label})
             if self.settings.environment == "production":
-                raise RuntimeError(f"Vault connectivity critically missing: {e}")
+                raise RuntimeError(f"Vault connectivity critically missing: {e}") from e
 
         self._identities[label] = Identity(
             label=label,
@@ -159,7 +159,7 @@ class FabricWallet:
             self._log_op(logging.INFO, "Private key extracted from Vault dynamically", {"label": label})
         except Exception as e:
             self._log_op(logging.ERROR, f"Failed extracting secret from Vault: {e}", {"label": label})
-            raise RuntimeError(f"Vault key extraction failed: {e}")
+            raise RuntimeError(f"Vault key extraction failed: {e}") from e
 
         buf = bytearray(pem_str.encode("utf-8"))
         # We can drop the str reference but cannot truly wipe its backing

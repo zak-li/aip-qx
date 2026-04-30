@@ -1,9 +1,10 @@
-import json
 import hashlib
+import json
 from dataclasses import dataclass
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 
 from .trail import ProvenanceRecord
+
 
 @dataclass
 class RecordIntegrity:

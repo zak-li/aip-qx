@@ -1,16 +1,23 @@
 import json
 from collections.abc import Mapping
-from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy.ext.asyncio import AsyncSession
-from pydantic import TypeAdapter
 
-from backend.dependencies import get_db, get_current_user, require_role, get_fabric, resolve_identity
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+from pydantic import TypeAdapter
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from backend.dependencies import get_current_user, get_db, get_fabric, require_role, resolve_identity
 from backend.features.assets.schemas import (
-    TokenizeRequest, TransferRequest, FreezeRequest, UnfreezeRequest,
-    AssetResponse, ProvenanceRecord, ValuateRequest, ValuationResponse,
+    AssetResponse,
+    FreezeRequest,
+    ProvenanceRecord,
+    TokenizeRequest,
+    TransferRequest,
+    UnfreezeRequest,
+    ValuateRequest,
+    ValuationResponse,
 )
-from backend.features.assets.service import tokenize, transfer, freeze, unfreeze_asset
-from backend.features.assets.valuation_service import record_valuation, get_history
+from backend.features.assets.service import freeze, tokenize, transfer, unfreeze_asset
+from backend.features.assets.valuation_service import get_history, record_valuation
 from backend.features.auth.models import User
 
 router = APIRouter()
@@ -101,7 +108,7 @@ async def valuate_asset(
             valuation_date=body.valuation_date,
         )
     except ValueError as exc:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc))
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
     return ValuationResponse.model_validate(valuation)
 
 

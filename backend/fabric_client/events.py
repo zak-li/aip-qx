@@ -233,5 +233,5 @@ class FabricEventListener:
                     try:
                         await pubsub.unsubscribe("asset:events")
                         await pubsub.aclose()
-                    except Exception:
+                    except Exception:  # noqa: S110
                         pass

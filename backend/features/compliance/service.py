@@ -15,7 +15,8 @@ from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.config import Settings, settings as _settings
+from backend.config import Settings
+from backend.config import settings as _settings
 from backend.constants import KYC_REQUIRED_LEVEL
 from backend.core.client_ip import get_request_ip
 from backend.features.compliance.aml import AMLResult, AMLScorer

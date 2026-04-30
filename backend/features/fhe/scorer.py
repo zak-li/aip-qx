@@ -1,63 +1,47 @@
-"""Encrypted AML Scoring Logic.
+"""Privacy-preserving AML scoring via HElib CKKS.
 
-The client encrypts the risk indicators. The server computes the weighted 
-sum without seeing the underlying values.
+The client encrypts its three risk indicators locally; the server computes
+the weighted sum entirely on the ciphertext and decrypts only the final
+scalar score — the raw indicator values are never visible to the server.
+
+Scoring pipeline:
+    1. FHEClient.encrypt_indicators()  → ciphertext bytes
+    2. FHEScorer.compute_score()       → decrypted float (server-side)
 """
 from __future__ import annotations
-import tenseal as ts
 
-# Standard AML weights from our plaintext logic
-WEIGHT_JURISDICTION = 0.3
-WEIGHT_CROSS_BORDER = 0.4
-WEIGHT_VOLUME = 0.3
+from backend.features.fhe.context import get_session
 
-class FHEScorer:
-    """Server-side component: Performs computations on encrypted data."""
+WEIGHT_JURISDICTION: float = 0.3
+WEIGHT_CROSS_BORDER: float = 0.4
+WEIGHT_VOLUME: float = 0.3
 
-    def __init__(self, context: ts.Context):
-        self.context = context
+_WEIGHTS = [WEIGHT_JURISDICTION, WEIGHT_CROSS_BORDER, WEIGHT_VOLUME]
 
-    def compute_encrypted_score(self, enc_indicators: ts.CKKSTensor) -> ts.CKKSTensor:
-        """Computes the weighted AML score entirely homomorphically.
-        
-        Args:
-            enc_indicators: A TenSEAL CKKSTensor containing 
-                            [jurisdiction_risk, cross_border_activity, unusual_volume]
-        Returns:
-            An encrypted tensor containing the final baseline score.
-        """
-        # In FHE, we can multiply an encrypted vector by a plaintext vector
-        weights = [WEIGHT_JURISDICTION, WEIGHT_CROSS_BORDER, WEIGHT_VOLUME]
-
-        # enc_indicators * weights does element-wise multiplication
-        # Then we sum the elements.
-        weighted_vector = enc_indicators * weights
-
-        # We need the sum of the vector components.
-        # TenSEAL supports sum() over the vector.
-        # Alternatively, we could do dot product if they were both vectors,
-        # but CKKSTensor * list is element-wise.
-
-        # Using polyval or dot product is faster, but simple sum works for small vectors.
-        # For a 1D tensor, we can just sum it.
-        enc_score = weighted_vector.sum()
-
-        return enc_score
 
 class FHEClient:
-    """Client-side component: Encrypts data and decrypts results."""
+    """Client-side component: encrypts risk indicators into a CKKS ciphertext."""
 
-    def __init__(self, context: ts.Context):
-        self.context = context
+    def encrypt_indicators(
+        self,
+        jurisdiction: float,
+        cross_border: float,
+        volume: float,
+    ) -> bytes:
+        """Return an opaque ciphertext encoding the three indicators."""
+        session = get_session()
+        return bytes(session.encrypt([jurisdiction, cross_border, volume]))
 
-    def encrypt_indicators(self, jurisdiction: float, cross_border: float, volume: float) -> ts.CKKSTensor:
-        """Encrypts the 3 indicators into a single ciphertext vector."""
-        vec = [jurisdiction, cross_border, volume]
-        return ts.ckks_tensor(self.context, vec)
 
-    def decrypt_score(self, enc_score: ts.CKKSTensor) -> float:
-        """Decrypts the final score returned by the server."""
-        # The result of sum() might be a tensor. We decrypt and take the first (and only) element.
-        raw = enc_score.decrypt().tolist()
-        val = raw[0] if isinstance(raw, list) else raw
-        return round(float(val), 4)
+class FHEScorer:
+    """Server-side component: scores the encrypted indicators homomorphically."""
+
+    def compute_score(self, ciphertext: bytes) -> float:
+        """Multiply by AML weights, sum slots, decrypt — returns a score in [0, 1].
+
+        The server never accesses the plaintext indicators; only the final
+        weighted sum is decrypted.
+        """
+        session = get_session()
+        raw = session.score(ciphertext, _WEIGHTS)
+        return round(float(raw), 4)

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime, timedelta, UTC
+from datetime import UTC, datetime, timedelta
 from uuid import UUID
 
 from sqlalchemy import select
@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from backend.config import Settings
 from backend.constants import KYC_RENEWAL_DAYS, KYC_REQUIRED_LEVEL
 from backend.features.compliance.models import ComplianceRecord, KYCDocument
+
 
 @dataclass
 class KYCResult:

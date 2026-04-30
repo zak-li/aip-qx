@@ -21,7 +21,7 @@ from __future__ import annotations
 import json
 import logging
 import uuid
-from datetime import datetime, timedelta, UTC
+from datetime import UTC, datetime, timedelta
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -45,8 +45,8 @@ def _canonical_json(obj: dict) -> bytes:
 
 def _sign_claim(claim: dict) -> str:
     """ECDSA-sign the claim using the platform private key (DER-encoded hex)."""
-    from cryptography.hazmat.primitives.asymmetric.ec import ECDSA
     from cryptography.hazmat.primitives import hashes
+    from cryptography.hazmat.primitives.asymmetric.ec import ECDSA
 
     payload = _canonical_json(claim)
     sig = get_signing_key().sign(payload, ECDSA(hashes.SHA256()))
@@ -102,7 +102,7 @@ async def issue_credential(
     stmt = select(ZKPCredential).where(
         ZKPCredential.user_id == user_id,
         ZKPCredential.public_key_x == public_key_x,
-        ZKPCredential.revoked == False,
+        ~ZKPCredential.revoked,
     ).order_by(ZKPCredential.issued_at.desc()).limit(1)
     existing = (await db.execute(stmt)).scalar_one_or_none()
     if existing and existing.expires_at > datetime.now(UTC):

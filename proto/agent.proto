@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package rwa.agent;
+
+
+service AgentService {
+  // Unary: full answer in one response
+  rpc Chat         (ChatRequest)        returns (ChatResponse);
+  // Server-streaming: LLM tokens streamed as they are generated
+  rpc ChatStream   (ChatRequest)        returns (stream ChatChunk);
+
+  rpc TriggerIndexing  (IndexRequest)   returns (IndexResponse);
+  rpc SemanticSearch   (SearchRequest)  returns (SearchResponse);
+  rpc GetAgentStatus   (StatusRequest)  returns (AgentStatusResponse);
+}
+
+// ---------------------------------------------------------------------------
+
+message ChatMessage {
+  string role    = 1;
+  string content = 2;
+}
+
+message ChatRequest {
+  string              message           = 1;
+  repeated ChatMessage history         = 2;
+  float               temperature      = 3;
+  int32               max_tokens       = 4;
+  float               top_p            = 5;
+  float               frequency_penalty = 6;
+  float               presence_penalty  = 7;
+  int32               n_results         = 8;
+  bool                use_rag           = 9;
+  string              style_preset      = 10;
+}
+
+message SourceDocument {
+  string content   = 1;
+  string source    = 2;
+  double relevance = 3;
+}
+
+message ChatResponse {
+  string                  answer      = 1;
+  int32                   sources_used = 2;
+  repeated SourceDocument sources     = 3;
+  int32                   time_ms     = 4;
+}
+
+message ChatChunk {
+  string token    = 1;  // partial LLM token
+  bool   is_final = 2;
+  string meta     = 3;  // JSON metadata on the final chunk
+}
+
+message IndexRequest  {}
+message IndexResponse { string status = 1; string message = 2; }
+
+message SearchRequest  { string query = 1; int32 n = 2; }
+message SearchResponse { string results_json = 1; }  // JSON-serialised list
+
+message StatusRequest {}
+message AgentStatusResponse {
+  bool   groq_configured    = 1;
+  string model              = 2;
+  int32  knowledge_base_docs = 3;
+  string status             = 4;
+}

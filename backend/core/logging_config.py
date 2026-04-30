@@ -4,7 +4,6 @@ import re
 
 from backend.config import settings
 
-
 # ── Sensitive value redaction ────────────────────────────────────────────────
 
 SENSITIVE_PATTERN = re.compile(
@@ -45,7 +44,7 @@ class SensitiveFilter(logging.Filter):
         if isinstance(record.msg, str):
             record.msg = _scrub(record.msg)
         if record.args:
-            args_iter = record.args if isinstance(record.args, (list, tuple)) else (record.args,)
+            args_iter = record.args if isinstance(record.args, list | tuple) else (record.args,)
             sanitized = tuple(_scrub(a) if isinstance(a, str) else a for a in args_iter)
             record.args = sanitized
         return True

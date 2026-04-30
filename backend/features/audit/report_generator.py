@@ -1,12 +1,13 @@
 import asyncio
+import hashlib
 import os
 import shutil
 import tempfile
-import hashlib
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 
-from .trail import ProvenanceRecord
 from .integrity_checker import IntegrityReport
+from .trail import ProvenanceRecord
+
 
 class ReportGenerator:
 
@@ -27,7 +28,7 @@ class ReportGenerator:
         tmpdir = tempfile.mkdtemp()
         try:
             tex_file = os.path.join(tmpdir, "report.tex")
-            with open(tex_file, "w", encoding="utf-8") as f:
+            with open(tex_file, "w", encoding="utf-8") as f:  # noqa: ASYNC230
                 f.write(tex_content)
 
             try:
@@ -36,14 +37,14 @@ class ReportGenerator:
                     stdout=asyncio.subprocess.PIPE,
                     stderr=asyncio.subprocess.PIPE
                 )
-            except FileNotFoundError:
-                raise FileNotFoundError("pdflatex non trouvé — installer texlive-full sur la VM Ubuntu")
+            except FileNotFoundError as exc:
+                raise FileNotFoundError("pdflatex non trouvé — installer texlive-full sur la VM Ubuntu") from exc
 
             try:
                 stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=30.0)
-            except TimeoutError:
+            except TimeoutError as exc:
                 proc.kill()
-                raise RuntimeError("Timeout pdflatex (30s) atteint")
+                raise RuntimeError("Timeout pdflatex (30s) atteint") from exc
 
             if proc.returncode != 0:
                 log_lines = stdout.decode("utf-8", errors="replace").split("\n")[-20:]
@@ -54,7 +55,7 @@ class ReportGenerator:
             if not os.path.exists(pdf_file) or os.path.getsize(pdf_file) == 0:
                 raise RuntimeError("PDF généré vide — vérifier le template LaTeX")
 
-            with open(pdf_file, "rb") as f:
+            with open(pdf_file, "rb") as f:  # noqa: ASYNC230
                 return f.read()
         finally:
             shutil.rmtree(tmpdir, ignore_errors=True)

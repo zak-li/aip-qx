@@ -1,13 +1,15 @@
 import asyncio
 import json
 import logging
+
+from sqlalchemy import text
+
+from backend.core.audit_helpers import log_task_audit
 from backend.core.celery_app import celery_app
 from backend.core.database import AsyncSessionLocal
-from sqlalchemy import text
 from backend.features.compliance.aml import AMLScorer
 from backend.features.compliance.sar_reporter import SARReporter
 from backend.features.fraud_detection.neo4j_sync import get_neo4j_client
-from backend.core.audit_helpers import log_task_audit
 
 logger = logging.getLogger(__name__)
 
@@ -62,6 +64,7 @@ def check_kyc_expiry() -> dict:
 
 async def _do_aml_screening() -> dict:
     from uuid import UUID
+
     from backend.config import settings as _settings
 
     async with AsyncSessionLocal() as session:
@@ -107,6 +110,7 @@ def run_periodic_aml_screening() -> dict:
 
 async def _do_generate_sar(participant_id: str, tx_id: str | None, reason_code: str, amount: float, regulatory_ref: str | None) -> str:
     from uuid import UUID
+
     from backend.config import settings as _settings
 
     async with AsyncSessionLocal() as session:

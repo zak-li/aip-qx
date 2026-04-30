@@ -1,11 +1,12 @@
 from fastapi import APIRouter
-from backend.features.auth import router as auth
-from backend.features.auth import organizations_router as organizations
-from backend.features.assets import router as assets
-from backend.features.transactions import router as transactions
-from backend.features.audit import router as audit
-from backend.features.compliance import router as compliance
+
 from backend.features.agent import router as agent
+from backend.features.assets import router as assets
+from backend.features.audit import router as audit
+from backend.features.auth import organizations_router as organizations
+from backend.features.auth import router as auth
+from backend.features.compliance import router as compliance
+from backend.features.transactions import router as transactions
 from backend.features.zkp import router as zkp
 
 api_router = APIRouter()

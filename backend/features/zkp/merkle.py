@@ -14,7 +14,6 @@ from __future__ import annotations
 import hashlib
 from dataclasses import dataclass, field
 
-
 # ── hashing helpers ───────────────────────────────────────────────────────────
 
 def _leaf_hash(value: str) -> bytes:
@@ -48,9 +47,9 @@ class MerkleTree:
         while len(current) > 1:
             next_level = []
             for i in range(0, len(current), 2):
-                l = current[i]
+                left = current[i]
                 r = current[i + 1] if i + 1 < len(current) else current[i]
-                next_level.append(_node_hash(l, r))
+                next_level.append(_node_hash(left, r))
             levels.append(next_level)
             current = next_level
 

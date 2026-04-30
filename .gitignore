@@ -58,3 +58,6 @@ tests/fixtures/crypto_config_mock/
 *.synctex.gz
 *.fls
 *.fdb_latexmk
+
+# Local deploy scripts (contain credentials)
+scripts/_deploy_*.py

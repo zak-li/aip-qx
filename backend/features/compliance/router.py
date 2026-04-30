@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, UTC
+from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 from uuid import UUID
 
@@ -7,13 +7,13 @@ from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.features.compliance.aml import AMLScorer
-from backend.features.compliance.kyc import KYCVerifier
-from backend.features.compliance.sar_reporter import SARReporter
 from backend.config import settings
 from backend.dependencies import get_db, require_role
-from backend.features.compliance.models import ComplianceRecord, KYCDocument, SARReport
 from backend.features.auth.models import User
+from backend.features.compliance.aml import AMLScorer
+from backend.features.compliance.kyc import KYCVerifier
+from backend.features.compliance.models import ComplianceRecord, KYCDocument, SARReport
+from backend.features.compliance.sar_reporter import SARReporter
 from backend.features.compliance.schemas import AMLResult, ComplianceStatusResponse
 
 router = APIRouter()

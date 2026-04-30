@@ -1,0 +1,106 @@
+syntax = "proto3";
+
+package rwa.assets;
+
+
+service AssetsService {
+  rpc TokenizeAsset        (TokenizeRequest)    returns (AssetResponse);
+  rpc TransferAsset        (TransferRequest)    returns (AssetResponse);
+  rpc FreezeAsset          (FreezeRequest)      returns (AssetResponse);
+  rpc UnfreezeAsset        (UnfreezeRequest)    returns (AssetResponse);
+  rpc GetAsset             (AssetIdRequest)     returns (AssetResponse);
+  rpc GetAssetHistory      (AssetIdRequest)     returns (ProvenanceResponse);
+  rpc SearchAssets         (SearchRequest)      returns (AssetList);
+  rpc ValuateAsset         (ValuateRequest)     returns (ValuationResponse);
+  rpc ListAssetValuations  (AssetIdRequest)     returns (ValuationList);
+}
+
+// ---------------------------------------------------------------------------
+
+message TokenizeRequest {
+  string asset_id    = 1;
+  string asset_type  = 2;
+  string isin        = 3;
+  string lei         = 4;
+  string currency    = 5;  // ISO 4217
+  double face_value  = 6;
+  string owner       = 7;
+  string metadata    = 8;  // arbitrary JSON
+}
+
+message TransferRequest {
+  string asset_id  = 1;
+  string new_owner = 2;
+  double amount    = 3;
+}
+
+message FreezeRequest {
+  string asset_id = 1;
+  string reason   = 2;
+}
+
+message UnfreezeRequest {
+  string asset_id = 1;
+  string reason   = 2;
+}
+
+message AssetIdRequest { string asset_id = 1; }
+
+message SearchRequest {
+  string status     = 1;
+  string asset_type = 2;
+  string owner      = 3;
+  int32  limit      = 4;
+  int32  offset     = 5;
+}
+
+message AssetResponse {
+  string asset_id    = 1;
+  string asset_type  = 2;
+  string isin        = 3;
+  string lei         = 4;
+  string currency    = 5;
+  double face_value  = 6;
+  string owner       = 7;
+  string status      = 8;
+  string created_at  = 9;
+  string updated_at  = 10;
+}
+
+message AssetList { repeated AssetResponse assets = 1; }
+
+message ProvenanceRecord {
+  string tx_id       = 1;
+  string action      = 2;
+  string actor       = 3;
+  string timestamp   = 4;
+  string metadata    = 5;
+}
+
+message ProvenanceResponse { repeated ProvenanceRecord records = 1; }
+
+message ValuateRequest {
+  string asset_id          = 1;
+  double current_value     = 2;
+  double yield_to_maturity = 3;
+  double duration          = 4;
+  double convexity         = 5;
+  int32  credit_spread_bps = 6;
+  string pricing_source    = 7;
+  string valuation_date    = 8;  // ISO-8601 date
+}
+
+message ValuationResponse {
+  string id                = 1;
+  string asset_id          = 2;
+  double current_value     = 3;
+  double yield_to_maturity = 4;
+  double duration          = 5;
+  double convexity         = 6;
+  int32  credit_spread_bps = 7;
+  string pricing_source    = 8;
+  string valuation_date    = 9;
+  string created_at        = 10;
+}
+
+message ValuationList { repeated ValuationResponse valuations = 1; }

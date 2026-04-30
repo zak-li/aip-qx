@@ -9,12 +9,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.config import Settings
 from backend.constants import (
-    MAX_AML_SCORE,
-    SAR_THRESHOLD,
     AML_HIGH_AMOUNT_BONUS_1,
     AML_HIGH_AMOUNT_BONUS_1_THRESHOLD,
     AML_HIGH_AMOUNT_BONUS_2,
     AML_HIGH_AMOUNT_BONUS_2_THRESHOLD,
+    MAX_AML_SCORE,
+    SAR_THRESHOLD,
 )
 from backend.features.compliance.fixtures_loader import get_participants
 from backend.features.compliance.models import ComplianceRecord

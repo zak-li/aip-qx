@@ -1,14 +1,15 @@
 from __future__ import annotations
 
 import uuid
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from decimal import Decimal
 
-from sqlalchemy import ForeignKey, Integer, Numeric, String, TIMESTAMP, Boolean, Text
-from sqlalchemy.dialects.postgresql import JSONB, ARRAY
+from sqlalchemy import TIMESTAMP, Boolean, ForeignKey, Integer, Numeric, String, Text
+from sqlalchemy.dialects.postgresql import ARRAY, JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.core.database_base import Base, TimestampMixin, UUIDMixin
+
 
 class ComplianceRecord(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "compliance_records"

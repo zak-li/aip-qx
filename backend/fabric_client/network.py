@@ -2,17 +2,17 @@ import asyncio
 import json
 import logging
 import os
-from typing import TypeAlias
 
 import yaml
 
 from backend.config import FabricSettings
+
 from .retry import fabric_retry
 from .wallet import FabricWallet
 
 logger = logging.getLogger(__name__)
 
-PayloadDict: TypeAlias = dict[str, str | int | float | bool | dict[str, str | int | float | bool] | list[str | int | float | bool] | None]
+type PayloadDict = dict[str, str | int | float | bool | dict[str, str | int | float | bool] | list[str | int | float | bool] | None]
 
 class FabricEndorsementError(Exception):
     pass
@@ -68,7 +68,8 @@ class FabricClient:
             peers = {}
 
         for peer_id, peer_ext in peers.items():
-            if not isinstance(peer_ext, dict): continue
+            if not isinstance(peer_ext, dict):
+                continue
 
             url_raw = str(peer_ext.get("url", ""))
             addr = url_raw.replace("grpcs://", "").replace("grpc://", "")
@@ -133,9 +134,9 @@ class FabricClient:
                 process.communicate(),
                 timeout=self.settings.fabric_grpc_timeout,
             )
-        except TimeoutError:
+        except TimeoutError as exc:
             process.kill()
-            raise FabricEndorsementError("Fabric CLI subprocess explicitly timed out boundary limit.")
+            raise FabricEndorsementError("Fabric CLI subprocess explicitly timed out boundary limit.") from exc
 
         stdout_dec = stdout.decode('utf-8').strip()
         stderr_dec = stderr.decode('utf-8').strip()
@@ -163,7 +164,7 @@ class FabricClient:
 
         env = self._get_env_for_identity(identity_label)
 
-        payload = {"Args": [function] + list(args)}
+        payload = {"Args": [function, *list(args)]}
 
         cmd = [
             self.peer_bin, "chaincode", "invoke",
@@ -220,7 +221,7 @@ class FabricClient:
         self._sanitize_arguments(args)
 
         env = self._get_env_for_identity(identity_label)
-        payload = {"Args": [function] + list(args)}
+        payload = {"Args": [function, *list(args)]}
 
         cmd = [
             self.peer_bin, "chaincode", "query",

@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package rwa.zkp;
+
+
+service ZKPService {
+  rpc SetupKey          (SetupKeyRequest)  returns (SetupKeyResponse);
+  rpc VerifyProof       (ProofRequest)     returns (ProofResponse);
+  rpc GetZKPStatus      (StatusRequest)    returns (ZKPStatusResponse);
+  rpc RevokeCredential  (RevokeRequest)    returns (RevokeResponse);
+}
+
+// ---------------------------------------------------------------------------
+
+message SetupKeyRequest {
+  string public_key_x = 1;
+  string public_key_y = 2;
+}
+
+message SetupKeyResponse {
+  string credential_id       = 1;
+  string claim               = 2;  // JSON-serialised claim dict
+  string issuer_sig          = 3;
+  string expires_at          = 4;
+  string sanctions_tree_root = 5;
+}
+
+message ProofRequest {
+  string public_key_x    = 1;
+  string public_key_y    = 2;
+  string proof_rx        = 3;
+  string proof_ry        = 4;
+  string proof_s         = 5;
+  string purpose         = 6;
+  string context         = 7;
+  string nullifier       = 8;
+  string credential_claim = 9;
+  string credential_sig  = 10;
+}
+
+message ProofResponse {
+  bool   valid   = 1;
+  string purpose = 2;
+  string message = 3;
+}
+
+message StatusRequest {}
+
+message ZKPStatusResponse {
+  string credential_id       = 1;
+  bool   has_credential      = 2;
+  bool   age_ok              = 3;
+  bool   kyc_ok              = 4;
+  bool   not_sanctioned      = 5;
+  int32  kyc_level           = 6;
+  string expires_at          = 7;
+  bool   revoked             = 8;
+  string sanctions_tree_root = 9;
+}
+
+message RevokeRequest {
+  string credential_id = 1;
+  string reason        = 2;
+}
+
+message RevokeResponse {
+  string status        = 1;
+  string credential_id = 2;
+}

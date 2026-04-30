@@ -91,7 +91,7 @@ def fabric_retry(
                     latest_error = exc
                     exc_name = "TimeoutError"
                     FABRIC_RETRY_ATTEMPTS.labels(function_name=func.__name__, exception_type=exc_name).inc()
-                except (grpc.RpcError, ConnectionError, TimeoutError) as exc:
+                except (grpc.RpcError, ConnectionError) as exc:
                     latest_error = exc
                     exc_name = type(exc).__name__
                     FABRIC_RETRY_ATTEMPTS.labels(function_name=func.__name__, exception_type=exc_name).inc()

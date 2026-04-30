@@ -10,10 +10,10 @@ from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.config import settings
-from backend.dependencies import get_db, get_current_user
+from backend.dependencies import get_current_user, get_db
+from backend.features.agent.rag_pipeline import answer, answer_stream
+from backend.features.agent.vector_store import _get_collection, index_knowledge_base, semantic_search
 from backend.features.auth.models import User
-from backend.features.agent.rag_pipeline import answer_stream, answer
-from backend.features.agent.vector_store import index_knowledge_base, semantic_search, _get_collection
 
 logger = logging.getLogger(__name__)
 
@@ -95,7 +95,7 @@ async def chat(
             return ChatResponse(answer=result, sources_used=len(sources), sources=sources, time_ms=time_ms)
         except Exception as exc:
             logger.error(f"[AGENT] Chat error: {exc}")
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Erreur agent: {exc}")
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Erreur agent: {exc}") from exc
 
 
 @router.post("/index", status_code=202)
@@ -107,7 +107,7 @@ async def trigger_indexing(current_user: User = Depends(get_current_user)) -> di
         index_knowledge_base()
         return {"status": "indexed", "message": "Base de connaissances réindexée avec succès."}
     except Exception as exc:
-        raise HTTPException(status_code=500, detail=f"Erreur d'indexation: {exc}")
+        raise HTTPException(status_code=500, detail=f"Erreur d'indexation: {exc}") from exc
 
 
 @router.get("/search")
@@ -118,7 +118,7 @@ async def semantic_search_endpoint(
     try:
         return semantic_search(query, n_results=n)
     except Exception as exc:
-        raise HTTPException(status_code=500, detail=str(exc))
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
 @router.get("/status")

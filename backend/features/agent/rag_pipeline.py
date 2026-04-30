@@ -8,8 +8,8 @@ from collections.abc import AsyncGenerator
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from backend.features.agent.groq_client import generate, generate_stream
 from backend.features.agent.retriever import build_context
-from backend.features.agent.groq_client import generate_stream, generate
 
 logger = logging.getLogger(__name__)
 

@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package rwa.auth;
+
+
+// JWT passed in gRPC metadata: key "authorization", value "Bearer <token>"
+
+service AuthService {
+  rpc Login           (LoginRequest)     returns (TokenResponse);
+  rpc Logout          (LogoutRequest)    returns (LogoutResponse);
+  rpc Refresh         (RefreshRequest)   returns (TokenResponse);
+  rpc GetMe           (GetMeRequest)     returns (UserProfile);
+
+  rpc SetupMFA        (SetupMFARequest)  returns (MFASetupResponse);
+  rpc EnableMFA       (MFAVerifyRequest) returns (MFAActionResponse);
+  rpc DisableMFA      (MFAVerifyRequest) returns (MFAActionResponse);
+
+  // GDPR Art. 15 — personal data export
+  rpc ExportMyData    (ExportRequest)    returns (UserDataExport);
+  // GDPR Art. 17 — right to erasure (anonymises, does not hard-delete)
+  rpc DeleteMyAccount (DeleteRequest)    returns (DeleteResponse);
+}
+
+// ---------------------------------------------------------------------------
+
+message LoginRequest {
+  string email    = 1;
+  string password = 2;
+  string mfa_code = 3;  // optional; send empty string when MFA not yet configured
+}
+
+message TokenResponse {
+  string access_token = 1;
+  string token_type   = 2;
+  int32  expires_in   = 3;
+  bool   mfa_required = 4;
+}
+
+message LogoutRequest  {}
+message LogoutResponse { string message = 1; }
+
+message RefreshRequest {}
+
+message GetMeRequest {}
+
+message UserProfile {
+  string id          = 1;
+  string email       = 2;
+  string first_name  = 3;
+  string last_name   = 4;
+  string role        = 5;
+  string org_id      = 6;
+  bool   mfa_enabled = 7;
+  string created_at  = 8;  // ISO-8601
+  string last_login  = 9;
+}
+
+message SetupMFARequest  {}
+message MFASetupResponse {
+  string provisioning_uri = 1;
+  string secret           = 2;
+}
+
+message MFAVerifyRequest  { string code = 1; }
+message MFAActionResponse { string message = 1; }
+
+message ExportRequest {}
+message UserDataExport {
+  string json_payload = 1;  // full GDPR export serialised as JSON string
+}
+
+message DeleteRequest  {}
+message DeleteResponse { string message = 1; }

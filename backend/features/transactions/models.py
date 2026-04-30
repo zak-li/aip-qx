@@ -4,11 +4,11 @@ import uuid
 from datetime import datetime
 from decimal import Decimal
 
-from sqlalchemy import Boolean, Numeric, String, ForeignKey, Enum, Integer
+from sqlalchemy import Boolean, Enum, ForeignKey, Integer, Numeric, String
 from sqlalchemy.dialects.postgresql import ARRAY, JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from backend.core.database_base import Base, UUIDMixin, TimestampMixin
+from backend.core.database_base import Base, TimestampMixin, UUIDMixin
 from backend.features.assets.models import Asset
 from backend.features.auth.models import User
 

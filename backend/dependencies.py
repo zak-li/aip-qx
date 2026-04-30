@@ -1,7 +1,8 @@
-from typing import Annotated
 from collections.abc import AsyncGenerator, Callable
+from typing import Annotated
 from uuid import UUID
 
+import grpc
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from redis.asyncio import Redis
@@ -26,6 +27,21 @@ _MSP_TO_IDENTITY: dict[str, str] = {
     "BNPParibasMSP": "Admin@bnpparibas",
     "AMFRegulateurMSP": "Admin@amf-regulateur",
 }
+
+
+def resolve_identity_from_payload(payload: dict) -> str:
+    """Resolve Fabric wallet identity from a decoded JWT payload dict.
+
+    Used by gRPC servicers where there is no User ORM object — only the
+    payload injected by AuthInterceptor.
+    """
+    msp_id = payload.get("msp_id")
+    if not msp_id:
+        raise grpc.RpcError(grpc.StatusCode.PERMISSION_DENIED)  # type: ignore[attr-defined]
+    identity = _MSP_TO_IDENTITY.get(msp_id)
+    if identity is None:
+        raise grpc.RpcError(grpc.StatusCode.PERMISSION_DENIED)  # type: ignore[attr-defined]
+    return identity
 
 
 def resolve_identity(user: User) -> str:

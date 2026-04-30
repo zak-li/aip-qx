@@ -3,10 +3,11 @@ from __future__ import annotations
 import uuid
 from datetime import datetime
 
-from sqlalchemy import Boolean, Float, ForeignKey, String, Text, TIMESTAMP
+from sqlalchemy import TIMESTAMP, Boolean, Float, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from backend.core.database_base import Base
+
 
 class TribunalSession(Base):
     __tablename__ = "tribunal_sessions"

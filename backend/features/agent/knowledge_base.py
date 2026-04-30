@@ -41,8 +41,8 @@ KNOWLEDGE_CHUNKS: list[dict[str, str]] = [
         "category": "compliance",
         "title": "Calcul du score AML",
         "content": (
-            "Score AML = (jurisdiction_risk × 0.30) + (cross_border_activity × 0.40) + "
-            "(unusual_volume × 0.30). "
+            "Score AML = (jurisdiction_risk x 0.30) + (cross_border_activity x 0.40) + "
+            "(unusual_volume x 0.30). "
             "Bonus montant : +0.10 si transaction > 25M EUR, +0.05 si > 5M EUR. "
             "Seuils : FAIBLE < 0.30, MOYEN < 0.60, ELEVÉ ≤ 0.75, CRITIQUE > 0.75. "
             "Blocage si score > MAX_AML_SCORE (0.60). SAR généré si score > SAR_THRESHOLD (0.75)."

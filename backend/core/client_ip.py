@@ -22,7 +22,6 @@ from collections.abc import Iterable
 
 from fastapi import Request
 
-
 # Default sentinel used when no request context is available — e.g. background
 # Celery tasks or startup-time checks. Distinguishable from a real address.
 _NO_REQUEST_SENTINEL = "internal"
