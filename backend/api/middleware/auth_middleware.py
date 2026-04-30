@@ -11,25 +11,10 @@ from backend.core.security import decode_token
 
 logger = logging.getLogger(__name__)
 
-# Strict allow-list of paths that bypass JWT validation.
-_EXCLUDED_EXACT = frozenset({
-    "/",
+# API routes that must remain publicly accessible (no token required).
+_PUBLIC_API_PATHS = frozenset({
     "/api/v1/auth/login",
-    "/health",
-    "/metrics",
-    "/docs",
-    "/redoc",
-    "/openapi.json",
-    "/favicon.svg",
-    "/robots.txt",
-    "/site.webmanifest",
 })
-
-_EXCLUDED_PREFIX = (
-    "/assets/",
-    "/animations/",
-    "/docs/",
-)
 
 # CSRF check applies to mutating verbs only. GET/HEAD/OPTIONS are exempt
 # because the cookie-only path does not let cross-origin JS read the
@@ -38,9 +23,13 @@ _SAFE_METHODS = frozenset({"GET", "HEAD", "OPTIONS"})
 
 
 def _is_excluded(path: str) -> bool:
-    if path in _EXCLUDED_EXACT:
+    # Public API endpoints (login, etc.) are always open.
+    if path in _PUBLIC_API_PATHS:
         return True
-    return any(path.startswith(prefix) for prefix in _EXCLUDED_PREFIX)
+    # Only enforce JWT on API routes — the SPA shell, static assets,
+    # health, metrics and all React Router paths are served unauthenticated
+    # (the frontend handles its own auth flow).
+    return not path.startswith("/api/")
 
 
 def _unauthorized(message: str) -> JSONResponse:

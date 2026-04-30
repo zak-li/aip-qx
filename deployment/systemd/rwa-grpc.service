@@ -1,0 +1,23 @@
+[Unit]
+Description=RWA gRPC Server
+After=network-online.target rwa-uvicorn.service
+Requires=rwa-uvicorn.service
+StartLimitIntervalSec=120
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=zakaria
+Group=zakaria
+WorkingDirectory=/home/zakaria/rwa-platform
+EnvironmentFile=/home/zakaria/rwa-platform/.env
+ExecStart=/home/zakaria/rwa-platform/.venv/bin/python -m backend.grpc_server.server
+Restart=on-failure
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1
+StandardOutput=append:/home/zakaria/rwa-platform/logs/grpc.log
+StandardError=append:/home/zakaria/rwa-platform/logs/grpc.log
+SyslogIdentifier=rwa-grpc
+
+[Install]
+WantedBy=multi-user.target

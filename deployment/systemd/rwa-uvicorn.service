@@ -2,6 +2,8 @@
 Description=RWA Platform - FastAPI Backend (Uvicorn)
 After=network-online.target rwa-platform.service
 Requires=rwa-platform.service
+StartLimitIntervalSec=120
+StartLimitBurst=5
 
 [Service]
 Type=simple
@@ -14,8 +16,6 @@ ExecStop=/bin/kill -TERM $MAINPID
 KillMode=mixed
 Restart=on-failure
 RestartSec=10
-StartLimitIntervalSec=120
-StartLimitBurst=5
 StandardOutput=append:/home/zakaria/rwa-platform/logs/uvicorn.log
 StandardError=append:/home/zakaria/rwa-platform/logs/uvicorn.log
 SyslogIdentifier=rwa-uvicorn
