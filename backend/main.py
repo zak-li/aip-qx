@@ -1,14 +1,12 @@
 import asyncio
 import logging
-import os
 from collections.abc import AsyncGenerator, Awaitable, Callable
 from contextlib import asynccontextmanager
 
 import hvac
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
-from fastapi.staticfiles import StaticFiles
+from fastapi.responses import JSONResponse
 from prometheus_client import CONTENT_TYPE_LATEST, Counter, Gauge, Histogram, generate_latest
 from prometheus_fastapi_instrumentator import Instrumentator
 from sqlalchemy import text
@@ -59,22 +57,18 @@ SECURITY_HEADERS = {
     "Referrer-Policy": "strict-origin-when-cross-origin",
     "Permissions-Policy": "geolocation=(), camera=(), microphone=(), payment=()",
     "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
-    # The SPA bundle is served from the same origin; the chart/markdown libs run inline.
-    # Tighten if the frontend is migrated to nonce-based CSP.
     "Content-Security-Policy": (
         "default-src 'self'; "
-        "script-src 'self' 'unsafe-inline'; "
-        "style-src 'self' 'unsafe-inline'; "
-        "img-src 'self' data: blob:; "
-        "font-src 'self' data:; "
+        "script-src 'self'; "
+        "style-src 'self'; "
+        "img-src 'self' data:; "
+        "font-src 'self'; "
         "connect-src 'self'; "
         "frame-ancestors 'none'; "
         "base-uri 'self'; "
         "form-action 'self'"
     ),
 }
-
-_dist = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend", "dist", "frontend", "browser"))
 
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
@@ -123,10 +117,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         logger.error(f"PostgreSQL connection failed: {exc}")
 
     try:
-        redis_gen = get_redis()
-        redis_conn = await redis_gen.__anext__()
+        redis_conn = await anext(get_redis())
         await redis_conn.ping()
-        await redis_gen.aclose()
         logger.info("Redis connection verified.")
     except Exception as exc:
         logger.error(f"Redis connection failed: {exc}")
@@ -163,8 +155,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         if _event_listener_instance:
             try:
                 await _event_listener_instance.stop()
-            except Exception:  # noqa: S110
-                pass
+            except Exception:
+                logger.exception("Event listener failed to stop cleanly")
 
         for cleanup in (
             get_fabric().disconnect,
@@ -178,8 +170,6 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
                 logger.exception("Shutdown cleanup step failed")
 
 
-# Disable interactive API docs in production — they leak the full schema
-# and operation IDs to anyone who can reach the SPA.
 _is_prod = settings.environment == "production"
 app = FastAPI(
     title="RWA Tokenization Backend",
@@ -206,14 +196,9 @@ Instrumentator().instrument(app)
 setup_global_exception_handlers(app)
 app.include_router(api_router, prefix="/api/v1")
 
-if os.path.isdir(_dist):
-    app.mount("/", StaticFiles(directory=_dist, html=True), name="spa")
-
 
 @app.exception_handler(Exception)
 async def global_unhandled_exception_handler(request: Request, exc: Exception) -> JSONResponse:
-    # Full traceback goes to the server log only — never to the client response,
-    # since exception messages can carry SQL fragments, file paths, secrets, etc.
     logger.exception("UNHANDLED EXCEPTION IN API")
     return JSONResponse(
         status_code=500,
@@ -223,11 +208,7 @@ async def global_unhandled_exception_handler(request: Request, exc: Exception) -
 
 @app.get("/health", tags=["System"])
 async def check_health() -> JSONResponse:
-    """Public liveness probe — only returns ok/degraded, no subsystem details.
-
-    Detailed per-subsystem status is available at /health/deep, restricted to
-    the internal IP range to avoid leaking architecture to external scanners.
-    """
+    """Public liveness probe — only returns ok/degraded, no subsystem details."""
     try:
         async with AsyncSessionLocal() as db:
             await db.execute(text("SELECT 1"))
@@ -261,10 +242,8 @@ async def check_health_deep(request: Request) -> JSONResponse:
         overall_ok = False
 
     try:
-        redis_gen = get_redis()
-        redis_conn = await redis_gen.__anext__()
+        redis_conn = await anext(get_redis())
         await redis_conn.ping()
-        await redis_gen.aclose()
         checks["redis"] = "ok"
     except Exception:
         logger.exception("health: redis check failed")
@@ -309,16 +288,3 @@ async def get_metrics(request: Request) -> Response:
     if not _is_trusted_internal(client_ip):
         return JSONResponse(status_code=403, content={"error": "Forbidden"})
     return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
-
-
-# SPA catch-all — serves index.html for any Angular route not matched above.
-# Only reached when StaticFiles mount above didn't find a real file
-# (i.e. Angular Router paths like /agent).
-@app.get("/{full_path:path}", include_in_schema=False)
-async def serve_spa(full_path: str) -> Response:
-    if full_path.startswith("api/") or full_path.startswith("health/"):
-        return JSONResponse(status_code=404, content={"error": "NotFound"})
-    index = os.path.join(_dist, "index.html")
-    if os.path.isfile(index):
-        return FileResponse(index, headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
-    return JSONResponse(status_code=503, content={"error": "FrontendNotBuilt"})
