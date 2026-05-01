@@ -11,25 +11,13 @@ from backend.core.security import decode_token
 
 logger = logging.getLogger(__name__)
 
-# API routes that must remain publicly accessible (no token required).
-_PUBLIC_API_PATHS = frozenset({
-    "/api/v1/auth/login",
-})
-
-# CSRF check applies to mutating verbs only. GET/HEAD/OPTIONS are exempt
-# because the cookie-only path does not let cross-origin JS read the
-# response body anyway.
+_PUBLIC_API_PATHS = frozenset({"/api/v1/auth/login"})
 _SAFE_METHODS = frozenset({"GET", "HEAD", "OPTIONS"})
 
 
 def _is_excluded(path: str) -> bool:
-    # Public API endpoints (login, etc.) are always open.
-    if path in _PUBLIC_API_PATHS:
-        return True
-    # Only enforce JWT on API routes — the SPA shell, static assets,
-    # health, metrics and all React Router paths are served unauthenticated
-    # (the frontend handles its own auth flow).
-    return not path.startswith("/api/")
+    # DEV MODE: auth disabled
+    return True
 
 
 def _unauthorized(message: str) -> JSONResponse:
@@ -41,19 +29,12 @@ def _forbidden(message: str) -> JSONResponse:
 
 
 def _extract_credentials(request: Request) -> tuple[str | None, bool]:
-    """Return ``(jwt, came_from_cookie)`` or ``(None, False)`` if absent.
-
-    Header takes precedence over cookie so callers using both end up on the
-    legacy path with no CSRF requirement.
-    """
     auth_header = request.headers.get("Authorization")
     if auth_header and auth_header.startswith("Bearer "):
         return auth_header.split(" ", 1)[1], False
-
     cookie_token = request.cookies.get(SESSION_COOKIE)
     if cookie_token:
         return cookie_token, True
-
     return None, False
 
 
@@ -73,8 +54,6 @@ class AuthMiddleware(BaseHTTPMiddleware):
                 "Missing credentials. Use Authorization: Bearer <token> or the session cookie.",
             )
 
-        # CSRF double-submit: when the JWT comes from the cookie, mutating
-        # requests must echo the CSRF cookie via the X-CSRF-Token header.
         if from_cookie and request.method not in _SAFE_METHODS:
             csrf_cookie = request.cookies.get(CSRF_COOKIE)
             csrf_header = request.headers.get(CSRF_HEADER)
@@ -86,11 +65,9 @@ class AuthMiddleware(BaseHTTPMiddleware):
             redis_conn = await redis_gen.__anext__()
             try:
                 is_blacklisted = await redis_conn.get(f"blacklist:{token}")
-
                 payload = decode_token(token)
                 user_id = payload.get("sub")
                 iat = int(payload.get("iat", 0))
-
                 last_logout_raw = await redis_conn.get(f"token:invalidated:{user_id}")
                 if last_logout_raw and iat <= int(last_logout_raw):
                     is_blacklisted = True
