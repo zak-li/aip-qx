@@ -99,7 +99,7 @@ class User(Base, UUIDMixin):
     def is_locked(self) -> bool:
         if not self.locked_until:
             return False
-        return datetime.now(UTC) < self.locked_until
+        return datetime.now(UTC) <= self.locked_until
 
     def __repr__(self) -> str:
         return f"<User id={self.id} email={self.email} role={self.role}>"

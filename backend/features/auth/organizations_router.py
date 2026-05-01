@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, ConfigDict, EmailStr
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -70,11 +70,10 @@ async def list_users(
     ),
     db: AsyncSession = Depends(get_db),
 ) -> list[UserSummary]:
-    from fastapi import HTTPException as _HTTPException
     if role and role.upper() not in _VALID_ROLES:
-        raise _HTTPException(status_code=400, detail=f"Invalid role. Must be one of: {', '.join(sorted(_VALID_ROLES))}")
+        raise HTTPException(status_code=400, detail=f"Invalid role. Must be one of: {', '.join(sorted(_VALID_ROLES))}")
     if country and country.upper() not in _VALID_COUNTRIES:
-        raise _HTTPException(status_code=400, detail="Invalid country code.")
+        raise HTTPException(status_code=400, detail="Invalid country code.")
 
     stmt = select(User, Organization).join(Organization, User.org_id == Organization.id)
     if role:

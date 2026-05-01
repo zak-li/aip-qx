@@ -97,7 +97,6 @@ class SARReporter:
         return ref
 
     async def get_active(self) -> list[SARReport]:
-        from sqlalchemy import select
         stmt = select(SARReportORM).where(SARReportORM.status == "DRAFT")
         result = await self.db.execute(stmt)
         records = result.scalars().all()
@@ -115,7 +114,6 @@ class SARReporter:
         ]
 
     async def close(self, reference: str, closed_by_id: uuid.UUID) -> SARReport:
-        from sqlalchemy import select
         stmt = select(SARReportORM).where(SARReportORM.sar_ref == reference)
         result = await self.db.execute(stmt)
         report = result.scalar_one()

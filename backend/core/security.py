@@ -1,3 +1,4 @@
+import base64
 import hashlib
 import logging
 from datetime import UTC, datetime, timedelta
@@ -9,19 +10,13 @@ from backend.config import settings
 
 logger = logging.getLogger(__name__)
 
-# Identity claims for issued tokens. Both must be present and verified at decode.
 JWT_ISSUER = "rwa-platform"
 JWT_AUDIENCE = "rwa-platform-api"
 
 
 def _prepare_password(password: str) -> bytes:
-    """SHA-256 the UTF-8 password before bcrypt to avoid silent 72-byte truncation.
-
-    The pre-hash is base64-encoded so the result fits within bcrypt's 72-byte
-    input ceiling regardless of the original password length.
-    """
+    """SHA-256 + base64 the password before bcrypt to avoid silent 72-byte truncation."""
     digest = hashlib.sha256(password.encode("utf-8")).digest()
-    import base64
     return base64.b64encode(digest)
 
 
@@ -37,7 +32,11 @@ get_password_hash = hash_password
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     try:
         return bcrypt.checkpw(_prepare_password(plain_password), hashed_password.encode("utf-8"))
-    except Exception:
+    except ValueError as exc:
+        logger.warning(f"Password verification error (invalid hash format): {exc}")
+        return False
+    except Exception as exc:
+        logger.error(f"Unexpected error during password verification: {exc}")
         return False
 
 

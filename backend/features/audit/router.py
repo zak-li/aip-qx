@@ -1,8 +1,10 @@
+from celery.result import AsyncResult
 from fastapi import APIRouter, Depends, Query
 from fastapi.responses import JSONResponse
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from backend.core.celery_app import celery_app
 from backend.dependencies import get_current_user, get_db, get_fabric, require_role, resolve_identity
 from backend.features.audit.tasks import generate_audit_report as task_generate
 from backend.features.auth.models import User
@@ -67,10 +69,6 @@ async def get_report_status(
     task_id: str,
     current_user: User = Depends(require_role("AUDITEUR")),
 ) -> dict[str, str]:
-    from celery.result import AsyncResult
-
-    from backend.core.celery_app import celery_app
-
     result = AsyncResult(task_id, app=celery_app)
     if result.state == "SUCCESS":
         return {"task_id": task_id, "status": "SUCCESS", "file_path": result.result.get("file_path", "")}

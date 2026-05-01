@@ -1,4 +1,5 @@
 import asyncio
+import json
 
 from celery import Task
 from sqlalchemy import text
@@ -15,7 +16,6 @@ async def _log_audit_result(task_name: str, payload: dict) -> None:
             INSERT INTO audit_logs (action, details, created_at)
             VALUES (:action, :details, now())
         """)
-        import json
         await session.execute(stmt, {"action": task_name, "details": json.dumps(payload)})
         await session.commit()
 
@@ -55,7 +55,7 @@ async def _do_sync_fabric_state(asset_id: str) -> dict:
         if upd:
             sets = ", ".join([f"{k} = :{k}" for k in upd])
             upd["aid"] = asset_id
-            ustmt = text(f"UPDATE assets SET {sets} WHERE asset_id = :aid")  # noqa: S608  # nosec B608
+            ustmt = text(f"UPDATE assets SET {sets} WHERE asset_id = :aid")  # noqa: S608
             await session.execute(ustmt, upd)
             await session.commit()
 
@@ -84,7 +84,6 @@ def sync_fabric_state_all() -> dict:
 
 async def _do_process_event(event_type: str, payload: dict) -> None:
     async with AsyncSessionLocal() as session:
-        import json
         istmt = text("""
             INSERT INTO network_events (event_type, payload, created_at)
             VALUES (:et, :pay, now())
@@ -93,9 +92,7 @@ async def _do_process_event(event_type: str, payload: dict) -> None:
 
         aid = payload.get("asset_id")
         if aid:
-            if event_type == "AssetCreated":
-                pass
-            elif event_type == "AssetTransferred":
+            if event_type == "AssetTransferred":
                 val = payload.get("price", payload.get("amount", 0))
                 own = payload.get("to_owner")
                 if own:
@@ -120,10 +117,9 @@ def process_fabric_event(event_type: str, payload: dict) -> None:
     asyncio.run(_do_process_event(event_type, payload))
 
 async def _do_update_cache(asset_id: str) -> None:
-    redis_gen = get_redis()
-    redis_conn = await redis_gen.__anext__()
-    await redis_conn.delete(f"asset:{asset_id}")
-    await redis_gen.aclose()
+    async for redis_conn in get_redis():
+        await redis_conn.delete(f"asset:{asset_id}")
+        break
 
 @celery_app.task(queue="fabric_events")
 def update_asset_cache(asset_id: str) -> None:

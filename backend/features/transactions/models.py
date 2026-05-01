@@ -12,8 +12,7 @@ from backend.core.database_base import Base, TimestampMixin, UUIDMixin
 from backend.features.assets.models import Asset
 from backend.features.auth.models import User
 
-JsonType = JSONB
-ArrayType = ARRAY(String)
+_ArrayType = ARRAY(String)
 
 class Transaction(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "transactions"
@@ -41,7 +40,7 @@ class Transaction(Base, UUIDMixin, TimestampMixin):
     settlement_date: Mapped[datetime | None] = mapped_column(nullable=True)
     clearing_ref: Mapped[str | None] = mapped_column(String(100), nullable=True)
 
-    endorsing_orgs: Mapped[list[str] | None] = mapped_column(ArrayType, nullable=True)
+    endorsing_orgs: Mapped[list[str] | None] = mapped_column(_ArrayType, nullable=True)
     endorsement_count: Mapped[int | None] = mapped_column(Integer, nullable=True)
     justification: Mapped[str | None] = mapped_column(String, nullable=True)
 

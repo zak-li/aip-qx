@@ -10,12 +10,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.config import settings
 from backend.core.auth_cookies import (
+    SESSION_COOKIE,
     clear_session_cookies,
     issue_csrf_token,
     set_session_cookies,
 )
+from backend.core.redis_client import get_redis
 from backend.core.security import create_access_token, decode_token, verify_password
-from backend.dependencies import get_current_user, get_db, get_redis
+from backend.dependencies import get_current_user, get_db
 from backend.features.auth.models import User
 from backend.features.auth.schemas import (
     LoginRequest,
@@ -122,7 +124,6 @@ async def logout(
     if auth_header and auth_header.startswith("Bearer "):
         token = auth_header.split(" ", 1)[1]
     else:
-        from backend.core.auth_cookies import SESSION_COOKIE
         token = request.cookies.get(SESSION_COOKIE) or ""
 
     if not token:
