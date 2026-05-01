@@ -18,7 +18,8 @@ from backend.core.celery_app import celery_app
 from backend.main import app
 from backend.config import Settings
 from backend.core.database_base import Base
-from backend.dependencies import get_db, get_fabric, get_redis
+from backend.dependencies import get_db, get_fabric
+from backend.core.redis_client import get_redis
 from backend.core.security import create_access_token
 from backend.fabric_client.network import FabricClient
 from backend.exceptions import AssetNotFoundException, AssetFrozenError
