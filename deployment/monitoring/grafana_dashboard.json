@@ -64,12 +64,6 @@
       "id": "heatmap",
       "name": "Heatmap",
       "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "table",
-      "name": "Table",
-      "version": ""
     }
   ],
   "annotations": {
@@ -121,18 +115,27 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#2D9CDB",
+                "color": "#5794F2",
                 "value": null
+              },
+              {
+                "color": "#19D3C5",
+                "value": 10
+              },
+              {
+                "color": "#73BF69",
+                "value": 100
               }
             ]
           },
           "unit": "reqps",
-          "decimals": 2
+          "decimals": 2,
+          "mappings": []
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
+        "h": 6,
         "w": 4,
         "x": 0,
         "y": 1
@@ -146,9 +149,12 @@
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
-          ]
+          ],
+          "fields": "",
+          "values": false
         },
-        "textMode": "auto"
+        "textMode": "value_and_name",
+        "wideLayout": true
       },
       "targets": [
         {
@@ -178,22 +184,27 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#27AE60",
+                "color": "#5794F2",
                 "value": null
               },
               {
-                "color": "#27AE60",
-                "value": 1
+                "color": "#19D3C5",
+                "value": 5
+              },
+              {
+                "color": "#73BF69",
+                "value": 20
               }
             ]
           },
           "unit": "short",
-          "decimals": 0
+          "decimals": 0,
+          "mappings": []
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
+        "h": 6,
         "w": 4,
         "x": 4,
         "y": 1
@@ -201,15 +212,18 @@
       "id": 3,
       "options": {
         "colorMode": "background",
-        "graphMode": "none",
+        "graphMode": "area",
         "justifyMode": "center",
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
-          ]
+          ],
+          "fields": "",
+          "values": false
         },
-        "textMode": "auto"
+        "textMode": "value_and_name",
+        "wideLayout": true
       },
       "targets": [
         {
@@ -218,7 +232,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "expr": "rwa_assets_by_status{status=\"ACTIF\"}",
-          "legendFormat": "active",
+          "legendFormat": "assets",
           "refId": "A"
         }
       ],
@@ -239,26 +253,31 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#27AE60",
+                "color": "#73BF69",
                 "value": null
               },
               {
-                "color": "#F2994A",
-                "value": 500
+                "color": "#FADE2A",
+                "value": 150
               },
               {
-                "color": "#EB5757",
-                "value": 1500
+                "color": "#FF780A",
+                "value": 300
+              },
+              {
+                "color": "#F2495C",
+                "value": 600
               }
             ]
           },
           "unit": "ms",
-          "decimals": 0
+          "decimals": 0,
+          "mappings": []
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
+        "h": 6,
         "w": 4,
         "x": 8,
         "y": 1
@@ -272,9 +291,12 @@
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
-          ]
+          ],
+          "fields": "",
+          "values": false
         },
-        "textMode": "auto"
+        "textMode": "value_and_name",
+        "wideLayout": true
       },
       "targets": [
         {
@@ -283,7 +305,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "expr": "histogram_quantile(0.95, sum by(le) (rate(http_request_duration_seconds_bucket[$interval]))) * 1000",
-          "legendFormat": "p95",
+          "legendFormat": "p95 ms",
           "refId": "A"
         }
       ],
@@ -304,26 +326,31 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#27AE60",
+                "color": "#73BF69",
                 "value": null
               },
               {
-                "color": "#F2994A",
-                "value": 5
+                "color": "#FADE2A",
+                "value": 1
               },
               {
-                "color": "#EB5757",
-                "value": 20
+                "color": "#FF780A",
+                "value": 2
+              },
+              {
+                "color": "#F2495C",
+                "value": 5
               }
             ]
           },
           "unit": "percent",
-          "decimals": 1
+          "decimals": 2,
+          "mappings": []
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
+        "h": 6,
         "w": 4,
         "x": 12,
         "y": 1
@@ -337,9 +364,12 @@
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
-          ]
+          ],
+          "fields": "",
+          "values": false
         },
-        "textMode": "auto"
+        "textMode": "value_and_name",
+        "wideLayout": true
       },
       "targets": [
         {
@@ -348,11 +378,11 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "expr": "sum(rate(http_requests_total{status=\"5xx\"}[$interval])) / sum(rate(http_requests_total[$interval])) * 100",
-          "legendFormat": "error %",
+          "legendFormat": "%",
           "refId": "A"
         }
       ],
-      "title": "API Error Rate (5xx)",
+      "title": "Error Rate (5xx)",
       "type": "stat"
     },
     {
@@ -369,26 +399,31 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#27AE60",
+                "color": "#73BF69",
                 "value": null
               },
               {
-                "color": "#F2994A",
+                "color": "#FADE2A",
                 "value": 5
               },
               {
-                "color": "#EB5757",
+                "color": "#FF780A",
+                "value": 10
+              },
+              {
+                "color": "#F2495C",
                 "value": 20
               }
             ]
           },
           "unit": "short",
-          "decimals": 0
+          "decimals": 0,
+          "mappings": []
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
+        "h": 6,
         "w": 4,
         "x": 16,
         "y": 1
@@ -402,9 +437,12 @@
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
-          ]
+          ],
+          "fields": "",
+          "values": false
         },
-        "textMode": "auto"
+        "textMode": "value_and_name",
+        "wideLayout": true
       },
       "targets": [
         {
@@ -413,11 +451,11 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "expr": "rwa_kyc_expiring_count",
-          "legendFormat": "expiring",
+          "legendFormat": "users",
           "refId": "A"
         }
       ],
-      "title": "KYC Expiring (30d)",
+      "title": "KYC Expiring (30 d)",
       "type": "stat"
     },
     {
@@ -434,28 +472,31 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#27AE60",
+                "color": "#73BF69",
                 "value": null
               },
               {
-                "color": "#F2994A",
-                "value": 0.31
+                "color": "#FADE2A",
+                "value": 0.3
               },
               {
-                "color": "#EB5757",
-                "value": 0.61
+                "color": "#FF780A",
+                "value": 0.6
+              },
+              {
+                "color": "#F2495C",
+                "value": 0.8
               }
             ]
           },
           "unit": "percentunit",
-          "decimals": 4,
-          "min": 0,
-          "max": 1
+          "decimals": 3,
+          "mappings": []
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
+        "h": 6,
         "w": 4,
         "x": 20,
         "y": 1
@@ -469,9 +510,12 @@
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
-          ]
+          ],
+          "fields": "",
+          "values": false
         },
-        "textMode": "auto"
+        "textMode": "value_and_name",
+        "wideLayout": true
       },
       "targets": [
         {
@@ -480,7 +524,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "expr": "max(rwa_aml_score_avg)",
-          "legendFormat": "max AML",
+          "legendFormat": "score",
           "refId": "A"
         }
       ],
@@ -493,7 +537,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 6
+        "y": 7
       },
       "id": 8,
       "title": "API Traffic Analytics",
@@ -513,16 +557,16 @@
             "drawStyle": "line",
             "lineInterpolation": "smooth",
             "lineWidth": 2,
-            "fillOpacity": 18,
-            "gradientMode": "opacity",
+            "fillOpacity": 22,
+            "gradientMode": "scheme",
             "showPoints": "never",
             "spanNulls": true,
             "stacking": {
               "group": "A",
-              "mode": "normal"
+              "mode": "none"
             },
             "axisBorderShow": false,
-            "axisLabel": "req / s",
+            "axisLabel": "req/s",
             "axisPlacement": "auto",
             "hideFrom": {
               "legend": false,
@@ -534,7 +578,8 @@
             },
             "thresholdsStyle": {
               "mode": "off"
-            }
+            },
+            "pointSize": 5
           },
           "mappings": [],
           "thresholds": {
@@ -547,7 +592,7 @@
             ]
           },
           "unit": "reqps",
-          "decimals": 2
+          "min": 0
         },
         "overrides": [
           {
@@ -559,7 +604,7 @@
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "#2D9CDB",
+                  "fixedColor": "#5794F2",
                   "mode": "fixed"
                 }
               }
@@ -574,7 +619,7 @@
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "#27AE60",
+                  "fixedColor": "#73BF69",
                   "mode": "fixed"
                 }
               }
@@ -589,7 +634,7 @@
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "#F2994A",
+                  "fixedColor": "#FF780A",
                   "mode": "fixed"
                 }
               }
@@ -604,7 +649,7 @@
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "#EB5757",
+                  "fixedColor": "#F2495C",
                   "mode": "fixed"
                 }
               }
@@ -619,7 +664,7 @@
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "#9B51E0",
+                  "fixedColor": "#B877D9",
                   "mode": "fixed"
                 }
               }
@@ -631,7 +676,7 @@
         "h": 9,
         "w": 15,
         "x": 0,
-        "y": 7
+        "y": 8
       },
       "id": 9,
       "options": {
@@ -661,7 +706,7 @@
           "refId": "A"
         }
       ],
-      "title": "API Throughput by HTTP Method (req/s, stacked)",
+      "title": "Throughput by HTTP Method (req/s)",
       "type": "timeseries"
     },
     {
@@ -694,7 +739,7 @@
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "#27AE60",
+                  "fixedColor": "#73BF69",
                   "mode": "fixed"
                 }
               }
@@ -709,7 +754,7 @@
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "#56CCF2",
+                  "fixedColor": "#19D3C5",
                   "mode": "fixed"
                 }
               }
@@ -724,7 +769,7 @@
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "#F2994A",
+                  "fixedColor": "#FF780A",
                   "mode": "fixed"
                 }
               }
@@ -739,7 +784,7 @@
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "#EB5757",
+                  "fixedColor": "#F2495C",
                   "mode": "fixed"
                 }
               }
@@ -751,30 +796,26 @@
         "h": 9,
         "w": 9,
         "x": 15,
-        "y": 7
+        "y": 8
       },
       "id": 10,
       "options": {
         "displayLabels": [
-          "name",
           "percent"
         ],
         "legend": {
-          "calcs": [
-            "sum"
-          ],
           "displayMode": "table",
           "placement": "right",
           "showLegend": true,
           "values": [
-            "percent",
-            "value"
+            "value",
+            "percent"
           ]
         },
         "pieType": "donut",
         "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "targets": [
@@ -797,7 +838,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 17
       },
       "id": 11,
       "title": "API Latency Analysis",
@@ -817,8 +858,8 @@
             "drawStyle": "line",
             "lineInterpolation": "smooth",
             "lineWidth": 2,
-            "fillOpacity": 0,
-            "gradientMode": "none",
+            "fillOpacity": 10,
+            "gradientMode": "opacity",
             "showPoints": "never",
             "spanNulls": true,
             "stacking": {
@@ -837,84 +878,82 @@
               "type": "linear"
             },
             "thresholdsStyle": {
-              "mode": "line+area"
-            }
+              "mode": "off"
+            },
+            "pointSize": 5
           },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "transparent",
+                "color": "green",
                 "value": null
-              },
-              {
-                "color": "rgba(242,73,92,0.08)",
-                "value": 500
               }
             ]
           },
           "unit": "ms",
-          "decimals": 0,
           "min": 0
         },
         "overrides": [
           {
             "matcher": {
-              "id": "byRegexp",
-              "options": "^p99.*"
+              "id": "byName",
+              "options": "p50"
             },
             "properties": [
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "#EB5757",
+                  "fixedColor": "#73BF69",
                   "mode": "fixed"
                 }
               },
               {
                 "id": "custom.lineWidth",
-                "value": 3
+                "value": 1
               }
             ]
           },
           {
             "matcher": {
-              "id": "byRegexp",
-              "options": "^p95.*"
+              "id": "byName",
+              "options": "p95"
             },
             "properties": [
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "#F2994A",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "^p50.*"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#27AE60",
+                  "fixedColor": "#FF780A",
                   "mode": "fixed"
                 }
               },
               {
-                "id": "custom.lineStyle",
+                "id": "custom.lineWidth",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "p99"
+            },
+            "properties": [
+              {
+                "id": "color",
                 "value": {
-                  "fill": "dash",
-                  "dash": [
-                    8,
-                    4
-                  ]
+                  "fixedColor": "#F2495C",
+                  "mode": "fixed"
                 }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 2
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 4
               }
             ]
           }
@@ -924,7 +963,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 17
+        "y": 18
       },
       "id": 12,
       "options": {
@@ -972,7 +1011,7 @@
           "refId": "C"
         }
       ],
-      "title": "API Response Time — p50 / p95 / p99 (red zone > 500 ms)",
+      "title": "API Response Time — p50 / p95 / p99",
       "type": "timeseries"
     },
     {
@@ -982,9 +1021,6 @@
       },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
           "custom": {
             "hideFrom": {
               "legend": false,
@@ -995,16 +1031,6 @@
               "log": 2,
               "type": "log"
             }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "transparent",
-                "value": null
-              }
-            ]
           }
         },
         "overrides": []
@@ -1013,16 +1039,15 @@
         "h": 9,
         "w": 7,
         "x": 12,
-        "y": 17
+        "y": 18
       },
       "id": 13,
       "options": {
         "calculate": false,
         "cellGap": 1,
-        "cellRadius": 0,
         "color": {
           "exponent": 0.5,
-          "fill": "#2D9CDB",
+          "fill": "#19D3C5",
           "mode": "scheme",
           "reverse": false,
           "scale": "exponential",
@@ -1043,11 +1068,13 @@
         },
         "tooltip": {
           "mode": "single",
-          "showColorScale": false,
-          "yHistogram": true
+          "showColorScale": true,
+          "yHistogram": false
         },
         "yAxis": {
           "axisPlacement": "left",
+          "decimals": 0,
+          "label": "bucket (s)",
           "reverse": false,
           "unit": "s"
         }
@@ -1059,12 +1086,11 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "expr": "sum by(le) (increase(http_request_duration_seconds_bucket[$interval]))",
-          "format": "heatmap",
           "legendFormat": "{{le}}",
           "refId": "A"
         }
       ],
-      "title": "API Latency Distribution (heatmap — Turbo scale, log Y)",
+      "title": "Latency Distribution Heatmap (Turbo)",
       "type": "heatmap"
     },
     {
@@ -1081,23 +1107,28 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#27AE60",
+                "color": "#73BF69",
                 "value": null
               },
               {
-                "color": "#F2994A",
-                "value": 500
+                "color": "#FADE2A",
+                "value": 100
               },
               {
-                "color": "#EB5757",
-                "value": 1500
+                "color": "#FF780A",
+                "value": 300
+              },
+              {
+                "color": "#F2495C",
+                "value": 600
               }
             ]
           },
           "unit": "ms",
           "decimals": 0,
           "min": 0,
-          "max": 3000
+          "max": 1000,
+          "mappings": []
         },
         "overrides": []
       },
@@ -1105,7 +1136,7 @@
         "h": 9,
         "w": 5,
         "x": 19,
-        "y": 17
+        "y": 18
       },
       "id": 14,
       "options": {
@@ -1115,11 +1146,14 @@
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
-          ]
+          ],
+          "fields": "",
+          "values": false
         },
-        "showThresholdLabels": true,
+        "showThresholdLabels": false,
         "showThresholdMarkers": true,
-        "sizing": "auto"
+        "sizing": "auto",
+        "text": {}
       },
       "targets": [
         {
@@ -1128,11 +1162,11 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "expr": "histogram_quantile(0.95, sum by(le) (rate(http_request_duration_seconds_bucket[$interval]))) * 1000",
-          "legendFormat": "p95 overall",
+          "legendFormat": "p95 latency",
           "refId": "A"
         }
       ],
-      "title": "API p95 Latency (ms)",
+      "title": "p95 Latency Gauge (ms)",
       "type": "gauge"
     },
     {
@@ -1141,7 +1175,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 26
+        "y": 27
       },
       "id": 15,
       "title": "Compliance, AML & Regulatory Risk",
@@ -1155,128 +1189,70 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "continuous-GrYlRd"
           },
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "#27AE60",
+                "color": "#73BF69",
                 "value": null
               },
               {
-                "color": "#F2994A",
-                "value": 0.31
+                "color": "#FADE2A",
+                "value": 0.3
               },
               {
-                "color": "#EB5757",
-                "value": 0.61
+                "color": "#FF780A",
+                "value": 0.6
+              },
+              {
+                "color": "#F2495C",
+                "value": 0.8
               }
             ]
           },
           "unit": "percentunit",
-          "decimals": 4,
+          "decimals": 3,
           "min": 0,
-          "max": 1
+          "max": 1,
+          "mappings": []
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "TRES_FAIBLE"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#56CCF2",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "FAIBLE"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#27AE60",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "MOYEN"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#F2994A",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "ELEVE"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#E05F15",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "CRITIQUE"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#EB5757",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 9,
         "w": 7,
         "x": 0,
-        "y": 27
+        "y": 28
       },
       "id": 16,
       "options": {
-        "displayMode": "lcd",
-        "minVizHeight": 10,
-        "minVizWidth": 0,
+        "displayMode": "gradient",
+        "fillOpacity": 80,
+        "gradientMode": "scheme",
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "minVizHeight": 16,
+        "minVizWidth": 8,
         "namePlacement": "auto",
         "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
-          ]
+          ],
+          "fields": "",
+          "values": false
         },
         "showUnfilled": true,
         "sizing": "auto",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
         "valueMode": "color"
       },
       "targets": [
@@ -1290,7 +1266,7 @@
           "refId": "A"
         }
       ],
-      "title": "AML Score by Risk Category (LCD)",
+      "title": "AML Score by Risk Category",
       "type": "bargauge"
     },
     {
@@ -1323,7 +1299,7 @@
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "#27AE60",
+                  "fixedColor": "#73BF69",
                   "mode": "fixed"
                 }
               }
@@ -1347,13 +1323,13 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "EN_EMISSION"
+              "options": "REMBOURSE"
             },
             "properties": [
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "#9B51E0",
+                  "fixedColor": "#19D3C5",
                   "mode": "fixed"
                 }
               }
@@ -1362,13 +1338,28 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "REMBOURSE"
+              "options": "EN_ATTENTE"
             },
             "properties": [
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "#56CCF2",
+                  "fixedColor": "#FADE2A",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "REJETE"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#F2495C",
                   "mode": "fixed"
                 }
               }
@@ -1380,7 +1371,7 @@
         "h": 9,
         "w": 8,
         "x": 7,
-        "y": 27
+        "y": 28
       },
       "id": 17,
       "options": {
@@ -1389,9 +1380,6 @@
           "percent"
         ],
         "legend": {
-          "calcs": [
-            "sum"
-          ],
           "displayMode": "table",
           "placement": "right",
           "showLegend": true,
@@ -1400,10 +1388,10 @@
             "percent"
           ]
         },
-        "pieType": "pie",
+        "pieType": "donut",
         "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "targets": [
@@ -1434,8 +1422,8 @@
             "drawStyle": "line",
             "lineInterpolation": "smooth",
             "lineWidth": 2,
-            "fillOpacity": 20,
-            "gradientMode": "opacity",
+            "fillOpacity": 25,
+            "gradientMode": "scheme",
             "showPoints": "never",
             "spanNulls": true,
             "stacking": {
@@ -1443,7 +1431,7 @@
               "mode": "normal"
             },
             "axisBorderShow": false,
-            "axisLabel": "blocks / min",
+            "axisLabel": "blocks/min",
             "axisPlacement": "auto",
             "hideFrom": {
               "legend": false,
@@ -1455,7 +1443,8 @@
             },
             "thresholdsStyle": {
               "mode": "off"
-            }
+            },
+            "pointSize": 5
           },
           "mappings": [],
           "thresholds": {
@@ -1468,69 +1457,22 @@
             ]
           },
           "unit": "short",
-          "decimals": 2
+          "min": 0
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "aml_screening"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#EB5757",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "kyc_expired"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#F2994A",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "mica_breach"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#9B51E0",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 9,
         "w": 9,
         "x": 15,
-        "y": 27
+        "y": 28
       },
       "id": 18,
       "options": {
         "legend": {
           "calcs": [
             "lastNotNull",
-            "sum",
-            "max"
+            "sum"
           ],
           "displayMode": "table",
           "placement": "bottom",
@@ -1552,7 +1494,7 @@
           "refId": "A"
         }
       ],
-      "title": "Compliance Block Rate by Reason (stacked, per min)",
+      "title": "Compliance Blocks by Reason (per min, stacked)",
       "type": "timeseries"
     },
     {
@@ -1561,7 +1503,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 36
+        "y": 37
       },
       "id": 19,
       "title": "Circuit Breakers & Error Analysis",
@@ -1584,20 +1526,22 @@
               "tooltip": false,
               "viz": false
             },
-            "lineWidth": 0
+            "insertNulls": false,
+            "lineWidth": 0,
+            "spanNulls": false
           },
           "mappings": [
             {
               "options": {
                 "0": {
-                  "color": "#27AE60",
+                  "color": "#F2495C",
                   "index": 0,
-                  "text": "CLOSED"
+                  "text": "OPEN"
                 },
                 "1": {
-                  "color": "#EB5757",
+                  "color": "#73BF69",
                   "index": 1,
-                  "text": "OPEN"
+                  "text": "CLOSED"
                 }
               },
               "type": "value"
@@ -1607,11 +1551,11 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#27AE60",
+                "color": "#F2495C",
                 "value": null
               },
               {
-                "color": "#EB5757",
+                "color": "#73BF69",
                 "value": 1
               }
             ]
@@ -1623,7 +1567,7 @@
         "h": 7,
         "w": 15,
         "x": 0,
-        "y": 37
+        "y": 38
       },
       "id": 20,
       "options": {
@@ -1634,8 +1578,8 @@
           "showLegend": true
         },
         "mergeValues": true,
-        "rowHeight": 0.8,
-        "showValue": "always",
+        "rowHeight": 0.9,
+        "showValue": "auto",
         "tooltip": {
           "mode": "single",
           "sort": "none"
@@ -1652,7 +1596,7 @@
           "refId": "A"
         }
       ],
-      "title": "Circuit Breaker State by Component (CLOSED = healthy)",
+      "title": "Circuit Breaker State (CLOSED = Healthy)",
       "type": "state-timeline"
     },
     {
@@ -1669,16 +1613,16 @@
             "drawStyle": "line",
             "lineInterpolation": "smooth",
             "lineWidth": 2,
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "showPoints": "auto",
+            "fillOpacity": 20,
+            "gradientMode": "opacity",
+            "showPoints": "never",
             "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "none"
             },
             "axisBorderShow": false,
-            "axisLabel": "errors / s",
+            "axisLabel": "errors/s",
             "axisPlacement": "auto",
             "hideFrom": {
               "legend": false,
@@ -1690,7 +1634,8 @@
             },
             "thresholdsStyle": {
               "mode": "off"
-            }
+            },
+            "pointSize": 5
           },
           "mappings": [],
           "thresholds": {
@@ -1703,7 +1648,6 @@
             ]
           },
           "unit": "reqps",
-          "decimals": 3,
           "min": 0
         },
         "overrides": []
@@ -1712,13 +1656,13 @@
         "h": 7,
         "w": 5,
         "x": 15,
-        "y": 37
+        "y": 38
       },
       "id": 21,
       "options": {
         "legend": {
           "calcs": [
-            "sum",
+            "lastNotNull",
             "max"
           ],
           "displayMode": "table",
@@ -1752,40 +1696,32 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "palette-classic"
           },
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "#27AE60",
+                "color": "#5794F2",
                 "value": null
-              },
-              {
-                "color": "#F2994A",
-                "value": 10
-              },
-              {
-                "color": "#EB5757",
-                "value": 100
               }
             ]
           },
           "unit": "short",
           "decimals": 0,
-          "min": 0
+          "mappings": []
         },
         "overrides": [
           {
             "matcher": {
-              "id": "byRegexp",
-              "options": ".*5xx.*"
+              "id": "byName",
+              "options": "2xx"
             },
             "properties": [
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "#EB5757",
+                  "fixedColor": "#73BF69",
                   "mode": "fixed"
                 }
               }
@@ -1793,14 +1729,29 @@
           },
           {
             "matcher": {
-              "id": "byRegexp",
-              "options": ".*4xx.*"
+              "id": "byName",
+              "options": "4xx"
             },
             "properties": [
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "#F2994A",
+                  "fixedColor": "#FF780A",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "5xx"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#F2495C",
                   "mode": "fixed"
                 }
               }
@@ -1812,22 +1763,35 @@
         "h": 7,
         "w": 4,
         "x": 20,
-        "y": 37
+        "y": 38
       },
       "id": 22,
       "options": {
         "displayMode": "gradient",
-        "minVizHeight": 10,
-        "minVizWidth": 0,
+        "fillOpacity": 80,
+        "gradientMode": "scheme",
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "minVizHeight": 16,
+        "minVizWidth": 8,
         "namePlacement": "auto",
         "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
-            "sum"
-          ]
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
         },
         "showUnfilled": true,
         "sizing": "auto",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
         "valueMode": "color"
       },
       "targets": [
@@ -1841,7 +1805,7 @@
           "refId": "A"
         }
       ],
-      "title": "Request Totals by Status (24h)",
+      "title": "Request Totals by Status (24 h)",
       "type": "bargauge"
     },
     {
@@ -1850,7 +1814,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 44
+        "y": 45
       },
       "id": 23,
       "title": "Async Task Queue",
@@ -1870,8 +1834,8 @@
             "drawStyle": "line",
             "lineInterpolation": "smooth",
             "lineWidth": 2,
-            "fillOpacity": 8,
-            "gradientMode": "none",
+            "fillOpacity": 15,
+            "gradientMode": "scheme",
             "showPoints": "never",
             "spanNulls": true,
             "stacking": {
@@ -1879,7 +1843,7 @@
               "mode": "none"
             },
             "axisBorderShow": false,
-            "axisLabel": "tasks / min",
+            "axisLabel": "tasks/min",
             "axisPlacement": "auto",
             "hideFrom": {
               "legend": false,
@@ -1891,7 +1855,8 @@
             },
             "thresholdsStyle": {
               "mode": "off"
-            }
+            },
+            "pointSize": 5
           },
           "mappings": [],
           "thresholds": {
@@ -1904,66 +1869,15 @@
             ]
           },
           "unit": "short",
-          "decimals": 2,
           "min": 0
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": ".*SUCCESS.*"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#27AE60",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": ".*FAILURE.*"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#EB5757",
-                  "mode": "fixed"
-                }
-              },
-              {
-                "id": "custom.lineWidth",
-                "value": 3
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": ".*RETRY.*"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#F2994A",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 8,
         "w": 14,
         "x": 0,
-        "y": 45
+        "y": 46
       },
       "id": 24,
       "options": {
@@ -1989,7 +1903,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "expr": "sum by(task_name, status) (rate(rwa_celery_tasks_total[$interval])) * 60",
-          "legendFormat": "{{task_name}}  [{{status}}]",
+          "legendFormat": "{{task_name}} · {{status}}",
           "refId": "A"
         }
       ],
@@ -2004,82 +1918,56 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "palette-classic"
           },
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "#27AE60",
+                "color": "#5794F2",
                 "value": null
-              },
-              {
-                "color": "#F2994A",
-                "value": 20
-              },
-              {
-                "color": "#EB5757",
-                "value": 100
               }
             ]
           },
           "unit": "short",
           "decimals": 0,
-          "min": 0
+          "mappings": []
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": ".*FAILURE.*"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#EB5757",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": ".*SUCCESS.*"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#27AE60",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 8,
         "w": 10,
         "x": 14,
-        "y": 45
+        "y": 46
       },
       "id": 25,
       "options": {
-        "displayMode": "lcd",
-        "minVizHeight": 10,
-        "minVizWidth": 0,
+        "displayMode": "gradient",
+        "fillOpacity": 80,
+        "gradientMode": "scheme",
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "minVizHeight": 16,
+        "minVizWidth": 8,
         "namePlacement": "auto",
         "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
-            "sum"
-          ]
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
         },
         "showUnfilled": true,
         "sizing": "auto",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
         "valueMode": "color"
       },
       "targets": [
@@ -2089,11 +1977,11 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "expr": "sum by(task_name, status) (increase(rwa_celery_tasks_total[24h]))",
-          "legendFormat": "{{task_name}}  [{{status}}]",
+          "legendFormat": "{{task_name}} · {{status}}",
           "refId": "A"
         }
       ],
-      "title": "24h Task Totals (LCD)",
+      "title": "24 h Task Totals",
       "type": "bargauge"
     },
     {
@@ -2102,7 +1990,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 53
+        "y": 54
       },
       "id": 26,
       "title": "Infrastructure Availability",
@@ -2119,25 +2007,27 @@
             "mode": "thresholds"
           },
           "custom": {
-            "fillOpacity": 85,
+            "fillOpacity": 80,
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
             },
-            "lineWidth": 0
+            "insertNulls": false,
+            "lineWidth": 0,
+            "spanNulls": false
           },
           "mappings": [
             {
               "options": {
                 "0": {
-                  "color": "#EB5757",
-                  "index": 1,
+                  "color": "#F2495C",
+                  "index": 0,
                   "text": "DOWN"
                 },
                 "1": {
-                  "color": "#27AE60",
-                  "index": 0,
+                  "color": "#73BF69",
+                  "index": 1,
                   "text": "UP"
                 }
               },
@@ -2148,11 +2038,11 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#EB5757",
+                "color": "#F2495C",
                 "value": null
               },
               {
-                "color": "#27AE60",
+                "color": "#73BF69",
                 "value": 1
               }
             ]
@@ -2164,7 +2054,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 54
+        "y": 55
       },
       "id": 27,
       "options": {
@@ -2175,8 +2065,8 @@
           "showLegend": true
         },
         "mergeValues": true,
-        "rowHeight": 0.75,
-        "showValue": "always",
+        "rowHeight": 0.9,
+        "showValue": "auto",
         "tooltip": {
           "mode": "single",
           "sort": "none"
@@ -2189,7 +2079,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "expr": "up{job=\"rwa-api\"}",
-          "legendFormat": "RWA API",
+          "legendFormat": "API",
           "refId": "A"
         },
         {
@@ -2216,7 +2106,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "expr": "up{job=\"celery\"}",
-          "legendFormat": "Celery Worker",
+          "legendFormat": "Celery",
           "refId": "D"
         },
         {
@@ -2225,7 +2115,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "expr": "up{job=\"fabric-peer-bnp\"}",
-          "legendFormat": "Fabric — BNP Peer",
+          "legendFormat": "Fabric BNP",
           "refId": "E"
         },
         {
@@ -2234,7 +2124,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "expr": "up{job=\"fabric-peer-amf\"}",
-          "legendFormat": "Fabric — AMF Peer",
+          "legendFormat": "Fabric AMF",
           "refId": "F"
         },
         {
@@ -2243,7 +2133,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "expr": "up{job=\"couchdb-bnp\"}",
-          "legendFormat": "CouchDB — BNP",
+          "legendFormat": "CouchDB BNP",
           "refId": "G"
         },
         {
@@ -2252,11 +2142,11 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "expr": "up{job=\"couchdb-amf\"}",
-          "legendFormat": "CouchDB — AMF",
+          "legendFormat": "CouchDB AMF",
           "refId": "H"
         }
       ],
-      "title": "Service Health Timeline (8 components)",
+      "title": "Service Health Timeline",
       "type": "state-timeline"
     },
     {
@@ -2267,29 +2157,34 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "continuous-GrYlRd"
           },
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "#EB5757",
+                "color": "#F2495C",
                 "value": null
               },
               {
-                "color": "#F2994A",
-                "value": 0.7
+                "color": "#FF780A",
+                "value": 0.8
               },
               {
-                "color": "#27AE60",
+                "color": "#FADE2A",
                 "value": 0.95
+              },
+              {
+                "color": "#73BF69",
+                "value": 0.99
               }
             ]
           },
           "unit": "percentunit",
           "decimals": 2,
           "min": 0,
-          "max": 1
+          "max": 1,
+          "mappings": []
         },
         "overrides": []
       },
@@ -2297,22 +2192,35 @@
         "h": 4,
         "w": 16,
         "x": 0,
-        "y": 59
+        "y": 60
       },
       "id": 28,
       "options": {
         "displayMode": "gradient",
-        "minVizHeight": 10,
-        "minVizWidth": 0,
+        "fillOpacity": 80,
+        "gradientMode": "scheme",
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "minVizHeight": 16,
+        "minVizWidth": 8,
         "namePlacement": "auto",
         "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
-            "mean"
-          ]
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
         },
         "showUnfilled": true,
         "sizing": "auto",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
         "valueMode": "color"
       },
       "targets": [
@@ -2322,7 +2230,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "expr": "avg_over_time(up{job=\"rwa-api\"}[1h])",
-          "legendFormat": "RWA API",
+          "legendFormat": "API",
           "refId": "A"
         },
         {
@@ -2349,7 +2257,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "expr": "avg_over_time(up{job=\"celery\"}[1h])",
-          "legendFormat": "Celery Worker",
+          "legendFormat": "Celery",
           "refId": "D"
         },
         {
@@ -2358,7 +2266,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "expr": "avg_over_time(up{job=\"fabric-peer-bnp\"}[1h])",
-          "legendFormat": "Fabric — BNP Peer",
+          "legendFormat": "Fabric BNP",
           "refId": "E"
         },
         {
@@ -2367,7 +2275,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "expr": "avg_over_time(up{job=\"fabric-peer-amf\"}[1h])",
-          "legendFormat": "Fabric — AMF Peer",
+          "legendFormat": "Fabric AMF",
           "refId": "F"
         }
       ],
@@ -2388,21 +2296,26 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#EB5757",
+                "color": "#F2495C",
                 "value": null
               },
               {
-                "color": "#F2994A",
-                "value": 0.7
+                "color": "#FF780A",
+                "value": 0.8
               },
               {
-                "color": "#27AE60",
+                "color": "#FADE2A",
                 "value": 0.95
+              },
+              {
+                "color": "#73BF69",
+                "value": 0.99
               }
             ]
           },
           "unit": "percentunit",
-          "decimals": 2
+          "decimals": 3,
+          "mappings": []
         },
         "overrides": []
       },
@@ -2410,7 +2323,7 @@
         "h": 4,
         "w": 4,
         "x": 16,
-        "y": 59
+        "y": 60
       },
       "id": 29,
       "options": {
@@ -2421,9 +2334,12 @@
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
-          ]
+          ],
+          "fields": "",
+          "values": false
         },
-        "textMode": "auto"
+        "textMode": "value_and_name",
+        "wideLayout": true
       },
       "targets": [
         {
@@ -2432,7 +2348,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "expr": "avg(up{job=~\"rwa-api|postgres|redis|celery|fabric-peer-bnp|fabric-peer-amf|couchdb-bnp|couchdb-amf\"})",
-          "legendFormat": "overall",
+          "legendFormat": "uptime",
           "refId": "A"
         }
       ],
@@ -2453,33 +2369,26 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#27AE60",
+                "color": "#73BF69",
                 "value": null
               },
               {
-                "color": "#F2994A",
+                "color": "#FADE2A",
                 "value": 1
               },
               {
-                "color": "#EB5757",
+                "color": "#FF780A",
+                "value": 2
+              },
+              {
+                "color": "#F2495C",
                 "value": 3
               }
             ]
           },
           "unit": "short",
           "decimals": 0,
-          "mappings": [
-            {
-              "options": {
-                "0": {
-                  "color": "#27AE60",
-                  "index": 0,
-                  "text": "ALL OK"
-                }
-              },
-              "type": "value"
-            }
-          ]
+          "mappings": []
         },
         "overrides": []
       },
@@ -2487,7 +2396,7 @@
         "h": 4,
         "w": 4,
         "x": 20,
-        "y": 59
+        "y": 60
       },
       "id": 30,
       "options": {
@@ -2498,9 +2407,12 @@
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
-          ]
+          ],
+          "fields": "",
+          "values": false
         },
-        "textMode": "auto"
+        "textMode": "value_and_name",
+        "wideLayout": true
       },
       "targets": [
         {
@@ -2509,7 +2421,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "expr": "count(up{job=~\"rwa-api|postgres|redis|celery|fabric-peer-bnp|fabric-peer-amf|couchdb-bnp|couchdb-amf\"} == 0) or vector(0)",
-          "legendFormat": "degraded",
+          "legendFormat": "services",
           "refId": "A"
         }
       ],
@@ -2522,7 +2434,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 63
+        "y": 64
       },
       "id": 31,
       "title": "Blockchain & Data Layer",
@@ -2542,7 +2454,7 @@
             "drawStyle": "line",
             "lineInterpolation": "smooth",
             "lineWidth": 2,
-            "fillOpacity": 10,
+            "fillOpacity": 20,
             "gradientMode": "opacity",
             "showPoints": "never",
             "spanNulls": true,
@@ -2563,7 +2475,8 @@
             },
             "thresholdsStyle": {
               "mode": "off"
-            }
+            },
+            "pointSize": 5
           },
           "mappings": [],
           "thresholds": {
@@ -2576,8 +2489,8 @@
             ]
           },
           "unit": "short",
-          "decimals": 0,
-          "min": 0
+          "min": 0,
+          "decimals": 0
         },
         "overrides": [
           {
@@ -2604,7 +2517,7 @@
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "#9B51E0",
+                  "fixedColor": "#B877D9",
                   "mode": "fixed"
                 }
               }
@@ -2616,7 +2529,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 64
+        "y": 65
       },
       "id": 32,
       "options": {
@@ -2671,8 +2584,8 @@
             "drawStyle": "line",
             "lineInterpolation": "smooth",
             "lineWidth": 2,
-            "fillOpacity": 8,
-            "gradientMode": "none",
+            "fillOpacity": 15,
+            "gradientMode": "scheme",
             "showPoints": "never",
             "spanNulls": true,
             "stacking": {
@@ -2680,7 +2593,7 @@
               "mode": "none"
             },
             "axisBorderShow": false,
-            "axisLabel": "tuples / s",
+            "axisLabel": "tuples/s",
             "axisPlacement": "auto",
             "hideFrom": {
               "legend": false,
@@ -2692,7 +2605,8 @@
             },
             "thresholdsStyle": {
               "mode": "off"
-            }
+            },
+            "pointSize": 5
           },
           "mappings": [],
           "thresholds": {
@@ -2705,7 +2619,6 @@
             ]
           },
           "unit": "reqps",
-          "decimals": 2,
           "min": 0
         },
         "overrides": [
@@ -2718,7 +2631,7 @@
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "#2D9CDB",
+                  "fixedColor": "#5794F2",
                   "mode": "fixed"
                 }
               }
@@ -2733,7 +2646,7 @@
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "#27AE60",
+                  "fixedColor": "#73BF69",
                   "mode": "fixed"
                 }
               }
@@ -2748,7 +2661,7 @@
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "#F2994A",
+                  "fixedColor": "#FF780A",
                   "mode": "fixed"
                 }
               }
@@ -2763,7 +2676,7 @@
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "#EB5757",
+                  "fixedColor": "#F2495C",
                   "mode": "fixed"
                 }
               }
@@ -2775,7 +2688,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 64
+        "y": 65
       },
       "id": 33,
       "options": {
@@ -2848,23 +2761,22 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#27AE60",
+                "color": "#73BF69",
                 "value": null
               },
               {
-                "color": "#F2994A",
+                "color": "#FADE2A",
                 "value": 0.7
               },
               {
-                "color": "#EB5757",
+                "color": "#F2495C",
                 "value": 0.9
               }
             ]
           },
           "unit": "percentunit",
           "decimals": 2,
-          "min": 0,
-          "max": 1
+          "mappings": []
         },
         "overrides": []
       },
@@ -2872,7 +2784,7 @@
         "h": 4,
         "w": 4,
         "x": 16,
-        "y": 64
+        "y": 65
       },
       "id": 34,
       "options": {
@@ -2883,9 +2795,12 @@
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
-          ]
+          ],
+          "fields": "",
+          "values": false
         },
-        "textMode": "auto"
+        "textMode": "value_and_name",
+        "wideLayout": true
       },
       "targets": [
         {
@@ -2894,7 +2809,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "expr": "redis_memory_used_bytes / redis_memory_max_bytes",
-          "legendFormat": "used %",
+          "legendFormat": "Redis Memory Usage",
           "refId": "A"
         }
       ],
@@ -2915,23 +2830,22 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#EB5757",
+                "color": "#F2495C",
                 "value": null
               },
               {
-                "color": "#F2994A",
+                "color": "#FADE2A",
                 "value": 0.7
               },
               {
-                "color": "#27AE60",
+                "color": "#73BF69",
                 "value": 0.9
               }
             ]
           },
           "unit": "percentunit",
           "decimals": 2,
-          "min": 0,
-          "max": 1
+          "mappings": []
         },
         "overrides": []
       },
@@ -2939,7 +2853,7 @@
         "h": 4,
         "w": 4,
         "x": 20,
-        "y": 64
+        "y": 65
       },
       "id": 35,
       "options": {
@@ -2950,9 +2864,12 @@
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
-          ]
+          ],
+          "fields": "",
+          "values": false
         },
-        "textMode": "auto"
+        "textMode": "value_and_name",
+        "wideLayout": true
       },
       "targets": [
         {
@@ -2961,7 +2878,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "expr": "redis_keyspace_hits_total / (redis_keyspace_hits_total + redis_keyspace_misses_total)",
-          "legendFormat": "hit rate",
+          "legendFormat": "Redis Cache Hit Rate",
           "refId": "A"
         }
       ],
@@ -2982,22 +2899,22 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#27AE60",
+                "color": "#73BF69",
                 "value": null
               },
               {
-                "color": "#F2994A",
+                "color": "#FADE2A",
                 "value": 20
               },
               {
-                "color": "#EB5757",
+                "color": "#F2495C",
                 "value": 80
               }
             ]
           },
           "unit": "short",
           "decimals": 0,
-          "min": 0
+          "mappings": []
         },
         "overrides": []
       },
@@ -3005,7 +2922,7 @@
         "h": 4,
         "w": 4,
         "x": 16,
-        "y": 68
+        "y": 69
       },
       "id": 36,
       "options": {
@@ -3016,9 +2933,12 @@
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
-          ]
+          ],
+          "fields": "",
+          "values": false
         },
-        "textMode": "auto"
+        "textMode": "value_and_name",
+        "wideLayout": true
       },
       "targets": [
         {
@@ -3027,7 +2947,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "expr": "redis_connected_clients",
-          "legendFormat": "clients",
+          "legendFormat": "Redis Connected Clients",
           "refId": "A"
         }
       ],
@@ -3048,22 +2968,22 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#27AE60",
+                "color": "#73BF69",
                 "value": null
               },
               {
-                "color": "#F2994A",
+                "color": "#FADE2A",
                 "value": 50
               },
               {
-                "color": "#EB5757",
+                "color": "#F2495C",
                 "value": 90
               }
             ]
           },
           "unit": "short",
           "decimals": 0,
-          "min": 0
+          "mappings": []
         },
         "overrides": []
       },
@@ -3071,7 +2991,7 @@
         "h": 4,
         "w": 4,
         "x": 20,
-        "y": 68
+        "y": 69
       },
       "id": 37,
       "options": {
@@ -3082,9 +3002,12 @@
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
-          ]
+          ],
+          "fields": "",
+          "values": false
         },
-        "textMode": "auto"
+        "textMode": "value_and_name",
+        "wideLayout": true
       },
       "targets": [
         {
@@ -3093,11 +3016,11 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "expr": "sum(pg_stat_database_numbackends{datname=~\"rwadb.*\"})",
-          "legendFormat": "connections",
+          "legendFormat": "PostgreSQL Connections",
           "refId": "A"
         }
       ],
-      "title": "PostgreSQL Active Connections",
+      "title": "PostgreSQL Connections",
       "type": "stat"
     }
   ],
@@ -3113,16 +3036,15 @@
   "templating": {
     "list": [
       {
-        "auto": true,
-        "auto_count": 30,
-        "auto_min": "10s",
         "current": {
           "selected": false,
           "text": "1m",
           "value": "1m"
         },
         "hide": 0,
+        "includeAll": false,
         "label": "Interval",
+        "multi": false,
         "name": "interval",
         "options": [
           {
@@ -3152,9 +3074,9 @@
           }
         ],
         "query": "30s,1m,5m,15m,1h",
-        "refresh": 2,
+        "queryValue": "",
         "skipUrlSync": false,
-        "type": "interval"
+        "type": "custom"
       }
     ]
   },
@@ -3162,19 +3084,10 @@
     "from": "now-1h",
     "to": "now"
   },
-  "timepicker": {
-    "refresh_intervals": [
-      "10s",
-      "30s",
-      "1m",
-      "5m",
-      "15m",
-      "1h"
-    ]
-  },
+  "timepicker": {},
   "timezone": "Europe/Paris",
   "title": "RWA Platform — Operations Center",
   "uid": "rwa-ops-professional",
-  "version": 3,
-  "weekStart": "monday"
+  "version": 4,
+  "weekStart": ""
 }
