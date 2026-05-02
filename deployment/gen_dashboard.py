@@ -2,7 +2,7 @@
 """Generate the modernised RWA Operations Center Grafana dashboard."""
 import json
 
-DS  = "${DS_PROMETHEUS}"
+DS  = "ffgx1hbr25a0wc"   # Prometheus datasource UID on 10.10.10.150
 OUT = "deployment/monitoring/grafana_dashboard.json"
 
 # ─── Colour palette ───────────────────────────────────────────────────────────

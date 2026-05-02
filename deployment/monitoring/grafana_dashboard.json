@@ -104,7 +104,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "ffgx1hbr25a0wc"
       },
       "fieldConfig": {
         "defaults": {
@@ -160,7 +160,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "sum(rate(http_requests_total[$interval]))",
           "legendFormat": "req/s",
@@ -173,7 +173,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "ffgx1hbr25a0wc"
       },
       "fieldConfig": {
         "defaults": {
@@ -229,7 +229,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "rwa_assets_by_status{status=\"ACTIF\"}",
           "legendFormat": "assets",
@@ -242,7 +242,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "ffgx1hbr25a0wc"
       },
       "fieldConfig": {
         "defaults": {
@@ -302,7 +302,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "histogram_quantile(0.95, sum by(le) (rate(http_request_duration_seconds_bucket[$interval]))) * 1000",
           "legendFormat": "p95 ms",
@@ -315,7 +315,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "ffgx1hbr25a0wc"
       },
       "fieldConfig": {
         "defaults": {
@@ -375,7 +375,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "sum(rate(http_requests_total{status=\"5xx\"}[$interval])) / sum(rate(http_requests_total[$interval])) * 100",
           "legendFormat": "%",
@@ -388,7 +388,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "ffgx1hbr25a0wc"
       },
       "fieldConfig": {
         "defaults": {
@@ -448,7 +448,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "rwa_kyc_expiring_count",
           "legendFormat": "users",
@@ -461,7 +461,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "ffgx1hbr25a0wc"
       },
       "fieldConfig": {
         "defaults": {
@@ -521,7 +521,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "max(rwa_aml_score_avg)",
           "legendFormat": "score",
@@ -546,7 +546,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "ffgx1hbr25a0wc"
       },
       "fieldConfig": {
         "defaults": {
@@ -699,7 +699,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "sum by(method) (rate(http_requests_total[$interval]))",
           "legendFormat": "{{method}}",
@@ -712,7 +712,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "ffgx1hbr25a0wc"
       },
       "fieldConfig": {
         "defaults": {
@@ -822,7 +822,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "sum by(status) (increase(http_requests_total[$interval]))",
           "legendFormat": "{{status}}",
@@ -847,7 +847,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "ffgx1hbr25a0wc"
       },
       "fieldConfig": {
         "defaults": {
@@ -986,7 +986,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "histogram_quantile(0.50, sum by(le) (rate(http_request_duration_seconds_bucket[$interval]))) * 1000",
           "legendFormat": "p50",
@@ -995,7 +995,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "histogram_quantile(0.95, sum by(le) (rate(http_request_duration_seconds_bucket[$interval]))) * 1000",
           "legendFormat": "p95",
@@ -1004,7 +1004,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "histogram_quantile(0.99, sum by(le) (rate(http_request_duration_seconds_bucket[$interval]))) * 1000",
           "legendFormat": "p99",
@@ -1017,7 +1017,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "ffgx1hbr25a0wc"
       },
       "fieldConfig": {
         "defaults": {
@@ -1083,7 +1083,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "sum by(le) (increase(http_request_duration_seconds_bucket[$interval]))",
           "legendFormat": "{{le}}",
@@ -1096,7 +1096,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "ffgx1hbr25a0wc"
       },
       "fieldConfig": {
         "defaults": {
@@ -1159,7 +1159,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "histogram_quantile(0.95, sum by(le) (rate(http_request_duration_seconds_bucket[$interval]))) * 1000",
           "legendFormat": "p95 latency",
@@ -1184,7 +1184,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "ffgx1hbr25a0wc"
       },
       "fieldConfig": {
         "defaults": {
@@ -1259,7 +1259,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "rwa_aml_score_avg",
           "legendFormat": "{{risk_category}}",
@@ -1272,7 +1272,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "ffgx1hbr25a0wc"
       },
       "fieldConfig": {
         "defaults": {
@@ -1398,7 +1398,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "rwa_assets_by_status",
           "legendFormat": "{{status}}",
@@ -1411,7 +1411,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "ffgx1hbr25a0wc"
       },
       "fieldConfig": {
         "defaults": {
@@ -1487,7 +1487,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "sum by(blocked_by) (rate(rwa_compliance_blocks_total[$interval])) * 60",
           "legendFormat": "{{blocked_by}}",
@@ -1512,7 +1512,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "ffgx1hbr25a0wc"
       },
       "fieldConfig": {
         "defaults": {
@@ -1589,7 +1589,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "rwa_circuit_breaker_state",
           "legendFormat": "{{component}}",
@@ -1602,7 +1602,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "ffgx1hbr25a0wc"
       },
       "fieldConfig": {
         "defaults": {
@@ -1678,7 +1678,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "sum by(handler) (rate(http_requests_total{status=\"5xx\"}[$interval]))",
           "legendFormat": "{{handler}}",
@@ -1691,7 +1691,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "ffgx1hbr25a0wc"
       },
       "fieldConfig": {
         "defaults": {
@@ -1798,7 +1798,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "sum by(status) (increase(http_requests_total[24h]))",
           "legendFormat": "{{status}}",
@@ -1823,7 +1823,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "ffgx1hbr25a0wc"
       },
       "fieldConfig": {
         "defaults": {
@@ -1900,7 +1900,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "sum by(task_name, status) (rate(rwa_celery_tasks_total[$interval])) * 60",
           "legendFormat": "{{task_name}} · {{status}}",
@@ -1913,7 +1913,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "ffgx1hbr25a0wc"
       },
       "fieldConfig": {
         "defaults": {
@@ -1974,7 +1974,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "sum by(task_name, status) (increase(rwa_celery_tasks_total[24h]))",
           "legendFormat": "{{task_name}} · {{status}}",
@@ -1999,7 +1999,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "ffgx1hbr25a0wc"
       },
       "fieldConfig": {
         "defaults": {
@@ -2076,7 +2076,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "up{job=\"rwa-api\"}",
           "legendFormat": "API",
@@ -2085,7 +2085,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "up{job=\"postgres\"}",
           "legendFormat": "PostgreSQL",
@@ -2094,7 +2094,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "up{job=\"redis\"}",
           "legendFormat": "Redis",
@@ -2103,7 +2103,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "up{job=\"celery\"}",
           "legendFormat": "Celery",
@@ -2112,7 +2112,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "up{job=\"fabric-peer-bnp\"}",
           "legendFormat": "Fabric BNP",
@@ -2121,7 +2121,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "up{job=\"fabric-peer-amf\"}",
           "legendFormat": "Fabric AMF",
@@ -2130,7 +2130,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "up{job=\"couchdb-bnp\"}",
           "legendFormat": "CouchDB BNP",
@@ -2139,7 +2139,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "up{job=\"couchdb-amf\"}",
           "legendFormat": "CouchDB AMF",
@@ -2152,7 +2152,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "ffgx1hbr25a0wc"
       },
       "fieldConfig": {
         "defaults": {
@@ -2227,7 +2227,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "avg_over_time(up{job=\"rwa-api\"}[1h])",
           "legendFormat": "API",
@@ -2236,7 +2236,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "avg_over_time(up{job=\"postgres\"}[1h])",
           "legendFormat": "PostgreSQL",
@@ -2245,7 +2245,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "avg_over_time(up{job=\"redis\"}[1h])",
           "legendFormat": "Redis",
@@ -2254,7 +2254,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "avg_over_time(up{job=\"celery\"}[1h])",
           "legendFormat": "Celery",
@@ -2263,7 +2263,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "avg_over_time(up{job=\"fabric-peer-bnp\"}[1h])",
           "legendFormat": "Fabric BNP",
@@ -2272,7 +2272,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "avg_over_time(up{job=\"fabric-peer-amf\"}[1h])",
           "legendFormat": "Fabric AMF",
@@ -2285,7 +2285,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "ffgx1hbr25a0wc"
       },
       "fieldConfig": {
         "defaults": {
@@ -2345,7 +2345,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "avg(up{job=~\"rwa-api|postgres|redis|celery|fabric-peer-bnp|fabric-peer-amf|couchdb-bnp|couchdb-amf\"})",
           "legendFormat": "uptime",
@@ -2358,7 +2358,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "ffgx1hbr25a0wc"
       },
       "fieldConfig": {
         "defaults": {
@@ -2418,7 +2418,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "count(up{job=~\"rwa-api|postgres|redis|celery|fabric-peer-bnp|fabric-peer-amf|couchdb-bnp|couchdb-amf\"} == 0) or vector(0)",
           "legendFormat": "services",
@@ -2443,7 +2443,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "ffgx1hbr25a0wc"
       },
       "fieldConfig": {
         "defaults": {
@@ -2551,7 +2551,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "ledger_blockchain_height{job=\"fabric-peer-bnp\"}",
           "legendFormat": "BNP Peer",
@@ -2560,7 +2560,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "ledger_blockchain_height{job=\"fabric-peer-amf\"}",
           "legendFormat": "AMF Peer",
@@ -2573,7 +2573,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "ffgx1hbr25a0wc"
       },
       "fieldConfig": {
         "defaults": {
@@ -2710,7 +2710,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "rate(pg_stat_database_tup_fetched{datname=~\"rwadb.*\"}[$interval])",
           "legendFormat": "fetched",
@@ -2719,7 +2719,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "rate(pg_stat_database_tup_inserted{datname=~\"rwadb.*\"}[$interval])",
           "legendFormat": "inserted",
@@ -2728,7 +2728,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "rate(pg_stat_database_tup_updated{datname=~\"rwadb.*\"}[$interval])",
           "legendFormat": "updated",
@@ -2737,7 +2737,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "rate(pg_stat_database_tup_deleted{datname=~\"rwadb.*\"}[$interval])",
           "legendFormat": "deleted",
@@ -2750,7 +2750,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "ffgx1hbr25a0wc"
       },
       "fieldConfig": {
         "defaults": {
@@ -2806,7 +2806,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "redis_memory_used_bytes / redis_memory_max_bytes",
           "legendFormat": "Redis Memory Usage",
@@ -2819,7 +2819,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "ffgx1hbr25a0wc"
       },
       "fieldConfig": {
         "defaults": {
@@ -2875,7 +2875,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "redis_keyspace_hits_total / (redis_keyspace_hits_total + redis_keyspace_misses_total)",
           "legendFormat": "Redis Cache Hit Rate",
@@ -2888,7 +2888,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "ffgx1hbr25a0wc"
       },
       "fieldConfig": {
         "defaults": {
@@ -2944,7 +2944,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "redis_connected_clients",
           "legendFormat": "Redis Connected Clients",
@@ -2957,7 +2957,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "ffgx1hbr25a0wc"
       },
       "fieldConfig": {
         "defaults": {
@@ -3013,7 +3013,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "ffgx1hbr25a0wc"
           },
           "expr": "sum(pg_stat_database_numbackends{datname=~\"rwadb.*\"})",
           "legendFormat": "PostgreSQL Connections",
