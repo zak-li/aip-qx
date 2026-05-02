@@ -32,15 +32,6 @@ rapidfuzz==3.14.3
 prometheus-client==0.24.1
 prometheus-fastapi-instrumentator==7.1.0
 
-# OpenTelemetry — traces, metrics, logs → SigNoz
-opentelemetry-api==1.27.0
-opentelemetry-sdk==1.27.0
-opentelemetry-exporter-otlp-proto-grpc==1.27.0
-opentelemetry-instrumentation-fastapi==0.48b0
-opentelemetry-instrumentation-sqlalchemy==0.48b0
-opentelemetry-instrumentation-redis==0.48b0
-opentelemetry-instrumentation-logging==0.48b0
-
 hvac==2.4.0
 neo4j==6.1.0
 

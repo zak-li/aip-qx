@@ -1,6 +1,5 @@
 import asyncio
 import logging
-import os
 from collections.abc import AsyncGenerator, Awaitable, Callable
 from contextlib import asynccontextmanager
 
@@ -8,15 +7,6 @@ import hvac
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from opentelemetry import trace
-from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
-from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
-from opentelemetry.instrumentation.logging import LoggingInstrumentor
-from opentelemetry.instrumentation.redis import RedisInstrumentor
-from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
-from opentelemetry.sdk.resources import Resource
-from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from prometheus_client import CONTENT_TYPE_LATEST, Counter, Gauge, Histogram, generate_latest
 from prometheus_fastapi_instrumentator import Instrumentator
 from sqlalchemy import text
@@ -60,24 +50,6 @@ RWA_CELERY_TASKS.labels(task_name="sync_fabric_events", status="success").inc(0)
 
 setup_logging(settings.log_level)
 logger = logging.getLogger(__name__)
-
-# ── OpenTelemetry setup ───────────────────────────────────────────────────────
-_otel_endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://localhost:4317")
-_tracer_provider = TracerProvider(
-    resource=Resource(attributes={
-        "service.name":      "rwa-api",
-        "service.version":   "1.4.0",
-        "service.namespace": "rwa-platform",
-    })
-)
-_tracer_provider.add_span_processor(
-    BatchSpanProcessor(OTLPSpanExporter(endpoint=_otel_endpoint, insecure=True))
-)
-trace.set_tracer_provider(_tracer_provider)
-
-SQLAlchemyInstrumentor().instrument()
-RedisInstrumentor().instrument()
-LoggingInstrumentor().instrument(set_logging_format=True, log_level=logging.INFO)
 
 SECURITY_HEADERS = {
     "X-Content-Type-Options": "nosniff",
@@ -221,7 +193,6 @@ app.add_middleware(RateLimiterMiddleware)
 app.add_middleware(RequestLoggerMiddleware)
 
 Instrumentator().instrument(app)
-FastAPIInstrumentor.instrument_app(app, tracer_provider=_tracer_provider)
 setup_global_exception_handlers(app)
 app.include_router(api_router, prefix="/api/v1")
 

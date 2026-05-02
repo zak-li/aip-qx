@@ -1,4 +1,0 @@
-# Minimal prometheus.yml required by signoz/query-service
-# Actual scraping is handled by the OTel Collector
-global:
-  scrape_interval: 15s
