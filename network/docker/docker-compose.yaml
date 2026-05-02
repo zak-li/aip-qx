@@ -11,6 +11,7 @@ services:
 
   orderer.finance-trust.com:
     image: hyperledger/fabric-orderer:2.5.4
+    restart: unless-stopped
     environment:
       - FABRIC_LOGGING_SPEC=INFO
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
@@ -38,6 +39,7 @@ services:
 
   couchdb.bnp:
     image: couchdb:3.3.3
+    restart: unless-stopped
     environment:
       - COUCHDB_USER=${COUCHDB_USER:-admin}
       - COUCHDB_PASSWORD=${COUCHDB_PASS}
@@ -46,6 +48,7 @@ services:
 
   peer0.bnpparibas.finance-trust.com:
     image: hyperledger/fabric-peer:2.5.4
+    restart: unless-stopped
     group_add:
       - "988"
     environment:
@@ -80,6 +83,7 @@ services:
 
   couchdb.amf:
     image: couchdb:3.3.3
+    restart: unless-stopped
     environment:
       - COUCHDB_USER=${COUCHDB_USER:-admin}
       - COUCHDB_PASSWORD=${COUCHDB_PASS}
@@ -88,6 +92,7 @@ services:
 
   peer0.amf-regulateur.finance-trust.com:
     image: hyperledger/fabric-peer:2.5.4
+    restart: unless-stopped
     group_add:
       - "988"
     environment:
@@ -121,6 +126,7 @@ services:
       - rwa-network
 
   rwa-token-ccaas:
+    restart: unless-stopped
     build:
       context: ../chaincode/rwa-token
       dockerfile: Dockerfile.ccaas
@@ -134,6 +140,7 @@ services:
 
   neo4j:
     image: neo4j:5.23.0
+    restart: unless-stopped
     container_name: rwa-neo4j
     environment:
       - NEO4J_AUTH=neo4j/${NEO4J_PASS}
@@ -149,6 +156,7 @@ services:
 
   vault:
     image: hashicorp/vault:1.15.1
+    restart: unless-stopped
     container_name: rwa-vault
     environment:
       - VAULT_DEV_ROOT_TOKEN_ID=rwa-vault-dev-token-9988
