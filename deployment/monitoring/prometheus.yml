@@ -2,46 +2,53 @@ global:
   scrape_interval: 15s
   evaluation_interval: 15s
   external_labels:
-    project: "rwa-platform"
-    environment: "development"
+    project: rwa-platform
+    environment: production
 
 rule_files:
   - "alerts.yml"
 
 scrape_configs:
-  - job_name: "rwa-api"
+  - job_name: prometheus
     static_configs:
-      - targets: ["10.10.10.150:8000"]
-    metrics_path: "/metrics"
+      - targets: [localhost:9090]
 
-  - job_name: "fabric-peer-bnp"
+  - job_name: rwa-api
     static_configs:
-      - targets: ["10.10.10.150:9444"]
-    metrics_path: "/metrics"
+      - targets: [localhost:8000]
+    metrics_path: /metrics
+    scrape_interval: 10s
 
-  - job_name: "fabric-peer-amf"
+  - job_name: node-exporter
     static_configs:
-      - targets: ["10.10.10.150:9445"]
-    metrics_path: "/metrics"
+      - targets: [localhost:9100]
 
-  - job_name: "couchdb-bnp"
+  - job_name: redis
     static_configs:
-      - targets: ["10.10.10.150:5984"]
-    metrics_path: "/_prometheus"
+      - targets: [localhost:9121]
 
-  - job_name: "couchdb-amf"
+  - job_name: postgres
     static_configs:
-      - targets: ["10.10.10.150:7984"]
-    metrics_path: "/_prometheus"
+      - targets: [localhost:9187]
 
-  - job_name: "redis"
+  - job_name: fabric-peer-bnp
     static_configs:
-      - targets: ["10.10.10.150:9121"]
+      - targets: [localhost:9444]
 
-  - job_name: "postgres"
+  - job_name: fabric-peer-amf
     static_configs:
-      - targets: ["10.10.10.150:9187"]
+      - targets: [localhost:9445]
 
-  - job_name: "celery"
+  - job_name: couchdb-bnp
     static_configs:
-      - targets: ["10.10.10.150:9808"]
+      - targets: [localhost:5984]
+    metrics_path: /_prometheus
+
+  - job_name: couchdb-amf
+    static_configs:
+      - targets: [localhost:7984]
+    metrics_path: /_prometheus
+
+  - job_name: celery
+    static_configs:
+      - targets: [localhost:9808]
