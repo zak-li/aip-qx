@@ -91,6 +91,8 @@ peer:
   profile:
     enabled: false
     listenAddress: 0.0.0.0:6060
+  adminService:
+    listenAddress: 0.0.0.0:7053
   handlers:
     authFilters:
       - name: DefaultAuth
@@ -115,7 +117,6 @@ peer:
     concurrency:
       endorserService: 2500
       deliverService: 2500
-
 chaincode:
   pull: false
   externalBuilders:
@@ -139,7 +140,6 @@ chaincode:
     level: info
     shim: warning
     format: '%{color}%{time:2006-01-02 15:04:05.000 MST} [%{module}] %{shortfunc} -> %{level:.4s} %{id:03x}%{color:reset} %{message}'
-
 ledger:
   blockchain:
   state:
@@ -163,11 +163,9 @@ ledger:
     collElgProcMaxDbBatchSize: 5000
     collElgProcDbBatchesInterval: 1000
     deprioritizedDataReconcilerInterval: 60m
-
 operations:
   listenAddress: 0.0.0.0:9444
   tls:
     enabled: false
-
 metrics:
-  provider: disabled
+  provider: prometheus

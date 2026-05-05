@@ -1,167 +1,156 @@
 networks:
   rwa-network:
     name: rwa-network
-
 volumes:
-  orderer.finance-trust.com:
-  peer0.bnpparibas.finance-trust.com:
-  peer0.amf-regulateur.finance-trust.com:
-
+  orderer.finance-trust.com: null
+  peer0.bnpparibas.finance-trust.com: null
+  peer0.amf-regulateur.finance-trust.com: null
 services:
-
   orderer.finance-trust.com:
     image: hyperledger/fabric-orderer:2.5.4
-    restart: unless-stopped
     environment:
-      - FABRIC_LOGGING_SPEC=INFO
-      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
-      - ORDERER_GENERAL_LISTENPORT=7050
-      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
-      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
-      - ORDERER_GENERAL_TLS_ENABLED=true
-      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
-      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
-      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
-      - ORDERER_GENERAL_BOOTSTRAPMETHOD=none
-      - ORDERER_CHANNELPARTICIPATION_ENABLED=true
-      - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:7053
-      - ORDERER_ADMIN_TLS_ENABLED=false
-      - ORDERER_FILELEDGER_LOCATION=/var/hyperledger/production/orderer
+    - FABRIC_LOGGING_SPEC=INFO
+    - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+    - ORDERER_GENERAL_LISTENPORT=7050
+    - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+    - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+    - ORDERER_GENERAL_TLS_ENABLED=true
+    - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+    - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+    - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+    - ORDERER_GENERAL_BOOTSTRAPMETHOD=none
+    - ORDERER_CHANNELPARTICIPATION_ENABLED=true
+    - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:7053
+    - ORDERER_ADMIN_TLS_ENABLED=false
+    - ORDERER_FILELEDGER_LOCATION=/var/hyperledger/production/orderer
     volumes:
-      - ../crypto-config/ordererOrganizations/finance-trust.com/orderers/orderer.finance-trust.com/msp:/var/hyperledger/orderer/msp
-      - ../crypto-config/ordererOrganizations/finance-trust.com/orderers/orderer.finance-trust.com/tls:/var/hyperledger/orderer/tls
-      - orderer.finance-trust.com:/var/hyperledger/production/orderer
+    - ../crypto-config/ordererOrganizations/finance-trust.com/orderers/orderer.finance-trust.com/msp:/var/hyperledger/orderer/msp
+    - ../crypto-config/ordererOrganizations/finance-trust.com/orderers/orderer.finance-trust.com/tls:/var/hyperledger/orderer/tls
+    - orderer.finance-trust.com:/var/hyperledger/production/orderer
     ports:
-      - 7050:7050
-      - 7053:7053
+    - 7050:7050
+    - 7053:7053
     networks:
-      - rwa-network
-
+    - rwa-network
+    restart: unless-stopped
   couchdb.bnp:
     image: couchdb:3.3.3
-    restart: unless-stopped
     environment:
-      - COUCHDB_USER=${COUCHDB_USER:-admin}
-      - COUCHDB_PASSWORD=${COUCHDB_PASS}
+    - COUCHDB_USER=admin
+    - COUCHDB_PASSWORD=FCD9qntIqG%LKJW0p3dXwy@Y3w
+    ports:
+    - 5984:5984
     networks:
-      - rwa-network
-
+    - rwa-network
+    restart: unless-stopped
   peer0.bnpparibas.finance-trust.com:
     image: hyperledger/fabric-peer:2.5.4
-    restart: unless-stopped
     group_add:
-      - "988"
+    - '988'
     environment:
-      - CORE_PEER_ID=peer0.bnpparibas.finance-trust.com
-      - CORE_PEER_ADDRESS=peer0.bnpparibas.finance-trust.com:7051
-      - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
-      - CORE_PEER_LOCALMSPID=BNPParibasMSP
-      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
-      - CORE_PEER_TLS_ENABLED=true
-      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
-      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
-      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.bnp:5984
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=${COUCHDB_PASS}
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.bnpparibas.finance-trust.com:7051
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.bnpparibas.finance-trust.com:7051
-      - FABRIC_CFG_PATH=/etc/hyperledger/fabric
+    - CORE_PEER_ID=peer0.bnpparibas.finance-trust.com
+    - CORE_PEER_ADDRESS=peer0.bnpparibas.finance-trust.com:7051
+    - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
+    - CORE_PEER_LOCALMSPID=BNPParibasMSP
+    - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+    - CORE_PEER_TLS_ENABLED=true
+    - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+    - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+    - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+    - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+    - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.bnp:5984
+    - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+    - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=FCD9qntIqG%LKJW0p3dXwy@Y3w
+    - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.bnpparibas.finance-trust.com:7051
+    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.bnpparibas.finance-trust.com:7051
+    - FABRIC_CFG_PATH=/etc/hyperledger/fabric
+    - CORE_METRICS_PROVIDER=prometheus
+    - CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:9443
     volumes:
-      - ../crypto-config/peerOrganizations/bnpparibas.finance-trust.com/peers/peer0.bnpparibas.finance-trust.com/msp:/etc/hyperledger/fabric/msp
-      - ../crypto-config/peerOrganizations/bnpparibas.finance-trust.com/peers/peer0.bnpparibas.finance-trust.com/tls:/etc/hyperledger/fabric/tls
-      - ../config/peer/core.yaml:/etc/hyperledger/fabric/core.yaml
-      - peer0.bnpparibas.finance-trust.com:/var/hyperledger/production
+    - ../crypto-config/peerOrganizations/bnpparibas.finance-trust.com/peers/peer0.bnpparibas.finance-trust.com/msp:/etc/hyperledger/fabric/msp
+    - ../crypto-config/peerOrganizations/bnpparibas.finance-trust.com/peers/peer0.bnpparibas.finance-trust.com/tls:/etc/hyperledger/fabric/tls
+    - ../config/peer/core.yaml:/etc/hyperledger/fabric/core.yaml
+    - peer0.bnpparibas.finance-trust.com:/var/hyperledger/production
     ports:
-      - 7051:7051
+    - 7051:7051
+    - 9444:9443
     depends_on:
-      - orderer.finance-trust.com
-      - couchdb.bnp
+    - orderer.finance-trust.com
+    - couchdb.bnp
     networks:
-      - rwa-network
-
+    - rwa-network
+    restart: unless-stopped
   couchdb.amf:
     image: couchdb:3.3.3
-    restart: unless-stopped
     environment:
-      - COUCHDB_USER=${COUCHDB_USER:-admin}
-      - COUCHDB_PASSWORD=${COUCHDB_PASS}
+    - COUCHDB_USER=admin
+    - COUCHDB_PASSWORD=FCD9qntIqG%LKJW0p3dXwy@Y3w
+    ports:
+    - 7984:5984
     networks:
-      - rwa-network
-
+    - rwa-network
+    restart: unless-stopped
   peer0.amf-regulateur.finance-trust.com:
     image: hyperledger/fabric-peer:2.5.4
-    restart: unless-stopped
     group_add:
-      - "988"
+    - '988'
     environment:
-      - CORE_PEER_ID=peer0.amf-regulateur.finance-trust.com
-      - CORE_PEER_ADDRESS=peer0.amf-regulateur.finance-trust.com:7091
-      - CORE_PEER_LISTENADDRESS=0.0.0.0:7091
-      - CORE_PEER_LOCALMSPID=AMFRegulateurMSP
-      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
-      - CORE_PEER_TLS_ENABLED=true
-      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
-      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
-      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.amf:5984
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=${COUCHDB_PASS}
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.amf-regulateur.finance-trust.com:7091
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.amf-regulateur.finance-trust.com:7091
-      - FABRIC_CFG_PATH=/etc/hyperledger/fabric
+    - CORE_PEER_ID=peer0.amf-regulateur.finance-trust.com
+    - CORE_PEER_ADDRESS=peer0.amf-regulateur.finance-trust.com:7091
+    - CORE_PEER_LISTENADDRESS=0.0.0.0:7091
+    - CORE_PEER_LOCALMSPID=AMFRegulateurMSP
+    - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+    - CORE_PEER_TLS_ENABLED=true
+    - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+    - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+    - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+    - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+    - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.amf:5984
+    - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+    - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=FCD9qntIqG%LKJW0p3dXwy@Y3w
+    - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.amf-regulateur.finance-trust.com:7091
+    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.amf-regulateur.finance-trust.com:7091
+    - FABRIC_CFG_PATH=/etc/hyperledger/fabric
+    - CORE_METRICS_PROVIDER=prometheus
+    - CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:9443
     volumes:
-      - ../crypto-config/peerOrganizations/amf-regulateur.finance-trust.com/peers/peer0.amf-regulateur.finance-trust.com/msp:/etc/hyperledger/fabric/msp
-      - ../crypto-config/peerOrganizations/amf-regulateur.finance-trust.com/peers/peer0.amf-regulateur.finance-trust.com/tls:/etc/hyperledger/fabric/tls
-      - ../config/peer/core.yaml:/etc/hyperledger/fabric/core.yaml
-      - peer0.amf-regulateur.finance-trust.com:/var/hyperledger/production
+    - ../crypto-config/peerOrganizations/amf-regulateur.finance-trust.com/peers/peer0.amf-regulateur.finance-trust.com/msp:/etc/hyperledger/fabric/msp
+    - ../crypto-config/peerOrganizations/amf-regulateur.finance-trust.com/peers/peer0.amf-regulateur.finance-trust.com/tls:/etc/hyperledger/fabric/tls
+    - ../config/peer/core.yaml:/etc/hyperledger/fabric/core.yaml
+    - peer0.amf-regulateur.finance-trust.com:/var/hyperledger/production
     ports:
-      - 7091:7091
+    - 7091:7091
+    - 9445:9443
     depends_on:
-      - orderer.finance-trust.com
-      - couchdb.amf
+    - orderer.finance-trust.com
+    - couchdb.amf
     networks:
-      - rwa-network
-
-  rwa-token-ccaas:
+    - rwa-network
     restart: unless-stopped
+  rwa-token-ccaas:
     build:
       context: ../chaincode/rwa-token
       dockerfile: Dockerfile.ccaas
     environment:
-      - CHAINCODE_SERVER_ADDRESS=0.0.0.0:9999
-      - CHAINCODE_ID=rwa-token_1.0:26af1d017a0f119a93a9309794cfbbb84c407593a98495e81a460215ab13bf39
+    - CHAINCODE_SERVER_ADDRESS=0.0.0.0:9999
+    - CHAINCODE_ID=rwa-token_1.0:26af1d017a0f119a93a9309794cfbbb84c407593a98495e81a460215ab13bf39
     ports:
-      - 9999:9999
+    - 9999:9999
     networks:
-      - rwa-network
-
+    - rwa-network
+    restart: unless-stopped
   neo4j:
     image: neo4j:5.23.0
-    restart: unless-stopped
     container_name: rwa-neo4j
     environment:
-      - NEO4J_AUTH=neo4j/${NEO4J_PASS}
-      - NEO4J_dbms_memory_heap_initial__size=128m
-      - NEO4J_dbms_memory_heap_max__size=512m
-      - NEO4J_dbms_memory_pagecache_size=256m
-      - NEO4J_server_memory_pagecache_size=256m
+    - NEO4J_AUTH=neo4j/LV6VfaPgP#qdvG5TJP5^LjMWKO
+    - NEO4J_dbms_memory_heap_initial__size=128m
+    - NEO4J_dbms_memory_heap_max__size=512m
+    - NEO4J_dbms_memory_pagecache_size=256m
+    - NEO4J_server_memory_pagecache_size=256m
     ports:
-      - 7474:7474
-      - 7687:7687
+    - 7474:7474
+    - 7687:7687
     networks:
-      - rwa-network
-
-  vault:
-    image: hashicorp/vault:1.15.1
+    - rwa-network
     restart: unless-stopped
-    container_name: rwa-vault
-    environment:
-      - VAULT_DEV_ROOT_TOKEN_ID=rwa-vault-dev-token-9988
-      - VAULT_DEV_LISTEN_ADDRESS=0.0.0.0:8200
-    ports:
-      - 8200:8200
-    networks:
-      - rwa-network

@@ -1,0 +1,19 @@
+[Unit]
+Description=Celery Prometheus Exporter
+After=network-online.target rwa-celery.service
+Wants=rwa-celery.service
+
+[Service]
+Type=simple
+User=zakaria
+Group=zakaria
+WorkingDirectory=/home/zakaria/rwa-platform
+ExecStart=/home/zakaria/rwa-platform/.venv/bin/python /home/zakaria/rwa-platform/scripts/celery_exporter.py
+Restart=on-failure
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=celery-exporter
+
+[Install]
+WantedBy=multi-user.target
