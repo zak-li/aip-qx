@@ -55,6 +55,14 @@ else
 fi
 
 wait_port localhost 7687 "Neo4j"  60
+log "Waiting for Neo4j Bolt protocol..."
+n=0
+until /home/zakaria/rwa-platform/.venv/bin/python3 -c \
+    "from neo4j import GraphDatabase; d=GraphDatabase.driver('bolt://localhost:7687',auth=('neo4j','LV6VfaPgP#qdvG5TJP5^LjMWKO'),connection_timeout=3); d.verify_connectivity(); d.close()" 2>/dev/null; do
+    sleep 3; n=$((n+1))
+    [ "$n" -ge 20 ] && { log "WARN: Neo4j Bolt not ready after 60s, continuing"; break; }
+done
+log "Neo4j Bolt: PRET"
 
 for svc in prometheus grafana-server node_exporter; do
     systemctl start "$svc" 2>/dev/null && log "${svc}: demarre" || log "${svc}: ignore"
