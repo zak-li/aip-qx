@@ -68,7 +68,7 @@ Every transaction produces an on-chain audit entry. An off-chain integrity check
 **Step 1: Clone and configure**
 
 ```bash
-git clone https://github.com/hackerXcore/Fvbrixon.git
+git clone https://github.com/zak-li/Fvbrixon.git
 cd Fvbrixon
 cp .env.example .env
 ```
