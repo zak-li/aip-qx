@@ -28,7 +28,7 @@ Let $N$ be the set of randomly selected compliance auditors (peers) from regulat
 An AI agent flags an asset transfer as anomalous, triggering a Tribunal session. 
 There exists an objective ground truth $\omega \in \{FRAUD, LEGITIMATE\}$.
 
-Each auditor $i \in N$ observes evidence $E$ and must submit a vote $v_i \in \{FRAUD, LEGITIMATE\}$ using a cryptographic Commit-Reveal scheme to prevent cascading information cascades (free-riding).
+Each auditor $i \in N$ observes evidence $E$ and must submit a vote $v_i \in \{FRAUD, LEGITIMATE\}$ using a cryptographic Commit-Reveal scheme to prevent information cascades (free-riding).
 
 \section{The Payoff Function}
 Unlike public permissionless blockchains (e.g., Kleros, Augur) where auditors stake financial tokens, our permissioned environment uses a \textbf{Reputational Stake} $S \in \mathbb{R}^+$. A high reputation score is required to maintain node consensus privileges on the network.
@@ -73,9 +73,11 @@ Since we set $f \cdot S > C + R$, the condition is strictly satisfied. Thus, no 
 In a permissioned banking context, a malicious actor might attempt to bribe a coalition of size $k \geq \frac{n}{3}$ to prevent a supermajority against fraud, or $k \geq \frac{2n}{3}$ to force a false outcome.
 
 \begin{lemma}[Coalition Unprofitability]
-The cost of bribing a successful coalition $B_{cost}$ grows linearly with the reputational slash $f \cdot S$. 
+The cost of bribing a successful coalition $B_{cost}$ grows linearly with the reputational slash $f \cdot S$.
 \end{lemma}
-Because $S$ represents institutional operational licenses (not just liquid capital), $S \to \infty$ from the perspective of an individual rogue trader. Therefore, the bribe required to convince $k$ institutions to risk their regulatory banking license is economically infeasible.
+\begin{proof}
+Because $S$ represents institutional operational licenses (not merely liquid capital), $S \to \infty$ from the perspective of an individual rogue trader. The minimum bribe required to compensate auditor $i$ for risking their stake is $f \cdot S_i$; summing over a coalition of size $k$ yields $B_{cost} = k \cdot f \cdot S$. Therefore, the total cost of bribing $k$ institutions to risk their regulatory banking licenses grows without bound, rendering any such coalition economically infeasible.
+\end{proof}
 
 \section{Conclusion}
 By adapting Schelling-point game theory to non-financial reputational stakes, the Compliance Tribunal provides mathematical guarantees for decentralized auditing without requiring a native cryptocurrency token.

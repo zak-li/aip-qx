@@ -46,5 +46,5 @@ This document maps out the specific execution flows of the RWA Tokenization plat
    - The chaincode verifies that the invoking identity possesses the Regulatory Body role via the MSP configuration.
 3. **State Mutation:**
    - The asset's status is changed to `StatusGele`.
-   - Any subsequent attempts to call `TransferAsset` for this asset ID will fail cryptographically.
+   - Any subsequent attempts to call `TransferAsset` for this asset ID will be rejected at the chaincode endorsement stage.
    - The chaincode emits an `AssetFrozen` event, ensuring all participants on the network are synchronized regarding the asset's suspended state.

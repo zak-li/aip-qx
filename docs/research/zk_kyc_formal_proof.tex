@@ -72,13 +72,15 @@ If a Probabilistic Polynomial-Time (PPT) adversary $\mathcal{A}$ can forge a val
 \begin{proof}
 We rely on the Forking Lemma. Suppose $\mathcal{A}$ is an algorithm that outputs a valid proof $(R, c, s)$ for $Y$. We construct an extractor $\mathcal{E}$ that interacts with $\mathcal{A}$ and controls the random oracle $H$.
 
-1. $\mathcal{E}$ runs $\mathcal{A}$ with random tape $\rho$. $\mathcal{A}$ queries the random oracle for $H(R, Y, C)$ and eventually outputs a valid proof $(R, c_1, s_1)$ where $s_1G = R + c_1Y$.
+\begin{enumerate}
+    \item $\mathcal{E}$ runs $\mathcal{A}$ with random tape $\rho$. $\mathcal{A}$ queries the random oracle for $H(R, Y, C)$ and eventually outputs a valid proof $(R, c_1, s_1)$ where $s_1G = R + c_1Y$.
 
-2. $\mathcal{E}$ rewinds $\mathcal{A}$ to the exact state before the query $H(R, Y, C)$, keeping the same random tape $\rho$. $\mathcal{E}$ replies to the query with a new random challenge $c_2 \neq c_1$.
+    \item $\mathcal{E}$ rewinds $\mathcal{A}$ to the exact state before the query $H(R, Y, C)$, keeping the same random tape $\rho$. $\mathcal{E}$ replies to the query with a new random challenge $c_2 \neq c_1$.
 
-3. By the Forking Lemma, with probability $\geq \epsilon^2 / q_H$ (where $q_H$ is the number of hash queries), $\mathcal{A}$ outputs a second valid proof $(R, c_2, s_2)$ such that $s_2G = R + c_2Y$.
+    \item By the Forking Lemma, with probability $\geq \epsilon^2 / q_H$ (where $q_H$ is the number of hash queries), $\mathcal{A}$ outputs a second valid proof $(R, c_2, s_2)$ such that $s_2G = R + c_2Y$.
 
-4. $\mathcal{E}$ now has two valid transcripts:
+    \item $\mathcal{E}$ now has two valid transcripts:
+\end{enumerate}
 \[ s_1G = R + c_1Y \]
 \[ s_2G = R + c_2Y \]
 

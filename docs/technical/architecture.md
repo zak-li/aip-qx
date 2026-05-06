@@ -60,7 +60,7 @@ The core immutable ledger is governed by a **Regulatory-Embedded Consensus**.
 - **Chaincode (CCaaS):** Written in Go, deployed as an external gRPC service. It executes functions like `TokenizeAsset`, `TransferAsset`, `FreezeAsset`, and `UnfreezeAsset`. It strictly validates ISINs, LEIs, ISO currencies, and triggers MiCA Article 68 alerts for transactions over 1,000,000 EUR.
 
 ### 2. High-Performance Middleware (FastAPI)
-The Python-based middleware bridges the client requests with the blockchain network and handles heavy off-chain computation.
+The Python-based middleware bridges client requests to the blockchain network and handles heavy off-chain computation.
 - **Neo4j (Fraud Detection):** Used to map complex transaction graphs and entity relationships to detect money laundering rings prior to on-chain execution.
 - **PostgreSQL:** Stores off-chain PII (Personally Identifiable Information) and KYC documents to ensure compliance with GDPR (which prohibits storing PII on immutable ledgers).
 - **Redis:** Provides high-speed caching and rate limiting.
