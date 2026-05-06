@@ -50,7 +50,7 @@ tests/fixtures/crypto_config_mock/
 *.tgz
 *.zip
 
-# LaTeX build by-products only — actual .tex sources under whitepaper/, docs/
+# LaTeX build by-products only — actual .tex sources under docs/
 # are part of the project and must remain trackable.
 /doc.tex
 *.aux

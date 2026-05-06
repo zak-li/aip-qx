@@ -8,7 +8,7 @@
 \geometry{margin=1in}
 
 \title{Game-Theoretic Formalization of the Decentralized Compliance Tribunal}
-\author{Real World Assets (RWA) Tokenization Project}
+\author{Quant-ix Platform}
 \date{\today}
 
 \newtheorem{theorem}{Theorem}
@@ -26,9 +26,9 @@ This document provides the formal game-theoretic analysis of the Compliance Trib
 \section{System Model}
 Let $N$ be the set of randomly selected compliance auditors (peers) from regulated institutions (e.g., BNP Paribas, AMF), with $|N| = n$.
 An AI agent flags an asset transfer as anomalous, triggering a Tribunal session. 
-There exists an objective ground truth $\omega \in \{FRAUD, LEGITIMATE\}$.
+There exists an objective ground truth $\omega \in \{\text{FRAUD}, \text{LEGITIMATE}\}$.
 
-Each auditor $i \in N$ observes evidence $E$ and must submit a vote $v_i \in \{FRAUD, LEGITIMATE\}$ using a cryptographic Commit-Reveal scheme to prevent information cascades (free-riding).
+Each auditor $i \in N$ observes evidence $E$ and must submit a vote $v_i \in \{\text{FRAUD}, \text{LEGITIMATE}\}$ using a cryptographic Commit-Reveal scheme to prevent information cascades (free-riding).
 
 \section{The Payoff Function}
 Unlike public permissionless blockchains (e.g., Kleros, Augur) where auditors stake financial tokens, our permissioned environment uses a \textbf{Reputational Stake} $S \in \mathbb{R}^+$. A high reputation score is required to maintain node consensus privileges on the network.
@@ -58,9 +58,9 @@ If auditor $i$ also plays $v_i = \omega$, the supermajority $D = \omega$ is reac
 The utility is:
 \[ u_i(\omega, \omega_{-i}) = S + R - C \]
 
-If auditor $i$ deviates and plays $v_i \neq \omega$ (a malicious or lazy vote), the supermajority $D = \omega$ is still reached (assuming $n \geq 4$ and $\tau = 2/3$). The deviating auditor is slashed:
-\[ u_i(\neq \omega, \omega_{-i}) = S - f \cdot S - C' \]
-(where $C'$ is $0$ if they were lazy and didn't analyze $E$, or $C$ if they did).
+If auditor $i$ deviates and plays $\bar{v} \neq \omega$ (a malicious or lazy vote), the supermajority $D = \omega$ is still reached (assuming $n \geq 4$ and $\tau = 2/3$). The deviating auditor is slashed:
+\[ u_i(\bar{v}, \omega_{-i}) = S - f \cdot S - C' \]
+(where $C'$ is $0$ if they were lazy and did not analyze $E$, or $C$ if they did).
 
 For the truthful vote to be a strict best response, we require:
 \[ S + R - C > S - f \cdot S \]

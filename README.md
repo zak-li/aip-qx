@@ -97,7 +97,7 @@ cd network
 
 ```bash
 uvicorn backend.main:app --host 0.0.0.0 --port 8000 --workers 1
-celery -A backend.celery_app worker --loglevel=info -Q celery,compliance,reports,fabric_events
+celery -A backend.core.celery_app worker --loglevel=info -Q celery,compliance,reports,fabric_events
 ```
 
 The API is live at `http://localhost:8000`. Interactive docs are at `/docs` (Swagger UI) or `/redoc`.
