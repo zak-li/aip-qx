@@ -1,121 +1,238 @@
 <p align="center">
-  <img src="assets/logo.svg" alt="RWA Platform Logo" width="400">
+  <img src="assets/vector/logo-monochrome.svg" alt="Quant-ix" width="380">
 </p>
 
 <br>
 
 <p align="center">
-  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.11+-blue.svg" alt="Python Version"></a>
-  <a href="https://hyperledger-fabric.readthedocs.io/"><img src="https://img.shields.io/badge/Hyperledger_Fabric-2.5-2F3134.svg" alt="Fabric Version"></a>
-  <a href="https://go.dev/"><img src="https://img.shields.io/badge/Go-1.21+-00ADD8.svg" alt="Go Version"></a>
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.11+-blue.svg" alt="Python"></a>
+  <a href="https://hyperledger-fabric.readthedocs.io/"><img src="https://img.shields.io/badge/Hyperledger_Fabric-2.5-2F3134.svg" alt="Fabric"></a>
+  <a href="https://go.dev/"><img src="https://img.shields.io/badge/Go-1.21+-00ADD8.svg" alt="Go"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License"></a>
 </p>
 
 <br>
 
-## RWA Platform
+## Quant-ix
 
-Institutional-grade Real World Asset tokenization on a permissioned Hyperledger Fabric network. Manage the full asset lifecycle — issuance, transfer, compliance, audit — with on-chain immutability, ZK-KYC proofs, AML/KYC screening, and a RAG-powered regulatory agent.
+Quant-ix is an institutional platform for tokenizing Real World Assets on a permissioned Hyperledger Fabric network. It handles the full asset lifecycle from issuance to redemption, with built-in AML/KYC compliance, ZK-KYC identity proofs, FHE-based fraud scoring, and a RAG regulatory agent for MiCA queries.
+
+## Table of Contents
+
+- [Features](#features)
+- [Requirements](#requirements)
+- [Quick Start](#quick-start)
+- [API Reference](#api-reference)
+- [Environment Variables](#environment-variables)
+- [Project Structure](#project-structure)
+- [Observability](#observability)
+- [License](#license)
 
 ## Features
 
-- **Hyperledger Fabric** — permissioned two-org network (BNPParibas + AMFRegulateur), Go chaincode deployed as CCaaS
-- **Asset Lifecycle** — tokenize, transfer, and redeem real-world assets with ledger-backed state
-- **AML / KYC Compliance** — sanctions screening, MiCA rules engine, KYC expiry tracking, risk scoring
-- **ZK-KYC** — Merkle-based zero-knowledge proofs for privacy-preserving identity verification
-- **FHE Fraud Scoring** — Fully Homomorphic Encryption scorer for confidential risk evaluation
-- **Regulatory Audit** — immutable audit trail, integrity checker, PDF report generation via Celery
-- **RAG Agent** — Groq LLM + ChromaDB vector store for regulatory Q&A over the knowledge base
-- **gRPC + REST** — dual transport: FastAPI REST API and gRPC server for inter-service communication
-- **Observability** — Prometheus metrics, Grafana dashboards, Loki log aggregation, custom Celery exporter
+**Blockchain.** Two-organization Fabric network (BNPParibas and AMFRegulateur), each with a dedicated peer and CouchDB state database. The Go chaincode runs as CCaaS and enforces a dual-endorsement policy on all state-changing transactions. Assets move through a `ACTIVE`, `FROZEN`, `REDEEMED` lifecycle recorded immutably on-chain, and Fabric events are streamed live via gRPC with automatic reconnection.
+
+**Compliance and identity.** AML screening runs against a signed sanctions manifest verified with Ed25519. The MiCA rules engine checks exposure limits, asset-class restrictions, and reporting thresholds. ZK-KYC generates Merkle-based proofs so identity can be verified without exposing raw credentials. An FHE fraud scorer evaluates risk on encrypted data. KYC expiry and counterparty concentration are tracked continuously.
+
+**API and security.** Quant-ix exposes a FastAPI REST API and a gRPC server in parallel. Authentication is JWT-based with configurable TTL. Secrets are stored as `SecretStr` via pydantic-settings and never appear in logs. Private keys for Fabric identities live in HashiCorp Vault. Every response carries six security headers and requests go through rate limiting and host filtering.
+
+**Audit and reporting.** Every transaction produces an on-chain audit entry. An off-chain integrity checker verifies hashes independently. PDF audit reports are generated asynchronously via Celery. The RAG agent answers regulatory questions by querying a ChromaDB vector store with Groq LLM.
+
+## Requirements
+
+**Python backend**
+
+| Package | Version |
+|---|---|
+| Python | 3.11+ |
+| FastAPI | 0.135+ |
+| Celery | 5.6+ |
+| SQLAlchemy | 2.0+ |
+| grpcio | 1.78+ |
+| pydantic-settings | 2.4+ |
+| prometheus-client | 0.24+ |
+
+**Infrastructure**
+
+| Component | Role |
+|---|---|
+| Hyperledger Fabric 2.5 | Permissioned blockchain |
+| PostgreSQL 14+ | Application database |
+| Redis 7+ | Cache and Celery broker |
+| HashiCorp Vault | Fabric identity key storage |
+| Neo4j 5+ | Graph database for relationship analysis |
+| Docker + Compose | Peers, orderer, CouchDB containers |
 
 ## Quick Start
 
+**Step 1 — Clone and configure**
+
 ```bash
-git clone https://github.com/hackerXcore/blockchain_assets.git
-cd blockchain_assets
-
+git clone https://github.com/hackerXcore/Quant-ix.git
+cd Quant-ix
 cp .env.example .env
-# Fill in required variables (see Environment Variables below)
+```
 
-python -m venv .venv && source .venv/bin/activate
+Open `.env` and fill in at minimum `SECRET_KEY`, `DATABASE_URL`, `REDIS_URL`, and the Fabric variables.
+
+**Step 2 — Install dependencies**
+
+```bash
+python -m venv .venv
+source .venv/bin/activate      # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-Start the Fabric network:
+**Step 3 — Start the Fabric network**
 
 ```bash
 cd network
 ./scripts/network-up.sh
 ./scripts/create-channel.sh
 ./scripts/deploy-chaincode.sh
+./scripts/enroll-users.sh
 ```
 
-Start the API:
+**Step 4 — Start the API and worker**
 
 ```bash
 uvicorn backend.main:app --host 0.0.0.0 --port 8000 --workers 1
+celery -A backend.celery_app worker --loglevel=info -Q celery,compliance,reports,fabric_events
 ```
 
-Interactive docs at `/docs` (Swagger UI) or `/redoc`.
+The API is live at `http://localhost:8000`. Interactive docs are at `/docs` (Swagger UI) or `/redoc`.
+
+**Step 5 — Authenticate**
+
+```bash
+curl -X POST http://localhost:8000/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username": "admin", "password": "your-password"}'
+```
+
+Pass the returned token as `Authorization: Bearer <token>` on all subsequent requests.
 
 ## API Reference
 
-| Method | Prefix | Description |
+**Authentication**
+
+| Method | Endpoint | Description |
 |---|---|---|
-| `*` | `/api/v1/auth` | JWT authentication, organization management |
-| `*` | `/api/v1/assets` | Asset issuance, transfer, redemption |
-| `*` | `/api/v1/transactions` | Ledger transaction history |
-| `*` | `/api/v1/organizations` | Network organization registry |
-| `*` | `/api/v1/audit` | Regulatory audit trail and PDF reports |
-| `*` | `/api/v1/compliance` | AML screening, KYC verification, MiCA rules |
-| `*` | `/api/v1/zkp` | ZK-KYC proof issuance and verification |
-| `*` | `/api/v1/agent` | RAG agent for regulatory queries |
-| `*` | `/api/v1/events` | Live Fabric event stream (SSE) |
-| GET | `/metrics` | Prometheus metrics endpoint |
+| POST | `/api/v1/auth/register` | Register a new user |
+| POST | `/api/v1/auth/login` | Obtain JWT token |
+| POST | `/api/v1/auth/refresh` | Refresh access token |
+
+**Assets**
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/v1/assets` | Issue a new tokenized asset |
+| GET | `/api/v1/assets` | List assets with filtering |
+| GET | `/api/v1/assets/{id}` | Get asset by ID |
+| PUT | `/api/v1/assets/{id}/transfer` | Transfer ownership |
+| PUT | `/api/v1/assets/{id}/freeze` | Freeze (compliance hold) |
+| PUT | `/api/v1/assets/{id}/redeem` | Redeem and retire |
+
+**Compliance and KYC**
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/v1/compliance/screen` | AML sanctions screening |
+| GET | `/api/v1/compliance/kyc/{entity_id}` | KYC status and expiry |
+| POST | `/api/v1/zkp/prove` | Issue ZK-KYC proof |
+| POST | `/api/v1/zkp/verify` | Verify a ZK-KYC proof |
+
+**Audit, ledger and agent**
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/v1/audit/trail` | On-chain audit trail |
+| GET | `/api/v1/audit/integrity` | Off-chain hash integrity check |
+| POST | `/api/v1/audit/report` | Generate PDF report (async) |
+| GET | `/api/v1/transactions` | Ledger transaction history |
+| GET | `/api/v1/events` | Live Fabric event stream (SSE) |
+| POST | `/api/v1/agent/query` | RAG query over regulatory knowledge base |
+| GET | `/metrics` | Prometheus metrics |
 
 ## Environment Variables
 
-| Variable | Required | Description |
+**Required**
+
+| Variable | Description |
+|---|---|
+| `SECRET_KEY` | JWT signing key, minimum 32 characters |
+| `DATABASE_URL` | PostgreSQL async URL (`postgresql+asyncpg://...`) |
+| `REDIS_URL` | Redis URL (`redis://:password@host:6379/0`) |
+| `FABRIC_WALLET_PATH` | Path to `fabric_wallet.json` |
+| `FABRIC_CONNECTION_PROFILE` | Path to `connection_profile.yaml` |
+| `FABRIC_CHANNEL` | Fabric channel name |
+| `FABRIC_CHAINCODE` | Chaincode name |
+| `VAULT_ADDR` | HashiCorp Vault address |
+| `VAULT_TOKEN` | Vault authentication token |
+
+**Optional**
+
+| Variable | Default | Description |
 |---|---|---|
-| `SECRET_KEY` | Yes | JWT signing key (min 32 chars) |
-| `DATABASE_URL` | Yes | PostgreSQL async connection string |
-| `REDIS_URL` | Yes | Redis connection string |
-| `FABRIC_WALLET_PATH` | Yes | Path to `fabric_wallet.json` |
-| `FABRIC_CONNECTION_PROFILE` | Yes | Path to `connection_profile.yaml` |
-| `FABRIC_CHANNEL` | Yes | Fabric channel name |
-| `FABRIC_CHAINCODE` | Yes | Chaincode name |
-| `VAULT_ADDR` | Yes | HashiCorp Vault address |
-| `VAULT_TOKEN` | Yes | Vault authentication token |
-| `GROQ_API_KEY` | No | Groq API key for the RAG agent |
+| `GROQ_API_KEY` | `""` | Groq API key for the regulatory agent |
+| `GROQ_MODEL` | `llama-3.3-70b-versatile` | Groq model ID |
+| `NEO4J_URI` | | Neo4j bolt URI |
+| `FABRIC_TLS_ENABLED` | `true` | TLS for Fabric gRPC |
+| `FABRIC_GRPC_TIMEOUT` | `30` | gRPC timeout in seconds |
+| `FABRIC_RETRY_MAX_ATTEMPTS` | `5` | Retry attempts on Fabric errors |
+| `LOG_LEVEL` | `INFO` | Logging level |
+| `ALLOWED_ORIGINS` | | Comma-separated CORS origins |
 
 ## Project Structure
 
 ```
-blockchain_assets/
+Quant-ix/
 ├── backend/
-│   ├── main.py                  # FastAPI app, middleware, Prometheus metrics
-│   ├── config.py                # pydantic-settings configuration
+│   ├── main.py                 # FastAPI app, middleware, metrics
+│   ├── config.py               # Settings and secrets
 │   ├── features/
-│   │   ├── assets/              # Asset lifecycle (models, service, router)
-│   │   ├── transactions/        # Ledger transaction queries
-│   │   ├── compliance/          # AML, KYC, MiCA rules engine
-│   │   ├── audit/               # Audit trail, integrity checker, report generator
-│   │   ├── zkp/                 # ZK-KYC proof issuer and Merkle logic
-│   │   ├── fhe/                 # FHE fraud scorer
-│   │   └── agent/               # RAG pipeline, Groq client, ChromaDB vector store
-│   ├── fabric_client/           # Fabric network client, wallet, event listener, retry/circuit-breaker
-│   └── grpc_server/             # gRPC servicers (assets, transactions, audit, compliance, agent)
-├── chaincode/rwa-token/         # Go chaincode (CCaaS)
+│   │   ├── assets/             # Asset lifecycle
+│   │   ├── compliance/         # AML, KYC, MiCA rules
+│   │   ├── audit/              # Trail, integrity, PDF reports
+│   │   ├── zkp/                # ZK-KYC proofs
+│   │   ├── fhe/                # FHE fraud scorer
+│   │   └── agent/              # RAG pipeline, ChromaDB
+│   ├── fabric_client/          # Wallet, events, retry, circuit breaker
+│   └── grpc_server/            # gRPC servicers
+├── chaincode/rwa-token/        # Go chaincode (CCaaS)
 ├── network/
-│   ├── config/                  # core.yaml, connection_profile.yaml, configtx.yaml
-│   ├── docker/                  # docker-compose.yaml (peers, orderer, CouchDB)
-│   └── scripts/                 # network-up, channel, chaincode, enroll scripts
+│   ├── config/                 # core.yaml, connection_profile.yaml
+│   ├── docker/                 # docker-compose.yaml
+│   └── scripts/                # Network lifecycle scripts
 ├── deployment/
-│   ├── systemd/                 # rwa-uvicorn, rwa-celery, rwa-grpc service units
-│   └── monitoring/              # Prometheus, Grafana, Loki, Celery exporter
-└── database/migrations/         # Alembic migrations
+│   ├── systemd/                # Service units
+│   └── monitoring/             # Prometheus, Grafana, Loki
+└── database/
+    ├── migrations/             # Alembic migrations
+    └── fixtures/               # Seed data
 ```
+
+## Observability
+
+Quant-ix ships a full monitoring stack managed via systemd. Prometheus scrapes ten targets including Fabric peers, CouchDB, Redis, PostgreSQL, and the custom Celery exporter. Grafana provides dashboards for service health, API latency percentiles, infrastructure utilization, and compliance metrics. Loki aggregates structured JSON logs from the API, Celery workers, Docker containers, and systemd.
+
+| Component | Port |
+|---|---|
+| Prometheus | 9090 |
+| Grafana | 3000 |
+| Loki | 3100 |
+| Node Exporter | 9100 |
+| Celery Exporter | 9808 |
+
+Custom metrics exposed at `/metrics`:
+
+| Metric | Description |
+|---|---|
+| `rwa_assets_by_status` | Asset count by lifecycle status |
+| `rwa_compliance_blocks_total` | Compliance blocks by reason |
+| `rwa_kyc_expiring_count` | KYC records expiring within 30 days |
+| `rwa_circuit_breaker_state` | Fabric circuit breaker state |
+| `rwa_celery_tasks_total` | Celery task completions by name and status |
 
 ## License
 
