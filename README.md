@@ -40,7 +40,7 @@ Every transaction produces an on-chain audit entry. An off-chain integrity check
 
 ## Requirements
 
-**Python backend**
+**API**
 
 | Package | Version |
 |---|---|
@@ -52,7 +52,7 @@ Every transaction produces an on-chain audit entry. An off-chain integrity check
 | pydantic-settings | 2.4+ |
 | prometheus-client | 0.24+ |
 
-**Infrastructure**
+**Technology Stack**
 
 | Component | Role |
 |---|---|
@@ -79,7 +79,7 @@ Open `.env` and fill in at minimum `SECRET_KEY`, `DATABASE_URL`, `REDIS_URL`, an
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate      # Windows: .venv\Scripts\activate
+source .venv/bin/activate         # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
