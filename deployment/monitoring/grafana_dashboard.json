@@ -219,7 +219,7 @@
       "gridPos": { "x": 0, "y": 19, "w": 14, "h": 9 },
       "options": {
         "tooltip": { "mode": "multi", "sort": "desc" },
-        "legend": { "displayMode": "list", "placement": "right", "showLegend": true }
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true }
       },
       "fieldConfig": {
         "defaults": { "unit": "reqps", "custom": { "drawStyle": "line", "lineInterpolation": "smooth", "lineWidth": 2, "fillOpacity": 14, "gradientMode": "scheme", "spanNulls": true, "showPoints": "never", "stacking": { "mode": "normal", "group": "A" } } },
@@ -399,7 +399,7 @@
         { "expr": "rate(couchdb_database_writes_total{job=\"couchdb-amf\"}[2m])", "legendFormat": "Writes AMF", "refId": "D", "instant": false, "range": true }
       ],
       "gridPos": { "x": 0, "y": 48, "w": 12, "h": 8 },
-      "options": { "tooltip": { "mode": "multi", "sort": "desc" }, "legend": { "displayMode": "list", "placement": "right", "showLegend": true } },
+      "options": { "tooltip": { "mode": "multi", "sort": "desc" }, "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
       "fieldConfig": {
         "defaults": { "unit": "ops", "custom": { "drawStyle": "line", "lineInterpolation": "smooth", "lineWidth": 2, "fillOpacity": 12, "gradientMode": "opacity", "spanNulls": true, "showPoints": "never", "stacking": { "mode": "none", "group": "A" } } },
         "overrides": [
@@ -422,7 +422,7 @@
         { "expr": "rate(couchdb_document_inserts_total{job=\"couchdb-amf\"}[2m])", "legendFormat": "Inserts AMF", "refId": "D", "instant": false, "range": true }
       ],
       "gridPos": { "x": 12, "y": 48, "w": 12, "h": 8 },
-      "options": { "tooltip": { "mode": "multi", "sort": "desc" }, "legend": { "displayMode": "list", "placement": "right", "showLegend": true } },
+      "options": { "tooltip": { "mode": "multi", "sort": "desc" }, "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
       "fieldConfig": {
         "defaults": { "unit": "reqps", "custom": { "drawStyle": "line", "lineInterpolation": "smooth", "lineWidth": 2, "fillOpacity": 12, "gradientMode": "opacity", "spanNulls": true, "showPoints": "never", "stacking": { "mode": "none", "group": "A" } } },
         "overrides": [
@@ -471,31 +471,20 @@
     {
       "id": 61,
       "title": "Compliance Blocks",
-      "description": "Blocked transactions by compliance rule triggered",
-      "type": "bargauge",
+      "description": "Accumulated compliance blocks by rule triggered over time",
+      "type": "timeseries",
       "datasource": { "type": "prometheus", "uid": "ffgx1hbr25a0wc" },
-      "targets": [{ "expr": "rwa_compliance_blocks_total", "legendFormat": "{{blocked_by}}", "refId": "A", "instant": true, "range": false }],
+      "targets": [{ "expr": "rwa_compliance_blocks_total", "legendFormat": "{{blocked_by}}", "refId": "A", "instant": false, "range": true }],
       "gridPos": { "x": 8, "y": 57, "w": 8, "h": 9 },
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"] },
-        "orientation": "horizontal",
-        "displayMode": "basic",
-        "minVizHeight": 10,
-        "minVizWidth": 0,
-        "namePlacement": "auto",
-        "showUnfilled": true,
-        "valueMode": "color"
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true }
       },
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "color": { "mode": "thresholds" },
-          "thresholds": { "mode": "absolute", "steps": [
-            { "color": "#7BF3FC", "value": null },
-            { "color": "#FF9830", "value": 10 },
-            { "color": "#F2495C", "value": 50 }
-          ]},
-          "custom": {}
+          "custom": { "drawStyle": "line", "lineInterpolation": "smooth", "lineWidth": 2, "fillOpacity": 16, "gradientMode": "opacity", "spanNulls": true, "showPoints": "never", "stacking": { "mode": "none", "group": "A" } },
+          "color": { "mode": "palette-classic" }
         },
         "overrides": []
       }
@@ -504,33 +493,27 @@
     {
       "id": 62,
       "title": "AML Risk Score",
-      "description": "Average AML risk score by risk category",
-      "type": "bargauge",
+      "description": "Average AML risk score per category over time",
+      "type": "timeseries",
       "datasource": { "type": "prometheus", "uid": "ffgx1hbr25a0wc" },
-      "targets": [{ "expr": "rwa_aml_score_avg", "legendFormat": "{{risk_category}}", "refId": "A", "instant": true, "range": false }],
+      "targets": [{ "expr": "rwa_aml_score_avg", "legendFormat": "{{risk_category}}", "refId": "A", "instant": false, "range": true }],
       "gridPos": { "x": 16, "y": 57, "w": 8, "h": 9 },
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"] },
-        "orientation": "horizontal",
-        "displayMode": "basic",
-        "minVizHeight": 10,
-        "minVizWidth": 0,
-        "namePlacement": "auto",
-        "showUnfilled": true,
-        "valueMode": "color"
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true }
       },
       "fieldConfig": {
         "defaults": {
           "unit": "percentunit",
           "min": 0,
           "max": 1,
-          "color": { "mode": "thresholds" },
+          "custom": { "drawStyle": "line", "lineInterpolation": "smooth", "lineWidth": 2, "fillOpacity": 16, "gradientMode": "opacity", "spanNulls": true, "showPoints": "never", "stacking": { "mode": "none", "group": "A" } },
           "thresholds": { "mode": "absolute", "steps": [
             { "color": "#7BF3FC", "value": null },
             { "color": "#FF9830", "value": 0.4 },
             { "color": "#F2495C", "value": 0.7 }
           ]},
-          "custom": {}
+          "color": { "mode": "palette-classic" }
         },
         "overrides": []
       }
@@ -544,7 +527,7 @@
       "datasource": { "type": "prometheus", "uid": "ffgx1hbr25a0wc" },
       "targets": [{ "expr": "sum by(status) (rate(rwa_celery_tasks_total[2m]))", "legendFormat": "{{status}}", "refId": "A", "instant": false, "range": true }],
       "gridPos": { "x": 0, "y": 66, "w": 14, "h": 8 },
-      "options": { "tooltip": { "mode": "multi", "sort": "desc" }, "legend": { "displayMode": "list", "placement": "right", "showLegend": true } },
+      "options": { "tooltip": { "mode": "multi", "sort": "desc" }, "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
       "fieldConfig": {
         "defaults": { "unit": "ops", "custom": { "drawStyle": "bars", "lineWidth": 0, "fillOpacity": 80, "gradientMode": "opacity", "spanNulls": true, "showPoints": "never", "stacking": { "mode": "normal", "group": "A" } } },
         "overrides": [
@@ -598,7 +581,7 @@
       "datasource": { "type": "prometheus", "uid": "ffgx1hbr25a0wc" },
       "targets": [{ "expr": "celery_queue_length", "legendFormat": "{{queue}}", "refId": "A", "instant": false, "range": true }],
       "gridPos": { "x": 0, "y": 75, "w": 14, "h": 9 },
-      "options": { "tooltip": { "mode": "multi", "sort": "desc" }, "legend": { "displayMode": "list", "placement": "right", "showLegend": true } },
+      "options": { "tooltip": { "mode": "multi", "sort": "desc" }, "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
       "fieldConfig": {
         "defaults": { "unit": "short", "color": { "mode": "palette-classic" }, "custom": { "drawStyle": "line", "lineInterpolation": "smooth", "lineWidth": 2, "fillOpacity": 12, "gradientMode": "opacity", "spanNulls": true, "showPoints": "never", "stacking": { "mode": "none", "group": "A" } } },
         "overrides": []
@@ -633,9 +616,9 @@
       "title": "Log Volume by Severity",
       "type": "timeseries",
       "datasource": { "type": "loki", "uid": "loki" },
-      "targets": [{ "expr": "sum by(level) (count_over_time({job=~\"rwa|systemd|docker\"}[1m]))", "legendFormat": "{{level}}", "refId": "A", "queryType": "range" }],
+      "targets": [{ "expr": "sum by(level) (count_over_time({job=~\"rwa|systemd\"}[1m]))", "legendFormat": "{{level}}", "refId": "A", "queryType": "range" }],
       "gridPos": { "x": 0, "y": 85, "w": 24, "h": 6 },
-      "options": { "tooltip": { "mode": "multi", "sort": "desc" }, "legend": { "displayMode": "list", "placement": "right", "showLegend": true } },
+      "options": { "tooltip": { "mode": "multi", "sort": "desc" }, "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
       "fieldConfig": {
         "defaults": { "unit": "short", "custom": { "drawStyle": "bars", "lineWidth": 0, "fillOpacity": 80, "gradientMode": "none", "spanNulls": false, "showPoints": "never", "stacking": { "mode": "normal", "group": "A" } } },
         "overrides": [
@@ -658,12 +641,13 @@
     },
 
     { "id": 82,
-      "title": "Container Logs",
+      "title": "System Logs",
+      "description": "Full systemd journal stream across all units and severity levels",
       "type": "logs",
       "datasource": { "type": "loki", "uid": "loki" },
-      "targets": [{ "expr": "{job!~\"rwa|systemd|prometheus\"} != \"GET /metrics\" != \"level=debug\"", "refId": "A", "queryType": "range", "maxLines": 200 }],
+      "targets": [{ "expr": "{job=\"systemd\"}", "refId": "A", "queryType": "range", "maxLines": 200 }],
       "gridPos": { "x": 12, "y": 91, "w": 12, "h": 12 },
-      "options": { "showTime": true, "showLabels": true, "showCommonLabels": false, "wrapLogMessage": true, "prettifyLogMessage": false, "enableLogDetails": true, "dedupStrategy": "none", "sortOrder": "Descending" },
+      "options": { "showTime": true, "showLabels": false, "showCommonLabels": false, "wrapLogMessage": true, "prettifyLogMessage": false, "enableLogDetails": true, "dedupStrategy": "none", "sortOrder": "Descending" },
       "fieldConfig": { "defaults": {}, "overrides": [] }
     },
 
