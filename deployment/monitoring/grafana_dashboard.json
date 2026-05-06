@@ -1,6 +1,6 @@
 {
   "uid": "rwa-ops-hub",
-  "title": "RWA Operational Intelligence Hub",
+  "title": "Quant-ix Health",
   "tags": ["rwa", "blockchain", "compliance", "production"],
   "timezone": "browser",
   "refresh": "30s",
@@ -389,7 +389,7 @@
     },
 
     { "id": 53,
-      "title": "CouchDB — Reads & Writes",
+      "title": "CouchDB Reads and Writes",
       "type": "timeseries",
       "datasource": { "type": "prometheus", "uid": "ffgx1hbr25a0wc" },
       "targets": [
@@ -412,7 +412,7 @@
     },
 
     { "id": 54,
-      "title": "CouchDB — HTTP & Inserts",
+      "title": "CouchDB HTTP and Inserts",
       "type": "timeseries",
       "datasource": { "type": "prometheus", "uid": "ffgx1hbr25a0wc" },
       "targets": [
@@ -434,7 +434,7 @@
       }
     },
 
-    { "id": 204, "title": "Blockchain & Compliance", "type": "row", "collapsed": false,
+    { "id": 204, "title": "Blockchain and Compliance", "type": "row", "collapsed": false,
       "gridPos": { "x": 0, "y": 56, "w": 24, "h": 1 }, "panels": [] },
 
     {
@@ -572,7 +572,7 @@
       }
     },
 
-    { "id": 205, "title": "Workers & Queues", "type": "row", "collapsed": false,
+    { "id": 205, "title": "Workers and Queues", "type": "row", "collapsed": false,
       "gridPos": { "x": 0, "y": 74, "w": 24, "h": 1 }, "panels": [] },
 
     { "id": 70,
@@ -589,7 +589,7 @@
     },
 
     { "id": 71,
-      "title": "Workers & Active Tasks",
+      "title": "Workers and Active Tasks",
       "type": "stat",
       "datasource": { "type": "prometheus", "uid": "ffgx1hbr25a0wc" },
       "targets": [
@@ -609,18 +609,18 @@
       }
     },
 
-    { "id": 206, "title": "Logs & Observability", "type": "row", "collapsed": false,
+    { "id": 206, "title": "Logs and Observability", "type": "row", "collapsed": false,
       "gridPos": { "x": 0, "y": 84, "w": 24, "h": 1 }, "panels": [] },
 
     { "id": 80,
       "title": "Log Volume by Severity",
       "type": "timeseries",
       "datasource": { "type": "loki", "uid": "loki" },
-      "targets": [{ "expr": "sum by(level) (count_over_time({job=~\"rwa|systemd\"}[1m]))", "legendFormat": "{{level}}", "refId": "A", "queryType": "range" }],
-      "gridPos": { "x": 0, "y": 85, "w": 24, "h": 6 },
+      "targets": [{ "expr": "sum by(level) (count_over_time({job=~\"rwa|systemd\"}[$__interval]))", "legendFormat": "{{level}}", "refId": "A", "queryType": "range" }],
+      "gridPos": { "x": 0, "y": 85, "w": 24, "h": 8 },
       "options": { "tooltip": { "mode": "multi", "sort": "desc" }, "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true } },
       "fieldConfig": {
-        "defaults": { "unit": "short", "custom": { "drawStyle": "bars", "lineWidth": 0, "fillOpacity": 80, "gradientMode": "none", "spanNulls": false, "showPoints": "never", "stacking": { "mode": "normal", "group": "A" } } },
+        "defaults": { "unit": "short", "custom": { "drawStyle": "bars", "lineWidth": 0, "fillOpacity": 80, "gradientMode": "none", "spanNulls": false, "showPoints": "never", "barAlignment": 0, "barMaxWidth": 20, "stacking": { "mode": "normal", "group": "A" } } },
         "overrides": [
           { "matcher": { "id": "byName", "options": "info" },     "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "#7BF3FC" } }] },
           { "matcher": { "id": "byName", "options": "warning" },  "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "#FF9830" } }] },
