@@ -8,7 +8,7 @@
 
 ## Reporting a vulnerability
 
-Report security vulnerabilities by email to **nadiraymen5@gmail.com**.
+Report security vulnerabilities by email to **zakaria.x.rl@proton.me**.
 
 Include:
 
