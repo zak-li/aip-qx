@@ -46,7 +46,7 @@ Every transaction produces an on-chain audit entry. An off-chain integrity check
 
 | Package | Version |
 |---|---|
-| Python | 3.11+ |
+| Python | 3.12+ |
 | FastAPI | 0.135+ |
 | Celery | 5.6+ |
 | SQLAlchemy | 2.0+ |
@@ -146,7 +146,7 @@ Pass the returned token as `Authorization: Bearer <token>` on all subsequent req
 | GET | `/api/v1/compliance/alerts/active` | Active compliance alerts |
 | POST | `/api/v1/compliance/screening/run` | Run AML sanctions screening |
 | POST | `/api/v1/compliance/kyc/submit` | Submit KYC documents |
-| POST | `/api/v1/zkp/prove` | Issue ZK-KYC proof |
+| POST | `/api/v1/zkp/setup-key` | Issue ZK-KYC credential |
 | POST | `/api/v1/zkp/verify` | Verify a ZK-KYC proof |
 
 **Audit, ledger and agent**
@@ -161,7 +161,7 @@ Pass the returned token as `Authorization: Bearer <token>` on all subsequent req
 | GET | `/api/v1/transactions` | Ledger transaction history |
 | GET | `/api/v1/transactions/stats/summary` | Transaction statistics summary |
 | GET | `/api/v1/events/stream` | Live Fabric event stream (SSE) |
-| POST | `/api/v1/agent/query` | RAG query over regulatory knowledge base |
+| POST | `/api/v1/agent/chat` | RAG query over regulatory knowledge base |
 | GET | `/metrics` | Prometheus metrics |
 
 ## Environment Variables
@@ -199,7 +199,7 @@ Pass the returned token as `Authorization: Bearer <token>` on all subsequent req
 regx/
 ├── backend/
 │   ├── main.py                 # FastAPI app, middleware, metrics
-│   ├── config.py               # Settings and secrets
+│   ├── config.py
 │   ├── features/
 │   │   ├── assets/             # Asset lifecycle
 │   │   ├── compliance/         # AML, KYC, MiCA rules
