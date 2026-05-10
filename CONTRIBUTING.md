@@ -14,7 +14,7 @@ Thank you for your interest in RegX.
 git clone https://github.com/zak-li/regx.git
 cd regx
 python -m venv .venv
-source .venv/bin/activate   # Windows: .venv\Scripts\activate
+source .venv/bin/activate         # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
