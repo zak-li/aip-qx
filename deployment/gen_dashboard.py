@@ -1,9 +1,11 @@
-import json, requests
+import json
+import os
+import requests
 
-GRAFANA = "http://10.10.10.150:3000"
-AUTH    = ("admin", "admin")
-PROM    = "ffgx1hbr25a0wc"
-LOKI    = "loki"
+GRAFANA = os.environ.get("GRAFANA_URL", "http://localhost:3000")
+AUTH    = (os.environ.get("GRAFANA_USER", "admin"), os.environ.get("GRAFANA_PASSWORD", "admin"))
+PROM    = os.environ.get("GRAFANA_PROM_UID", "ffgx1hbr25a0wc")
+LOKI    = os.environ.get("GRAFANA_LOKI_UID", "loki")
 
 def prom():
     return {"type": "prometheus", "uid": PROM}

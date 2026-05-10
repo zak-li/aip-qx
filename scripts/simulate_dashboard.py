@@ -7,6 +7,7 @@ Usage:
 """
 
 import asyncio
+import os
 import random
 import sys
 import time
@@ -23,11 +24,11 @@ except ImportError:
     subprocess.check_call([sys.executable, "-m", "pip", "install", "httpx", "-q"])
     import httpx
 
-BASE_URL = "http://10.10.10.150:8000"
-THOMAS_EMAIL = "thomas.martin@bank01.com"
-THOMAS_PASSWORD = "ChangeMe2025!"
-THOMAS_USER_ID = "a0000001-0001-0001-0001-000000000001"
-BNP_ORG_ID = "a1b2c3d4-0001-0001-0001-000000000001"
+BASE_URL = os.environ.get("API_URL", "http://localhost:8000")
+THOMAS_EMAIL = os.environ.get("SIM_USER_EMAIL", "thomas.martin@bank01.com")
+THOMAS_PASSWORD = os.environ.get("SIM_USER_PASSWORD", "")
+THOMAS_USER_ID = os.environ.get("SIM_USER_ID", "a0000001-0001-0001-0001-000000000001")
+BNP_ORG_ID = os.environ.get("SIM_ORG_ID", "a1b2c3d4-0001-0001-0001-000000000001")
 
 ASSET_TYPES = ["OBLIGATION", "OPCVM", "IMMOBILIER", "DERIVE", "MATIERE_PREMIERE", "PRIVATE_EQUITY"]
 ASSET_PREFIXES = {

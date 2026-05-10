@@ -7,12 +7,15 @@ import sys
 import paramiko
 import posixpath
 
-HOST = "10.10.10.150"
-USERNAME = "zakaria"
-PASSWORD = "zakaria"
+HOST = os.environ.get("DEPLOY_HOST", "")
+USERNAME = os.environ.get("DEPLOY_USER", "")
+PASSWORD = os.environ.get("DEPLOY_PASSWORD", "")
+if not HOST or not USERNAME or not PASSWORD:
+    print("Set DEPLOY_HOST, DEPLOY_USER, DEPLOY_PASSWORD environment variables.")
+    raise SystemExit(1)
 
 LOCAL_SRC = os.path.abspath(os.path.join(os.path.dirname(__file__), "../frontend/src"))
-REMOTE_DEST = "/home/zakaria/rwa-platform/frontend/src"
+REMOTE_DEST = f"/home/{USERNAME}/rwa-platform/frontend/src"
 
 def create_remote_dir_if_missing(sftp, remote_path):
     try:

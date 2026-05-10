@@ -1,15 +1,20 @@
+import os
 import paramiko
 import sys
 
 def run_ssh_commands():
-    host = '10.10.10.150'
-    user = 'zakaria'
-    password = 'zakaria'
-    
+    host = os.environ.get("DEPLOY_HOST", "")
+    user = os.environ.get("DEPLOY_USER", "")
+    password = os.environ.get("DEPLOY_PASSWORD", "")
+    if not host or not user or not password:
+        print("Set DEPLOY_HOST, DEPLOY_USER, DEPLOY_PASSWORD environment variables.")
+        sys.exit(1)
+
+    sudo_pass = os.environ.get("DEPLOY_SUDO_PASSWORD", password)
     commands = [
-        "echo 'zakaria' | sudo -S docker pull neo4j:5.23.0",
-        "echo 'zakaria' | sudo -S docker pull hashicorp/vault:1.15.1",
-        "echo 'zakaria' | sudo -S docker compose -f /home/zakaria/rwa-platform/docker/docker-compose.yaml up -d neo4j vault"
+        f"echo '{sudo_pass}' | sudo -S docker pull neo4j:5.23.0",
+        f"echo '{sudo_pass}' | sudo -S docker pull hashicorp/vault:1.15.1",
+        f"echo '{sudo_pass}' | sudo -S docker compose -f /home/{user}/rwa-platform/docker/docker-compose.yaml up -d neo4j vault",
     ]
     
     client = paramiko.SSHClient()

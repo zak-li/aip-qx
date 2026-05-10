@@ -65,5 +65,7 @@ scripts/_deploy_*.py
 # Grafana customization scripts (contain VM credentials — never commit)
 grafana_scripts/
 
-# Node dependencies (grafana scripts)
+# Node dependencies and npm files (grafana/tooling scripts only)
 node_modules/
+package.json
+package-lock.json
