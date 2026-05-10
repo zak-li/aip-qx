@@ -8,14 +8,14 @@
 
 ## Reporting a vulnerability
 
-Report security vulnerabilities by email to **zakaria.x.rl@proton.me**.
+**Do not open a public issue for security vulnerabilities.**
 
-Include:
+Send a report to [regx.yovtg@aleeas.com](mailto:regx.yovtg@aleeas.com) with the following:
 
-- A clear description of the issue
-- Steps to reproduce or a proof-of-concept
-- The potential impact in your assessment
+- A description of the vulnerability and its potential impact
+- Steps to reproduce or a minimal proof-of-concept
+- Affected version(s)
 
-You will receive an acknowledgement within 48 hours. If the report is confirmed, a fix will be prioritized according to severity. You will be kept informed of progress and notified before any public disclosure.
+You will receive an acknowledgement within 48 hours. Confirmed vulnerabilities are triaged by severity and patched on a priority basis. You will be notified before any public disclosure.
 
-Please do not open a public GitHub issue for security-related matters.
+We ask that you follow responsible disclosure practices and allow reasonable time for a fix before making the issue public.
