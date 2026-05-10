@@ -215,11 +215,11 @@ regx/
 │   ├── docker/                 # docker-compose.yaml
 │   └── scripts/                # Network lifecycle scripts
 ├── deployment/
-│   ├── systemd/                # Service units
+│   ├── systemd/
 │   └── monitoring/             # Prometheus, Grafana, Loki
 └── database/
-    ├── migrations/             # Alembic migrations
-    └── fixtures/               # Seed data
+    ├── migrations/
+    └── fixtures/
 ```
 
 ## Observability
