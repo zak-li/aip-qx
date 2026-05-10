@@ -1,4 +1,4 @@
-import uuid
+﻿import uuid
 from datetime import timedelta
 
 import pyotp
@@ -15,12 +15,12 @@ async def test_user_mfa(async_session: AsyncSession, test_org: Organization) -> 
     user = User(
         id=THOMAS_USER_ID,
         org_id=BNP_ORG_ID,
-        email="thomas.mfa@bnpparibas.fr",
+        email="thomas.mfa@bank01.fr",
         hashed_password=hash_password("Passw0rd!"),
         first_name="Thomas",
         last_name="MFA",
         role="EMETTEUR",
-        msp_id="BNPParibasMSP",
+        msp_id="BANK01MSP",
         is_active=True,
         mfa_enabled=False,
         mfa_secret=None,
@@ -57,7 +57,7 @@ async def test_mfa_setup_fails_if_already_enabled(
     user = User(
         id=uuid.UUID("20000000-0000-0000-0000-000000000099"),
         org_id=BNP_ORG_ID,
-        email="already.mfa@bnpparibas.fr",
+        email="already.mfa@bank01.fr",
         hashed_password=hash_password("Passw0rd!"),
         role="EMETTEUR",
         is_active=True,
@@ -85,7 +85,7 @@ async def test_mfa_enable_with_valid_code(
     user = User(
         id=uuid.UUID("20000000-0000-0000-0000-000000000010"),
         org_id=BNP_ORG_ID,
-        email="enable.mfa@bnpparibas.fr",
+        email="enable.mfa@bank01.fr",
         hashed_password=hash_password("Passw0rd!"),
         role="EMETTEUR",
         is_active=True,
@@ -116,7 +116,7 @@ async def test_mfa_enable_with_invalid_code(
     user = User(
         id=uuid.UUID("20000000-0000-0000-0000-000000000011"),
         org_id=BNP_ORG_ID,
-        email="invalid.mfa@bnpparibas.fr",
+        email="invalid.mfa@bank01.fr",
         hashed_password=hash_password("Passw0rd!"),
         role="EMETTEUR",
         is_active=True,
@@ -145,7 +145,7 @@ async def test_login_returns_mfa_required_flag_when_mfa_enabled(
     user = User(
         id=uuid.UUID("20000000-0000-0000-0000-000000000020"),
         org_id=BNP_ORG_ID,
-        email="mfa.login@bnpparibas.fr",
+        email="mfa.login@bank01.fr",
         hashed_password=hash_password("Passw0rd!"),
         role="EMETTEUR",
         is_active=True,
@@ -157,7 +157,7 @@ async def test_login_returns_mfa_required_flag_when_mfa_enabled(
 
     response = await test_client.post(
         "/api/v1/auth/login",
-        json={"email": "mfa.login@bnpparibas.fr", "password": "Passw0rd!"},
+        json={"email": "mfa.login@bank01.fr", "password": "Passw0rd!"},
     )
     assert response.status_code == 200
     data = response.json()
@@ -172,7 +172,7 @@ async def test_login_with_valid_mfa_code_succeeds(
     user = User(
         id=uuid.UUID("20000000-0000-0000-0000-000000000021"),
         org_id=BNP_ORG_ID,
-        email="mfa.fulllogin@bnpparibas.fr",
+        email="mfa.fulllogin@bank01.fr",
         hashed_password=hash_password("Passw0rd!"),
         role="EMETTEUR",
         is_active=True,
@@ -186,7 +186,7 @@ async def test_login_with_valid_mfa_code_succeeds(
     response = await test_client.post(
         "/api/v1/auth/login",
         json={
-            "email": "mfa.fulllogin@bnpparibas.fr",
+            "email": "mfa.fulllogin@bank01.fr",
             "password": "Passw0rd!",
             "mfa_code": totp.now(),
         },
@@ -204,7 +204,7 @@ async def test_login_with_invalid_mfa_code_returns_401(
     user = User(
         id=uuid.UUID("20000000-0000-0000-0000-000000000022"),
         org_id=BNP_ORG_ID,
-        email="mfa.badcode@bnpparibas.fr",
+        email="mfa.badcode@bank01.fr",
         hashed_password=hash_password("Passw0rd!"),
         role="EMETTEUR",
         is_active=True,
@@ -217,7 +217,7 @@ async def test_login_with_invalid_mfa_code_returns_401(
     response = await test_client.post(
         "/api/v1/auth/login",
         json={
-            "email": "mfa.badcode@bnpparibas.fr",
+            "email": "mfa.badcode@bank01.fr",
             "password": "Passw0rd!",
             "mfa_code": "000000",
         },
@@ -232,7 +232,7 @@ async def test_mfa_disable_with_valid_code(
     user = User(
         id=uuid.UUID("20000000-0000-0000-0000-000000000030"),
         org_id=BNP_ORG_ID,
-        email="disable.mfa@bnpparibas.fr",
+        email="disable.mfa@bank01.fr",
         hashed_password=hash_password("Passw0rd!"),
         role="EMETTEUR",
         is_active=True,

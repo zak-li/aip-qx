@@ -1,4 +1,4 @@
-
+﻿
 import socket
 import sys
 from datetime import datetime, timezone
@@ -10,7 +10,7 @@ SERVICES = [
     ("PostgreSQL",             5432, "Base de données principale (rwadb)",  True),
     ("Redis",                  6379, "Cache & broker Celery",              True),
     ("Fabric Orderer",         7050, "Ordonnanceur Hyperledger Fabric",    True),
-    ("Fabric Peer BNP",        7051, "Nœud BNP Paribas (peer0)",          True),
+    ("Fabric Peer BNP",        7051, "Nœud Bank01 (peer0)",          True),
     ("Fabric Peer AMF",        7091, "Nœud AMF Régulateur (peer0)",       True),
     ("CouchDB BNP",            5984, "State DB BNP (World State)",        True),
     ("CouchDB AMF",            7984, "State DB AMF (World State)",        True),

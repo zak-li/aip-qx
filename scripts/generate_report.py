@@ -1,4 +1,4 @@
-import asyncio
+﻿import asyncio
 import os
 from datetime import datetime, timezone
 import sys
@@ -29,11 +29,11 @@ async def main():
         ProvenanceRecord(
             tx_id="185861c04e4744c0c10f07ac82011b1534fe3a7642507db322172ab39fa2ad43",
             timestamp=datetime.now(timezone.utc),
-            actor_msp="BNPParibasMSP",
-            actor_dn="CN=Admin@bnpparibas.finance-trust.com,OU=admin",
+            actor_msp="BANK01MSP",
+            actor_dn="CN=Admin@bank01.finance-trust.com,OU=admin",
             action="TOKENISE",
             from_owner="",
-            to_owner="CN=Admin@bnpparibas.finance-trust.com,OU=admin",
+            to_owner="CN=Admin@bank01.finance-trust.com,OU=admin",
             amount=50000000.0,
             justification="Tokenisation OAT emission primaire",
             block_number=1,
@@ -41,13 +41,13 @@ async def main():
         ProvenanceRecord(
             tx_id="7a4508a19663ea42115d16ef010048636c3b0670c62a0706731a006a9afe4611",
             timestamp=datetime.now(timezone.utc),
-            actor_msp="BNPParibasMSP",
-            actor_dn="CN=Admin@bnpparibas.finance-trust.com,OU=admin",
+            actor_msp="BANK01MSP",
+            actor_dn="CN=Admin@bank01.finance-trust.com,OU=admin",
             action="TRANSFERE",
-            from_owner="CN=Admin@bnpparibas.finance-trust.com,OU=admin",
+            from_owner="CN=Admin@bank01.finance-trust.com,OU=admin",
             to_owner="CN=pierre.moreau,OU=AXA-IM",
             amount=24739375.0,
-            justification="Cession bloc AXA IM portefeuille ESG",
+            justification="Cession bloc Inv01 portefeuille ESG",
             block_number=2,
         )
     ]

@@ -1,12 +1,12 @@
-{
-  "Admin@bnpparibas": {
-    "cert_path": "tests/fixtures/crypto_config_mock/peerOrganizations/bnpparibas.finance-trust.com/users/Admin@bnpparibas.finance-trust.com/msp/signcerts/cert.pem",
-    "key_path": "tests/fixtures/crypto_config_mock/peerOrganizations/bnpparibas.finance-trust.com/users/Admin@bnpparibas.finance-trust.com/msp/keystore/priv_sk",
-    "msp_id": "BNPParibasMSP"
+﻿{
+  "Admin@bank01": {
+    "cert_path": "tests/fixtures/crypto_config_mock/peerOrganizations/bank01.finance-trust.com/users/Admin@bank01.finance-trust.com/msp/signcerts/cert.pem",
+    "key_path": "tests/fixtures/crypto_config_mock/peerOrganizations/bank01.finance-trust.com/users/Admin@bank01.finance-trust.com/msp/keystore/priv_sk",
+    "msp_id": "BANK01MSP"
   },
   "Admin@amf-regulateur": {
     "cert_path": "tests/fixtures/crypto_config_mock/peerOrganizations/amf-regulateur.finance-trust.com/users/Admin@amf-regulateur.finance-trust.com/msp/signcerts/cert.pem",
     "key_path": "tests/fixtures/crypto_config_mock/peerOrganizations/amf-regulateur.finance-trust.com/users/Admin@amf-regulateur.finance-trust.com/msp/keystore/priv_sk",
-    "msp_id": "AMFRegulateurMSP"
+    "msp_id": "REG01MSP"
   }
 }

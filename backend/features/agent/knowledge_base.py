@@ -1,4 +1,4 @@
-"""Static knowledge base — MiCA, AML/KYC, Fabric architecture docs."""
+﻿"""Static knowledge base — MiCA, AML/KYC, Fabric architecture docs."""
 from __future__ import annotations
 
 KNOWLEDGE_CHUNKS: list[dict[str, str]] = [
@@ -70,7 +70,7 @@ KNOWLEDGE_CHUNKS: list[dict[str, str]] = [
         "content": (
             "Statuts possibles : ACTIF (actif négociable), GELE (gel réglementaire AMF, transfert interdit), "
             "EN_EMISSION (phase primaire, pas encore négociable), REMBOURSE (actif arrivé à maturité). "
-            "Le gel est initié uniquement par AMFRegulateurMSP via FreezeAsset. "
+            "Le gel est initié uniquement par REG01MSP via FreezeAsset. "
             "Le dégel est effectué par UnfreezeAsset après autorisation réglementaire."
         ),
     },
@@ -79,13 +79,13 @@ KNOWLEDGE_CHUNKS: list[dict[str, str]] = [
         "category": "blockchain",
         "title": "Architecture Hyperledger Fabric",
         "content": (
-            "Réseau Fabric : 2 organisations (BNPParibasMSP, AMFRegulateurMSP) + 1 orderer. "
+            "Réseau Fabric : 2 organisations (BANK01MSP, REG01MSP) + 1 orderer. "
             "Channel : rwa-channel. Chaincode : rwa-token (CCAAS). "
             "State DB : CouchDB (requêtes JSON riches). "
             "Fonctions chaincode : TokenizeAsset, TransferAsset, FreezeAsset, UnfreezeAsset, "
             "GetAsset, GetAssetHistory, GetProvenanceTrail, QueryAssets. "
-            "Politiques d'endorsement : BNPParibasMSP pour émission/transfert, "
-            "AMFRegulateurMSP pour gel/dégel."
+            "Politiques d'endorsement : BANK01MSP pour émission/transfert, "
+            "REG01MSP pour gel/dégel."
         ),
     },
     {
@@ -149,7 +149,7 @@ KNOWLEDGE_CHUNKS: list[dict[str, str]] = [
         "category": "security",
         "title": "Sécurité — HashiCorp Vault",
         "content": (
-            "Les clés privées Fabric (Admin@bnpparibas, Admin@amf-regulateur) sont stockées "
+            "Les clés privées Fabric (Admin@bank01, Admin@amf-regulateur) sont stockées "
             "dans HashiCorp Vault (moteur KV v2, mount point rwa-fabric). "
             "Les clés ne sont jamais conservées en mémoire au-delà de l'opération de signature. "
             "La mémoire est effacée via ctypes après chaque utilisation (zero-memory). "

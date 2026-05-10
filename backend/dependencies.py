@@ -1,4 +1,4 @@
-from collections.abc import Callable
+﻿from collections.abc import Callable
 from uuid import UUID
 
 import grpc
@@ -15,8 +15,8 @@ from backend.features.auth.models import User
 
 # MSP ID → Fabric wallet identity label.
 _MSP_TO_IDENTITY: dict[str, str] = {
-    "BNPParibasMSP": "Admin@bnpparibas",
-    "AMFRegulateurMSP": "Admin@amf-regulateur",
+    "BANK01MSP": "Admin@bank01",
+    "REG01MSP": "Admin@amf-regulateur",
 }
 
 

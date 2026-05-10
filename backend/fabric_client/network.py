@@ -1,4 +1,4 @@
-import asyncio
+﻿import asyncio
 import json
 import logging
 import os
@@ -99,14 +99,14 @@ class FabricClient:
         env["FABRIC_CFG_PATH"] = self.fabric_cfg
 
         if "bnp" in identity_label.lower():
-            env["CORE_PEER_LOCALMSPID"] = "BNPParibasMSP"
-            env["CORE_PEER_ADDRESS"] = "peer0.bnpparibas.finance-trust.com:7051"
-            env["CORE_PEER_MSPCONFIGPATH"] = f"{self.crypto_base}/peerOrganizations/bnpparibas.finance-trust.com/users/Admin@bnpparibas.finance-trust.com/msp"
-            env["CORE_PEER_TLS_CERT_FILE"] = f"{self.crypto_base}/peerOrganizations/bnpparibas.finance-trust.com/peers/peer0.bnpparibas.finance-trust.com/tls/server.crt"
-            env["CORE_PEER_TLS_KEY_FILE"] = f"{self.crypto_base}/peerOrganizations/bnpparibas.finance-trust.com/peers/peer0.bnpparibas.finance-trust.com/tls/server.key"
-            env["CORE_PEER_TLS_ROOTCERT_FILE"] = f"{self.crypto_base}/peerOrganizations/bnpparibas.finance-trust.com/peers/peer0.bnpparibas.finance-trust.com/tls/ca.crt"
+            env["CORE_PEER_LOCALMSPID"] = "BANK01MSP"
+            env["CORE_PEER_ADDRESS"] = "peer0.bank01.finance-trust.com:7051"
+            env["CORE_PEER_MSPCONFIGPATH"] = f"{self.crypto_base}/peerOrganizations/bank01.finance-trust.com/users/Admin@bank01.finance-trust.com/msp"
+            env["CORE_PEER_TLS_CERT_FILE"] = f"{self.crypto_base}/peerOrganizations/bank01.finance-trust.com/peers/peer0.bank01.finance-trust.com/tls/server.crt"
+            env["CORE_PEER_TLS_KEY_FILE"] = f"{self.crypto_base}/peerOrganizations/bank01.finance-trust.com/peers/peer0.bank01.finance-trust.com/tls/server.key"
+            env["CORE_PEER_TLS_ROOTCERT_FILE"] = f"{self.crypto_base}/peerOrganizations/bank01.finance-trust.com/peers/peer0.bank01.finance-trust.com/tls/ca.crt"
         elif "amf" in identity_label.lower():
-            env["CORE_PEER_LOCALMSPID"] = "AMFRegulateurMSP"
+            env["CORE_PEER_LOCALMSPID"] = "REG01MSP"
             env["CORE_PEER_ADDRESS"] = "peer0.amf-regulateur.finance-trust.com:7091"
             env["CORE_PEER_MSPCONFIGPATH"] = f"{self.crypto_base}/peerOrganizations/amf-regulateur.finance-trust.com/users/Admin@amf-regulateur.finance-trust.com/msp"
             env["CORE_PEER_TLS_CERT_FILE"] = f"{self.crypto_base}/peerOrganizations/amf-regulateur.finance-trust.com/peers/peer0.amf-regulateur.finance-trust.com/tls/server.crt"

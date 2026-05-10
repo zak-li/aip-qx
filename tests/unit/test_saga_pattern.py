@@ -1,4 +1,4 @@
-import uuid
+﻿import uuid
 from datetime import date
 from decimal import Decimal
 from unittest.mock import patch
@@ -82,7 +82,7 @@ async def test_transfer_saga_compensation_on_db_failure(
                     price=Decimal("950000"),
                     justification="Test SAGA transfer compensation",
                 )
-                await transfer(request, "Admin@bnpparibas", async_session, current_user=test_user_thomas)
+                await transfer(request, "Admin@bank01", async_session, current_user=test_user_thomas)
 
     submit_calls = mock_fabric_client.submit_transaction.call_args_list
     call_functions = [c[0][0] for c in submit_calls]
@@ -170,4 +170,4 @@ async def test_fabric_frozen_error_propagates_on_transfer(
                 price=Decimal("49000000"),
                 justification="Transfer frozen asset",
             )
-            await transfer(request, "Admin@bnpparibas", async_session, current_user=test_user_thomas)
+            await transfer(request, "Admin@bank01", async_session, current_user=test_user_thomas)

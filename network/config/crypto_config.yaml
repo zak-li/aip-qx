@@ -1,12 +1,12 @@
-PeerOrgs:
-  - Name: BNPParibas
-    Domain: bnpparibas.finance-trust.com
+﻿PeerOrgs:
+  - Name: BANK01
+    Domain: bank01.finance-trust.com
     EnableNodeOUs: true
     Template:
       Count: 1
     Users:
       Count: 3
-  - Name: AMFRegulateur
+  - Name: REG01
     Domain: amf-regulateur.finance-trust.com
     EnableNodeOUs: true
     Template:

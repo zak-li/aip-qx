@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # =============================================================================
 #  RWA Platform — Deploy & Test Vault Integration
 #  Run this directly on 10.10.10.150 as user zakaria
@@ -198,7 +198,7 @@ class FabricWallet:
 
         metadata = json.loads(wallet_path.read_text(encoding='utf-8'))
 
-        for target in ["Admin@bnpparibas", "Admin@amf-regulateur"]:
+        for target in ["Admin@bank01", "Admin@amf-regulateur"]:
             if target in metadata:
                 info = metadata[target]
                 if not isinstance(info, dict):

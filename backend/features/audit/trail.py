@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+﻿from dataclasses import dataclass
 from datetime import datetime
 
 from dateutil.parser import isoparse
@@ -27,7 +27,7 @@ class HistoryEntry:
     timestamp: datetime | None
 
 class AuditTrail:
-    def __init__(self, fabric_client: FabricClient, identity_label: str = "Admin@bnpparibas") -> None:
+    def __init__(self, fabric_client: FabricClient, identity_label: str = "Admin@bank01") -> None:
         self.fabric_client = fabric_client
         self.identity_label = identity_label
 

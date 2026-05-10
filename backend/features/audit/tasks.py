@@ -1,4 +1,4 @@
-import asyncio
+﻿import asyncio
 import json
 import os
 from datetime import UTC, datetime
@@ -17,7 +17,7 @@ from backend.features.audit.trail import AuditTrail
 async def _do_generate_audit(asset_id: str, requested_by_id: str) -> dict:
     fabric = get_fabric()
     await fabric.connect()
-    trail = AuditTrail(fabric_client=fabric, identity_label="Admin@bnpparibas")
+    trail = AuditTrail(fabric_client=fabric, identity_label="Admin@bank01")
 
     provenance = await trail.get_provenance(asset_id)
     raw_state = await trail.get_asset_state(asset_id)

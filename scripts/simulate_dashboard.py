@@ -1,4 +1,4 @@
-"""
+﻿"""
 RWA Platform — Dashboard Load Simulation
 Generates realistic API traffic so Prometheus metrics populate the Grafana dashboard.
 
@@ -24,7 +24,7 @@ except ImportError:
     import httpx
 
 BASE_URL = "http://10.10.10.150:8000"
-THOMAS_EMAIL = "thomas.martin@bnpparibas.com"
+THOMAS_EMAIL = "thomas.martin@bank01.com"
 THOMAS_PASSWORD = "ChangeMe2025!"
 THOMAS_USER_ID = "a0000001-0001-0001-0001-000000000001"
 BNP_ORG_ID = "a1b2c3d4-0001-0001-0001-000000000001"

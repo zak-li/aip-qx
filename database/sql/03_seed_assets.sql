@@ -1,4 +1,4 @@
-INSERT INTO assets (id, asset_id, isin, figi, asset_type, asset_name, issuer_org_id, current_owner_id, nominal_value, current_value, currency, status, issuance_date, maturity_date, coupon_rate, coupon_frequency, rating_moodys, rating_sp, rating_fitch, underlying_asset, fabric_tx_id, fabric_block_number, last_valuation_date, total_transfers, metadata) VALUES
+﻿INSERT INTO assets (id, asset_id, isin, figi, asset_type, asset_name, issuer_org_id, current_owner_id, nominal_value, current_value, currency, status, issuance_date, maturity_date, coupon_rate, coupon_frequency, rating_moodys, rating_sp, rating_fitch, underlying_asset, fabric_tx_id, fabric_block_number, last_valuation_date, total_transfers, metadata) VALUES
 ('a5000001-0001-0001-0001-000000000001',
  'RWA-OBL-BNP-2025-001', 'FR0014004L86', 'BBG00ZV3FXK4',
  'OBLIGATION', 'OAT 3.75% 25 Mars 2030 — BNP Emission Primaire',
@@ -10,7 +10,7 @@ INSERT INTO assets (id, asset_id, isin, figi, asset_type, asset_name, issuer_org
  'Obligation Assimilable du Tresor — Garantie souveraine France',
  'a3f8d2c1b4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2',
  1842, '2025-03-15', 0,
- '{"settlement_system": "Euroclear France", "minimum_denomination": 100000, "total_outstanding": 50000000, "paying_agent": "BNP Paribas Securities Services", "listing_market": "Euronext Paris", "accrued_interest": 468750.00, "mifid_classification": "COMPLEX_PRODUCT", "sfdr_article": "ARTICLE_8"}'
+ '{"settlement_system": "Euroclear France", "minimum_denomination": 100000, "total_outstanding": 50000000, "paying_agent": "Bank01 Securities Services", "listing_market": "Euronext Paris", "accrued_interest": 468750.00, "mifid_classification": "COMPLEX_PRODUCT", "sfdr_article": "ARTICLE_8"}'
 ),
 ('a5000002-0002-0002-0002-000000000002',
  'RWA-OBL-SG-2025-002', 'FR0014007NK8', 'BBG010MNPQ23',
@@ -27,7 +27,7 @@ INSERT INTO assets (id, asset_id, isin, figi, asset_type, asset_name, issuer_org
 ),
 ('a5000003-0003-0003-0003-000000000003',
  'RWA-OPCVM-AXA-2025-003', 'LU0012348560', 'BBG003VXHCH2',
- 'OPCVM', 'AXA WF Optimal Income A EUR Acc — SICAV Luxembourg',
+ 'OPCVM', 'Inv01 Optimal Income A EUR Acc — SICAV Luxembourg',
  'a1b2c3d4-0003-0003-0003-000000000003',
  'a0000005-0005-0005-0005-000000000005',
  120000000.0000, 124560000.0000, 'EUR', 'ACTIF',
@@ -36,7 +36,7 @@ INSERT INTO assets (id, asset_id, isin, figi, asset_type, asset_name, issuer_org
  'Fonds multi-actifs flexible — exposition mondiale actions et obligations',
  'c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7',
  1623, '2025-03-14', 3,
- '{"nav_per_share": 124.56, "total_shares": 1000000, "management_fee_bps": 75, "performance_fee_pct": 10, "high_water_mark": 118.90, "benchmark": "MSCI World 50% Bloomberg Aggregate 50%", "domicile": "Luxembourg", "depositary": "BNP Paribas Securities Services", "srri": 4}'
+ '{"nav_per_share": 124.56, "total_shares": 1000000, "management_fee_bps": 75, "performance_fee_pct": 10, "high_water_mark": 118.90, "benchmark": "MSCI World 50% Bloomberg Aggregate 50%", "domicile": "Luxembourg", "depositary": "Bank01 Securities Services", "srri": 4}'
 ),
 ('a5000004-0004-0004-0004-000000000004',
  'RWA-IMM-BNP-2025-004', 'FR0000RWA004', NULL,
@@ -62,7 +62,7 @@ INSERT INTO assets (id, asset_id, isin, figi, asset_type, asset_name, issuer_org
  'Fonds private equity specialise infrastructures energetiques europeennes',
  'e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9',
  1504, '2025-02-28', 0,
- '{"fund_vintage": 2024, "target_irr_pct": 12.5, "dpi": 0.0, "rvpi": 1.075, "tvpi": 1.075, "called_capital_pct": 45.0, "committed_capital": 100000000, "portfolio_companies": ["EolienFrance SAS", "SolarPark Iberia SA", "BioGaz Est SASU"], "gp_name": "Societe Generale Capital Partners", "lp_count": 23, "min_commitment": 1000000}'
+ '{"fund_vintage": 2024, "target_irr_pct": 12.5, "dpi": 0.0, "rvpi": 1.075, "tvpi": 1.075, "called_capital_pct": 45.0, "committed_capital": 100000000, "portfolio_companies": ["EolienFrance SAS", "SolarPark Iberia SA", "BioGaz Est SASU"], "gp_name": "Bank02 Capital Partners", "lp_count": 23, "min_commitment": 1000000}'
 ),
 ('a5000006-0006-0006-0006-000000000006',
  'RWA-DRV-BNP-2025-006', 'FR0000RWA006', NULL,

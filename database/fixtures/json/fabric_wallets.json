@@ -1,13 +1,13 @@
-{
+﻿{
   "wallets": [
     {
-      "identity_label": "thomas.martin@bnpparibas.com",
-      "mspId": "BNPParibasMSP",
+      "identity_label": "thomas.martin@bank01.com",
+      "mspId": "BANK01MSP",
       "type": "X.509",
       "version": 1,
       "common_name": "thomas.martin",
       "organizational_unit": "Capital-Markets",
-      "organization": "BNPParibasMSP",
+      "organization": "BANK01MSP",
       "locality": "Paris",
       "country": "FR",
       "cert_serial": "SN-BNP-PEER-A1B2C3D4E5F6",
@@ -22,13 +22,13 @@
       }
     },
     {
-      "identity_label": "claire.dupuis@bnpparibas.com",
-      "mspId": "BNPParibasMSP",
+      "identity_label": "claire.dupuis@bank01.com",
+      "mspId": "BANK01MSP",
       "type": "X.509",
       "version": 1,
       "common_name": "claire.dupuis",
       "organizational_unit": "Compliance-AML",
-      "organization": "BNPParibasMSP",
+      "organization": "BANK01MSP",
       "locality": "Paris",
       "country": "FR",
       "cert_serial": "SN-BNP-PEER-B2C3D4E5F6A1",
@@ -44,12 +44,12 @@
     },
     {
       "identity_label": "alexandre.leroy@socgen.com",
-      "mspId": "SocieteGeneraleMSP",
+      "mspId": "BANK02MSP",
       "type": "X.509",
       "version": 1,
       "common_name": "alexandre.leroy",
       "organizational_unit": "Fixed-Income-Trading",
-      "organization": "SocieteGeneraleMSP",
+      "organization": "BANK02MSP",
       "locality": "Paris",
       "country": "FR",
       "cert_serial": "SN-SG-PEER-C3D4E5F6A1B2",
@@ -65,12 +65,12 @@
     },
     {
       "identity_label": "isabelle.fontaine@socgen.com",
-      "mspId": "SocieteGeneraleMSP",
+      "mspId": "BANK02MSP",
       "type": "X.509",
       "version": 1,
       "common_name": "isabelle.fontaine",
       "organizational_unit": "Digital-Assets",
-      "organization": "SocieteGeneraleMSP",
+      "organization": "BANK02MSP",
       "locality": "Paris",
       "country": "FR",
       "cert_serial": "SN-SG-PEER-D4E5F6A1B2C3",
@@ -85,12 +85,12 @@
     },
     {
       "identity_label": "pierre.moreau@axa-im.com",
-      "mspId": "AXAInvestmentMSP",
+      "mspId": "INV01MSP",
       "type": "X.509",
       "version": 1,
       "common_name": "pierre.moreau",
       "organizational_unit": "Alternative-Investments",
-      "organization": "AXAInvestmentMSP",
+      "organization": "INV01MSP",
       "locality": "Paris",
       "country": "FR",
       "cert_serial": "SN-AXA-PEER-E5F6A1B2C3D4",
@@ -105,12 +105,12 @@
     },
     {
       "identity_label": "sophie.lambert@amf-france.org",
-      "mspId": "AMFRegulateurMSP",
+      "mspId": "REG01MSP",
       "type": "X.509",
       "version": 1,
       "common_name": "sophie.lambert",
       "organizational_unit": "Finance-Numerique",
-      "organization": "AMFRegulateurMSP",
+      "organization": "REG01MSP",
       "locality": "Paris",
       "country": "FR",
       "cert_serial": "SN-AMF-PEER-F6A1B2C3D4E5",
@@ -127,12 +127,12 @@
     },
     {
       "identity_label": "marc.bernard@amf-france.org",
-      "mspId": "AMFRegulateurMSP",
+      "mspId": "REG01MSP",
       "type": "X.509",
       "version": 1,
       "common_name": "marc.bernard",
       "organizational_unit": "Audit-Controle",
-      "organization": "AMFRegulateurMSP",
+      "organization": "REG01MSP",
       "locality": "Paris",
       "country": "FR",
       "cert_serial": "SN-AMF-PEER-A1B2C3D4E5F7",
@@ -147,13 +147,13 @@
       }
     },
     {
-      "identity_label": "nathalie.simon@caceis.com",
-      "mspId": "CACEISCustodianMSP",
+      "identity_label": "nathalie.simon@cst01.com",
+      "mspId": "CST01MSP",
       "type": "X.509",
       "version": 1,
       "common_name": "nathalie.simon",
       "organizational_unit": "Digital-Custody",
-      "organization": "CACEISCustodianMSP",
+      "organization": "CST01MSP",
       "locality": "Paris",
       "country": "FR",
       "cert_serial": "SN-CAC-PEER-B2C3D4E5F6A2",
@@ -167,13 +167,13 @@
       }
     },
     {
-      "identity_label": "james.wilson@natwestmarkets.com",
-      "mspId": "NatWestMarketsMSP",
+      "identity_label": "james.wilson@mkt01.com",
+      "mspId": "MKT01MSP",
       "type": "X.509",
       "version": 1,
       "common_name": "james.wilson",
       "organizational_unit": "Rates-Credit",
-      "organization": "NatWestMarketsMSP",
+      "organization": "MKT01MSP",
       "locality": "London",
       "country": "GB",
       "cert_serial": "SN-NW-PEER-C3D4E5F6A1B3",
@@ -190,12 +190,12 @@
     },
     {
       "identity_label": "francois.pichon@banque-france.fr",
-      "mspId": "BanqueDeFranceMSP",
+      "mspId": "CBK01MSP",
       "type": "X.509",
       "version": 1,
       "common_name": "francois.pichon",
       "organizational_unit": "Laboratoire-Fintech",
-      "organization": "BanqueDeFranceMSP",
+      "organization": "CBK01MSP",
       "locality": "Paris",
       "country": "FR",
       "cert_serial": "SN-BDF-PEER-D4E5F6A1B2C4",
@@ -214,16 +214,16 @@
   ],
   "ca_servers": [
     {
-      "mspId": "BNPParibasMSP",
-      "ca_name": "ca-bnpparibas",
-      "ca_host": "ca.bnpparibas.finance-trust.com",
+      "mspId": "BANK01MSP",
+      "ca_name": "ca-bank01",
+      "ca_host": "ca.bank01.finance-trust.com",
       "ca_port": 7054,
       "tls_enabled": true,
       "admin_user": "admin",
       "admin_department": "IT Infrastructure"
     },
     {
-      "mspId": "SocieteGeneraleMSP",
+      "mspId": "BANK02MSP",
       "ca_name": "ca-socgen",
       "ca_host": "ca.socgen.finance-trust.com",
       "ca_port": 7064,
@@ -232,7 +232,7 @@
       "admin_department": "IT Infrastructure"
     },
     {
-      "mspId": "AMFRegulateurMSP",
+      "mspId": "REG01MSP",
       "ca_name": "ca-amf-regulateur",
       "ca_host": "ca.amf-regulateur.finance-trust.com",
       "ca_port": 7094,
@@ -241,13 +241,13 @@
       "admin_department": "DSI AMF"
     },
     {
-      "mspId": "BanqueDeFranceMSP",
+      "mspId": "CBK01MSP",
       "ca_name": "ca-bdf",
       "ca_host": "ca.bdf.finance-trust.com",
       "ca_port": 7084,
       "tls_enabled": true,
       "admin_user": "admin",
-      "admin_department": "DSI Banque de France"
+      "admin_department": "DSI Cbk01"
     }
   ]
 }

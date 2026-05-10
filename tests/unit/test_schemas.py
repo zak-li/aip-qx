@@ -1,4 +1,4 @@
-from datetime import date
+﻿from datetime import date
 from decimal import Decimal
 
 import pytest
@@ -106,7 +106,7 @@ def test_transfer_request_zero_price():
             asset_id="RWA-OBL-BNP-2025-001",
             to_owner="sophie.lambert@amf.fr",
             price=Decimal("0"),
-            justification="Cession bloc AXA IM portefeuille ESG test",
+            justification="Cession bloc Inv01 portefeuille ESG test",
         )
 
 def test_transfer_request_dn_too_short():
@@ -115,5 +115,5 @@ def test_transfer_request_dn_too_short():
             asset_id="RWA-OBL-BNP-2025-001",
             to_owner="abc",
             price=Decimal("1000"),
-            justification="Cession bloc AXA IM portefeuille test",
+            justification="Cession bloc Inv01 portefeuille test",
         )

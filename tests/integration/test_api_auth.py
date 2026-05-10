@@ -1,4 +1,4 @@
-from httpx import AsyncClient
+﻿from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from tests.conftest import BNP_ORG_ID, THOMAS_USER_ID
@@ -9,7 +9,7 @@ async def test_login_thomas_martin_returns_valid_jwt(
 ):
     resp = await test_client.post(
         "/api/v1/auth/login",
-        json={"email": "thomas.martin@bnpparibas.fr", "password": "Passw0rd!"},
+        json={"email": "thomas.martin@bank01.fr", "password": "Passw0rd!"},
     )
     assert resp.status_code == 200
     body = resp.json()
@@ -22,7 +22,7 @@ async def test_login_wrong_password_returns_401(
 ):
     resp = await test_client.post(
         "/api/v1/auth/login",
-        json={"email": "thomas.martin@bnpparibas.fr", "password": "WrongPass!"},
+        json={"email": "thomas.martin@bank01.fr", "password": "WrongPass!"},
     )
     assert resp.status_code in (400, 401)
 
@@ -46,7 +46,7 @@ async def test_get_me_with_valid_token_returns_profile(
     )
     assert resp.status_code == 200
     body = resp.json()
-    assert body["email"] == "thomas.martin@bnpparibas.fr"
+    assert body["email"] == "thomas.martin@bank01.fr"
     assert body["role"] == "EMETTEUR"
 
 async def test_get_me_with_expired_token_returns_401(

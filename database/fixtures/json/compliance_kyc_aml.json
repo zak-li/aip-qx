@@ -1,4 +1,4 @@
-{
+﻿{
   "participants": [
     {
       "user_id": "10000000-0000-0000-0000-000000000001",
@@ -69,7 +69,7 @@
       "submission_id": "KYC-SUB-2025-BNP-TM-001",
       "participant_ref": "a0000001-0001-0001-0001-000000000001",
       "participant_name": "Thomas Martin",
-      "organisation": "BNP Paribas",
+      "organisation": "Bank01",
       "submitted_at": "2025-03-01 09:00:00",
       "provider": "Acuris Risk Intelligence",
       "provider_ref": "ARI-KYC-2025-BNP-TM-003841",
@@ -106,13 +106,13 @@
         },
         {
           "type": "CONTRAT_TRAVAIL",
-          "issuer": "BNP Paribas S.A.",
+          "issuer": "Bank01 S.A.",
           "issue_date": "2018-09-01",
           "verified": true
         }
       ],
       "employer_verification": {
-        "employer": "BNP Paribas S.A.",
+        "employer": "Bank01 S.A.",
         "lei": "R0MUWSFPU8MPRO8K5P83",
         "department": "Capital Markets Tokenization",
         "position": "Head of Digital Asset Issuance",
@@ -134,7 +134,7 @@
       "submission_id": "KYC-SUB-2025-NW-JW-001",
       "participant_ref": "a0000009-0009-0009-0009-000000000009",
       "participant_name": "Jamez Wilzon",
-      "organisation": "NatWest Markets",
+      "organisation": "Mkt01",
       "submitted_at": "2025-02-28 09:00:00",
       "provider": "LexisNexis Risk Solutions",
       "provider_ref": "LNRS-KYC-2025-NW-JW-002219",
@@ -176,7 +176,7 @@
         }
       ],
       "employer_verification": {
-        "employer": "NatWest Markets Plc",
+        "employer": "Mkt01 Plc",
         "lei": "8IBZUGJ7JPLH368JE346",
         "department": "Rates and Credit Trading",
         "position": "Senior Rates Trader",

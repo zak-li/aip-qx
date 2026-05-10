@@ -1,4 +1,4 @@
-import asyncio
+﻿import asyncio
 import hashlib
 import os
 import shutil
@@ -229,7 +229,7 @@ Vérification réalisée le """ + esc_gen_date + r""" --- """ + str(int_total) +
 \begin{tabularx}{\textwidth}{lX}
 \toprule
 \textbf{Réseau Fabric} & rwa-channel \\
-\textbf{Organisations endorseuses} & BNPParibasMSP + AMFRegulateurMSP \\
+\textbf{Organisations endorseuses} & BANK01MSP + REG01MSP \\
 \textbf{Politique d'endorsement} & MAJORITY \\
 \textbf{Références réglementaires applicables} & MiCA art.68/70/76, AMLD6, EMIR \\
 \bottomrule

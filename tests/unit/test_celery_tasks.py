@@ -1,4 +1,4 @@
-from decimal import Decimal
+﻿from decimal import Decimal
 from datetime import datetime, timedelta, timezone
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -35,7 +35,7 @@ async def test_check_kyc_expiry_detects_expiring_records(
         mock_session_local.return_value.__aenter__ = AsyncMock(return_value=mock_ctx)
         mock_session_local.return_value.__aexit__ = AsyncMock(return_value=False)
 
-        mock_rows = [(THOMAS_USER_ID, "thomas.martin@bnpparibas.fr", datetime.now(timezone.utc) + timedelta(days=15))]
+        mock_rows = [(THOMAS_USER_ID, "thomas.martin@bank01.fr", datetime.now(timezone.utc) + timedelta(days=15))]
         mock_result = MagicMock()
         mock_result.fetchall.return_value = mock_rows
 

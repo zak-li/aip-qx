@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 set -e
 
 export FABRIC_CFG_PATH=~/go/src/github.com/hyperledger/fabric-samples/config
@@ -44,8 +44,8 @@ peer lifecycle chaincode commit \
   -o orderer.finance-trust.com:7050 --tls --cafile $ORDERER_CA \
   --channelID rwa-channel --name rwa-token \
   --version 1.2 --sequence 1 \
-  --peerAddresses peer0.bnpparibas.finance-trust.com:7051 \
-  --tlsRootCertFiles ~/rwa-platform/crypto-config/peerOrganizations/bnpparibas.finance-trust.com/peers/peer0.bnpparibas.finance-trust.com/tls/ca.crt \
+  --peerAddresses peer0.bank01.finance-trust.com:7051 \
+  --tlsRootCertFiles ~/rwa-platform/crypto-config/peerOrganizations/bank01.finance-trust.com/peers/peer0.bank01.finance-trust.com/tls/ca.crt \
   --peerAddresses peer0.amf-regulateur.finance-trust.com:7091 \
   --tlsRootCertFiles ~/rwa-platform/crypto-config/peerOrganizations/amf-regulateur.finance-trust.com/peers/peer0.amf-regulateur.finance-trust.com/tls/ca.crt
 

@@ -1,4 +1,4 @@
-package main
+﻿package main
 
 import (
 	"encoding/json"
@@ -44,11 +44,11 @@ func TestTransferBlockedOnFrozenAsset(t *testing.T) {
 func TestProvenanceRecord(t *testing.T) {
 	record := ProvenanceRecord{
 		TxID:     "abc123",
-		ActorMSP: "BNPParibasMSP",
+		ActorMSP: "BANK01MSP",
 		Action:   "TOKENISE",
 	}
 	assert.Equal(t, "TOKENISE", record.Action)
-	assert.Equal(t, "BNPParibasMSP", record.ActorMSP)
+	assert.Equal(t, "BANK01MSP", record.ActorMSP)
 }
 
 func TestAssetStatusConstants(t *testing.T) {

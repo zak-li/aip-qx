@@ -1,5 +1,7 @@
+﻿<br>
+
 <p align="center">
-  <img src="assets/vector/logo-monochrome.svg" alt="Fvbrixon" width="380">
+  <img src="assets/vector/logo-monochrome.svg" alt="RegX" width="380">
 </p>
 
 <br>
@@ -13,9 +15,9 @@
 
 <br>
 
-## Fvbrixon
+## RegX
 
-Fvbrixon is an institutional platform for tokenizing Real World Assets on a permissioned Hyperledger Fabric network. It handles the full asset lifecycle from issuance to redemption, with built-in AML/KYC compliance, ZK-KYC identity proofs, FHE-based fraud scoring, and a RAG regulatory agent for MiCA queries.
+RegX is an institutional platform for tokenizing Real World Assets on a permissioned Hyperledger Fabric network. It handles the full asset lifecycle from issuance to redemption, with built-in AML/KYC compliance, ZK-KYC identity proofs, FHE-based fraud scoring, and a RAG regulatory agent for MiCA queries.
 
 ## Table of Contents
 
@@ -30,11 +32,11 @@ Fvbrixon is an institutional platform for tokenizing Real World Assets on a perm
 
 ## Features
 
-The Fabric network runs two organizations, BNPParibas and AMFRegulateur, each with a dedicated peer and CouchDB state database. The Go chaincode runs as CCaaS and enforces a dual-endorsement policy on all state-changing transactions. Assets move through an `ACTIVE`, `FROZEN`, `REDEEMED` lifecycle recorded immutably on-chain, and Fabric events are streamed live via gRPC with automatic reconnection.
+The Fabric network runs two organizations, BANK01 and REG01, each with a dedicated peer and CouchDB state database. The Go chaincode runs as CCaaS and enforces a dual-endorsement policy on all state-changing transactions. Assets move through an `ACTIVE`, `FROZEN`, `REDEEMED` lifecycle recorded immutably on-chain, and Fabric events are streamed live via gRPC with automatic reconnection.
 
 Compliance is built into every layer. AML screening runs against a signed sanctions manifest verified with Ed25519. The MiCA rules engine checks exposure limits, asset-class restrictions, and reporting thresholds. ZK-KYC generates Merkle-based proofs so identity can be verified without exposing raw credentials. An FHE fraud scorer evaluates risk on encrypted data, and KYC expiry with counterparty concentration is tracked continuously.
 
-Fvbrixon exposes a FastAPI REST API and a gRPC server in parallel. Authentication is JWT-based with configurable TTL. Secrets are stored as `SecretStr` via pydantic-settings and never appear in logs. Private keys for Fabric identities live in HashiCorp Vault, and every response carries six security headers with rate limiting and host filtering.
+RegX exposes a FastAPI REST API and a gRPC server in parallel. Authentication is JWT-based with configurable TTL. Secrets are stored as `SecretStr` via pydantic-settings and never appear in logs. Private keys for Fabric identities live in HashiCorp Vault, and every response carries six security headers with rate limiting and host filtering.
 
 Every transaction produces an on-chain audit entry. An off-chain integrity checker verifies hashes independently, PDF audit reports are generated asynchronously via Celery, and the RAG agent answers regulatory questions by querying a ChromaDB vector store with Groq LLM.
 
@@ -68,8 +70,8 @@ Every transaction produces an on-chain audit entry. An off-chain integrity check
 **Step 1: Clone and configure**
 
 ```bash
-git clone https://github.com/zak-li/fvbrixon.git
-cd fvbrixon
+git clone https://github.com/zak-li/regx.git
+cd regx
 cp .env.example .env
 ```
 
@@ -194,7 +196,7 @@ Pass the returned token as `Authorization: Bearer <token>` on all subsequent req
 ## Project Structure
 
 ```
-fvbrixon/
+regx/
 ├── backend/
 │   ├── main.py                 # FastAPI app, middleware, metrics
 │   ├── config.py               # Settings and secrets
@@ -222,7 +224,7 @@ fvbrixon/
 
 ## Observability
 
-Fvbrixon ships a full monitoring stack managed via systemd. Prometheus scrapes ten targets including Fabric peers, CouchDB, Redis, PostgreSQL, and the custom Celery exporter. Grafana provides dashboards for service health, API latency percentiles, infrastructure utilization, and compliance metrics. Loki aggregates structured JSON logs from the API, Celery workers, Docker containers, and systemd.
+RegX ships a full monitoring stack managed via systemd. Prometheus scrapes ten targets including Fabric peers, CouchDB, Redis, PostgreSQL, and the custom Celery exporter. Grafana provides dashboards for service health, API latency percentiles, infrastructure utilization, and compliance metrics. Loki aggregates structured JSON logs from the API, Celery workers, Docker containers, and systemd.
 
 | Component | Port |
 |---|---|

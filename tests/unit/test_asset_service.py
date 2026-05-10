@@ -1,4 +1,4 @@
-import uuid
+﻿import uuid
 from datetime import date
 from decimal import Decimal
 from unittest.mock import AsyncMock, patch
@@ -30,7 +30,7 @@ async def test_tokenize_creates_asset_and_calls_fabric(
 
     with patch("backend.features.assets.service.get_fabric", return_value=mock_fabric_client):
         with patch("backend.features.assets.service.get_redis", side_effect=Exception("skip redis")):
-            result = await tokenize(request, "Admin@bnpparibas", async_session)
+            result = await tokenize(request, "Admin@bank01", async_session)
 
     assert result.asset_id == "RWA-OBL-TEST-2026-001"
     assert result.fabric_tx_id == "abc123def456"
@@ -59,7 +59,7 @@ async def test_tokenize_raises_if_asset_already_exists(
 
     with patch("backend.features.assets.service.get_fabric", return_value=mock_fabric_client):
         with pytest.raises(AssetAlreadyExistsError) as exc_info:
-            await tokenize(request, "Admin@bnpparibas", async_session)
+            await tokenize(request, "Admin@bank01", async_session)
 
     assert "RWA-OBL-TEST-2026-002" in str(exc_info.value)
 
@@ -75,7 +75,7 @@ async def test_transfer_updates_owner_to_pierre_moreau(
         first_name="Pierre",
         last_name="Moreau",
         role="TRADER",
-        msp_id="AXAInvestmentManagersMSP",
+        msp_id="INV01ManagersMSP",
         is_active=True,
     )
     async_session.add(pierre)
@@ -104,12 +104,12 @@ async def test_transfer_updates_owner_to_pierre_moreau(
         asset_id="RWA-OBL-XFER-2026-001",
         to_owner="pierre.moreau@axa-im.fr",
         price=Decimal("24739375"),
-        justification="Cession bloc AXA IM portefeuille ESG test",
+        justification="Cession bloc Inv01 portefeuille ESG test",
     )
 
     with patch("backend.features.assets.service.get_fabric", return_value=mock_fabric_client):
         with patch("backend.features.assets.service.full_check", return_value=(False, None, None)):
-            result = await transfer(request, "Admin@bnpparibas", async_session)
+            result = await transfer(request, "Admin@bank01", async_session)
 
     assert result.current_value == Decimal("24739375")
     assert result.fabric_tx_id == "XFER_TX_001"
@@ -124,7 +124,7 @@ async def test_transfer_blocked_on_frozen_asset_returns_frozen_error(
         email="pierre.moreau2@axa-im.fr",
         hashed_password=hash_password("Passw0rd!"),
         role="TRADER",
-        msp_id="AXAInvestmentManagersMSP",
+        msp_id="INV01ManagersMSP",
         is_active=True,
     )
     async_session.add(pierre)
@@ -158,7 +158,7 @@ async def test_transfer_blocked_on_frozen_asset_returns_frozen_error(
     with patch("backend.features.assets.service.get_fabric", return_value=mock_fabric_client):
         with patch("backend.features.assets.service.full_check", return_value=(False, None, None)):
             with pytest.raises(AssetFrozenError) as exc_info:
-                await transfer(request, "Admin@bnpparibas", async_session)
+                await transfer(request, "Admin@bank01", async_session)
 
     assert "AMF-INV-2026-001" in str(exc_info.value)
 

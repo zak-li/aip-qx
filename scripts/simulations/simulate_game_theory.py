@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 Simulation visuelle du Tribunal de Compliance et de la Théorie des Jeux.
 Utilise 'rich' pour un rendu dans le terminal.
@@ -40,7 +40,7 @@ def simulate_tribunal():
     # 1. Setup Auditors
     auditors = [
         Auditor("AMF (Regulator)", 100.0),
-        Auditor("BNP Paribas", 100.0),
+        Auditor("Bank01", 100.0),
         Auditor("Société Générale", 100.0),
         Auditor("Crédit Agricole", 100.0, is_malicious=True), # The deviator
         Auditor("BPCE", 100.0)

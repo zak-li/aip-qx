@@ -1,35 +1,35 @@
-name: rwa-network
+﻿name: rwa-network
 version: "1.0"
 client:
-  organization: BNPParibas
+  organization: BANK01
   connection:
     timeout:
       peer:
         endorser: "300"
 
 organizations:
-  BNPParibas:
-    mspid: BNPParibasMSP
+  BANK01:
+    mspid: BANK01MSP
     peers:
-      - peer0.bnpparibas.finance-trust.com
+      - peer0.bank01.finance-trust.com
     certificateAuthorities:
-      - ca.bnpparibas.finance-trust.com
+      - ca.bank01.finance-trust.com
 
-  AMFRegulateur:
-    mspid: AMFRegulateurMSP
+  REG01:
+    mspid: REG01MSP
     peers:
       - peer0.amf-regulateur.finance-trust.com
     certificateAuthorities:
       - ca.amf-regulateur.finance-trust.com
 
 peers:
-  peer0.bnpparibas.finance-trust.com:
+  peer0.bank01.finance-trust.com:
     url: grpcs://127.0.0.1:7051
     tlsCACerts:
-      path: ./crypto-config/peerOrganizations/bnpparibas.finance-trust.com/peers/peer0.bnpparibas.finance-trust.com/tls/ca.crt
+      path: ./crypto-config/peerOrganizations/bank01.finance-trust.com/peers/peer0.bank01.finance-trust.com/tls/ca.crt
     grpcOptions:
-      ssl-target-name-override: peer0.bnpparibas.finance-trust.com
-      hostnameOverride: peer0.bnpparibas.finance-trust.com
+      ssl-target-name-override: peer0.bank01.finance-trust.com
+      hostnameOverride: peer0.bank01.finance-trust.com
 
   peer0.amf-regulateur.finance-trust.com:
     url: grpcs://127.0.0.1:7091
@@ -40,18 +40,18 @@ peers:
       hostnameOverride: peer0.amf-regulateur.finance-trust.com
 
 certificateAuthorities:
-  ca.bnpparibas.finance-trust.com:
+  ca.bank01.finance-trust.com:
     url: https://127.0.0.1:7054
-    caName: ca-bnpparibas
+    caName: ca-bank01
 
   ca.amf-regulateur.finance-trust.com:
     url: https://127.0.0.1:7154
-    caName: ca-amfregulateur
+    caName: ca-reg01
 
 channels:
   rwa-channel:
     peers:
-      peer0.bnpparibas.finance-trust.com:
+      peer0.bank01.finance-trust.com:
         endorsingPeer: true
         chaincodeQuery: true
         ledgerQuery: true

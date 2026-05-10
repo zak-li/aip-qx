@@ -1,4 +1,4 @@
-package main
+﻿package main
 
 import (
 	"fmt"
@@ -8,14 +8,14 @@ import (
 )
 
 var authorisedMSPs = map[string][]string{
-	"TokenizeAsset":  {"BNPParibasMSP"},
-	"TransferAsset":  {"BNPParibasMSP"},
-	"FreezeAsset":    {"AMFRegulateurMSP"},
-	"UnfreezeAsset":  {"AMFRegulateurMSP"},
-	"QueryAssets":    {"BNPParibasMSP", "AMFRegulateurMSP"},
-	"GetAsset":       {"BNPParibasMSP", "AMFRegulateurMSP"},
-	"GetAssetHistory": {"BNPParibasMSP", "AMFRegulateurMSP"},
-	"GetProvenanceTrail": {"BNPParibasMSP", "AMFRegulateurMSP"},
+	"TokenizeAsset":  {"BANK01MSP"},
+	"TransferAsset":  {"BANK01MSP"},
+	"FreezeAsset":    {"REG01MSP"},
+	"UnfreezeAsset":  {"REG01MSP"},
+	"QueryAssets":    {"BANK01MSP", "REG01MSP"},
+	"GetAsset":       {"BANK01MSP", "REG01MSP"},
+	"GetAssetHistory": {"BANK01MSP", "REG01MSP"},
+	"GetProvenanceTrail": {"BANK01MSP", "REG01MSP"},
 }
 
 func getClientMSP(ctx contractapi.TransactionContextInterface) (string, error) {

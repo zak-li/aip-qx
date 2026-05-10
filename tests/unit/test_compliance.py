@@ -1,4 +1,4 @@
-import uuid
+﻿import uuid
 from datetime import datetime, timezone
 from decimal import Decimal
 from unittest.mock import AsyncMock, patch
@@ -48,7 +48,7 @@ async def test_kyc_james_wilson_expired_after_20260228(
     natwest = Organization(
         id=uuid.UUID("00000000-0000-0000-0000-000000000003"),
         org_code="NW", legal_name="NatWest", org_type="BANQUE",
-        msp_id="NatWestMarketsMSP", is_active=True,
+        msp_id="MKT01MSP", is_active=True,
     )
     async_session.add(natwest)
     await async_session.flush()
