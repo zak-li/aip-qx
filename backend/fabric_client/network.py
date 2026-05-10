@@ -94,26 +94,52 @@ class FabricClient:
     async def disconnect(self) -> None:
         pass
 
+    # Per-org overrides: set FABRIC_BANK01_MSPID / FABRIC_BANK01_DOMAIN / FABRIC_BANK01_ADMIN /
+    # FABRIC_AMF_MSPID / FABRIC_AMF_DOMAIN / FABRIC_AMF_ADMIN in the environment to bridge legacy
+    # Fabric network names (e.g. BNPParibasMSP) without touching the running channel config.
+    _ORG_DEFAULTS: dict[str, dict[str, str]] = {
+        "bank01": {
+            "msp_id":    "BANK01MSP",
+            "domain":    "bank01.finance-trust.com",
+            "admin":     "admin@bank01.finance-trust.com",
+            "peer_port": "7051",
+        },
+        "amf": {
+            "msp_id":    "REG01MSP",
+            "domain":    "amf-regulateur.finance-trust.com",
+            "admin":     "admin@amf-regulateur.finance-trust.com",
+            "peer_port": "7091",
+        },
+    }
+
+    def _org_cfg(self, key: str) -> dict[str, str]:
+        d = self._ORG_DEFAULTS[key]
+        pfx = "FABRIC_BANK01_" if key == "bank01" else "FABRIC_AMF_"
+        return {
+            "msp_id":    os.environ.get(f"{pfx}MSPID",     d["msp_id"]),
+            "domain":    os.environ.get(f"{pfx}DOMAIN",    d["domain"]),
+            "admin":     os.environ.get(f"{pfx}ADMIN",     d["admin"]),
+            "peer_port": os.environ.get(f"{pfx}PEER_PORT", d["peer_port"]),
+        }
+
     def _get_env_for_identity(self, identity_label: str) -> dict[str, str]:
         env = os.environ.copy()
         env["FABRIC_CFG_PATH"] = self.fabric_cfg
 
         if "bank01" in identity_label.lower():
-            env["CORE_PEER_LOCALMSPID"] = "BANK01MSP"
-            env["CORE_PEER_ADDRESS"] = "peer0.bank01.finance-trust.com:7051"
-            env["CORE_PEER_MSPCONFIGPATH"] = f"{self.crypto_base}/peerOrganizations/bank01.finance-trust.com/users/admin@bank01.finance-trust.com/msp"
-            env["CORE_PEER_TLS_CERT_FILE"] = f"{self.crypto_base}/peerOrganizations/bank01.finance-trust.com/peers/peer0.bank01.finance-trust.com/tls/server.crt"
-            env["CORE_PEER_TLS_KEY_FILE"] = f"{self.crypto_base}/peerOrganizations/bank01.finance-trust.com/peers/peer0.bank01.finance-trust.com/tls/server.key"
-            env["CORE_PEER_TLS_ROOTCERT_FILE"] = f"{self.crypto_base}/peerOrganizations/bank01.finance-trust.com/peers/peer0.bank01.finance-trust.com/tls/ca.crt"
+            cfg = self._org_cfg("bank01")
         elif "amf" in identity_label.lower() or "reg01" in identity_label.lower():
-            env["CORE_PEER_LOCALMSPID"] = "REG01MSP"
-            env["CORE_PEER_ADDRESS"] = "peer0.amf-regulateur.finance-trust.com:7091"
-            env["CORE_PEER_MSPCONFIGPATH"] = f"{self.crypto_base}/peerOrganizations/amf-regulateur.finance-trust.com/users/admin@amf-regulateur.finance-trust.com/msp"
-            env["CORE_PEER_TLS_CERT_FILE"] = f"{self.crypto_base}/peerOrganizations/amf-regulateur.finance-trust.com/peers/peer0.amf-regulateur.finance-trust.com/tls/server.crt"
-            env["CORE_PEER_TLS_KEY_FILE"] = f"{self.crypto_base}/peerOrganizations/amf-regulateur.finance-trust.com/peers/peer0.amf-regulateur.finance-trust.com/tls/server.key"
-            env["CORE_PEER_TLS_ROOTCERT_FILE"] = f"{self.crypto_base}/peerOrganizations/amf-regulateur.finance-trust.com/peers/peer0.amf-regulateur.finance-trust.com/tls/ca.crt"
+            cfg = self._org_cfg("amf")
         else:
             raise ValueError(f"Unknown identity mapping {identity_label}")
+
+        domain = cfg["domain"]
+        env["CORE_PEER_LOCALMSPID"]     = cfg["msp_id"]
+        env["CORE_PEER_ADDRESS"]        = f"peer0.{domain}:{cfg['peer_port']}"
+        env["CORE_PEER_MSPCONFIGPATH"]  = f"{self.crypto_base}/peerOrganizations/{domain}/users/{cfg['admin']}/msp"
+        env["CORE_PEER_TLS_CERT_FILE"]  = f"{self.crypto_base}/peerOrganizations/{domain}/peers/peer0.{domain}/tls/server.crt"
+        env["CORE_PEER_TLS_KEY_FILE"]   = f"{self.crypto_base}/peerOrganizations/{domain}/peers/peer0.{domain}/tls/server.key"
+        env["CORE_PEER_TLS_ROOTCERT_FILE"] = f"{self.crypto_base}/peerOrganizations/{domain}/peers/peer0.{domain}/tls/ca.crt"
 
         env["CORE_PEER_TLS_ENABLED"] = "true"
         return env
