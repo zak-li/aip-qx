@@ -32,6 +32,12 @@ RegX is an institutional platform for tokenizing Real World Assets on a permissi
 
 ## Features
 
+### Compliance Flow
+
+<p align="center">
+  <img src="assets/compliance-flow.svg" alt="Compliance Flow" width="800">
+</p>
+
 The Fabric network runs two organizations, BANK01 and REG01, each with a dedicated peer and CouchDB state database. The Go chaincode runs as CCaaS and enforces a dual-endorsement policy on all state-changing transactions. Assets move through an `ACTIVE`, `FROZEN`, `REDEEMED` lifecycle recorded immutably on-chain, and Fabric events are streamed live via gRPC with automatic reconnection.
 
 The platform embeds compliance directly into transaction execution and asset lifecycle management. Sanctions screening is backed by Ed25519-authenticated manifests, while the MiCA enforcement layer validates exposure boundaries, restricted asset classes, and supervisory reporting requirements. zk-KYC workflows enable cryptographic identity attestation through Merkle proofs without exposing underlying credentials. Encrypted fraud analytics powered by Fully Homomorphic Encryption evaluate AML risk in confidential datasets, with persistent monitoring of KYC validity and systemic concentration exposure.
