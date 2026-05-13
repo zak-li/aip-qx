@@ -41,7 +41,10 @@ class FabricWallet:
         self.settings = settings
         self._identities: dict[str, Identity] = {}
 
-        self._vault = hvac.Client(url=self.settings.vault_addr, token=self.settings.vault_token)
+        self._vault = hvac.Client(
+            url=self.settings.vault_addr,
+            token=self.settings.vault_token.get_secret_value(),
+        )
 
         try:
             if not self._vault.is_authenticated():

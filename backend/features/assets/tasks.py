@@ -1,13 +1,15 @@
-﻿import asyncio
-import json
+﻿import json
 
 from celery import Task
 from sqlalchemy import text
 
 from backend.core.celery_app import celery_app
+from backend.core.celery_async import CELERY_AUDIT_IP, run_async
 from backend.core.database import AsyncSessionLocal
 from backend.core.redis_client import get_redis
 from backend.dependencies import get_fabric
+
+_SYNCABLE_COLUMNS = frozenset({"current_value", "status", "current_owner_id"})
 
 
 async def _log_audit_result(task_name: str, payload: dict) -> None:
@@ -15,9 +17,12 @@ async def _log_audit_result(task_name: str, payload: dict) -> None:
         stmt = text("""
             INSERT INTO audit_logs
                 (endpoint, http_method, ip_address, response_code, duration_ms, request_body)
-            VALUES (:endpoint, 'CELERY', '127.0.0.1', 200, 0, :body::jsonb)
+            VALUES (:endpoint, 'CELERY', :ip, 200, 0, :body::jsonb)
         """)
-        await session.execute(stmt, {"endpoint": task_name, "body": json.dumps(payload)})
+        await session.execute(
+            stmt,
+            {"endpoint": task_name, "ip": CELERY_AUDIT_IP, "body": json.dumps(payload)},
+        )
         await session.commit()
 
 async def _do_sync_fabric_state(asset_id: str) -> dict:
@@ -54,6 +59,9 @@ async def _do_sync_fabric_state(asset_id: str) -> dict:
             changes.append("current_owner_id")
 
         if upd:
+            invalid = set(upd) - _SYNCABLE_COLUMNS
+            if invalid:
+                raise ValueError(f"Refusing to sync unknown columns: {invalid}")
             sets = ", ".join([f"{k} = :{k}" for k in upd])
             upd["aid"] = asset_id
             ustmt = text(f"UPDATE assets SET {sets} WHERE asset_id = :aid")  # noqa: S608  # nosec B608
@@ -66,22 +74,39 @@ async def _do_sync_fabric_state(asset_id: str) -> dict:
 
 @celery_app.task(bind=True, queue="fabric_events", max_retries=3, default_retry_delay=60)
 def sync_fabric_state(self: Task, asset_id: str) -> dict:
-    return asyncio.run(_do_sync_fabric_state(asset_id))
+    return run_async(_do_sync_fabric_state(asset_id))
+
+_SYNC_BATCH_SIZE = 500
+
 
 async def _do_sync_all() -> dict:
+    launched = 0
     async with AsyncSessionLocal() as session:
-        stmt = text("SELECT DISTINCT asset_id FROM assets WHERE status != 'REMBOURSE'")
-        res = await session.execute(stmt)
-        assets = res.scalars().all()
-        for a_id in assets:
-            sync_fabric_state.delay(a_id)
-    res_payload = {"launched": len(assets)}
+        offset = 0
+        while True:
+            stmt = text(
+                "SELECT DISTINCT asset_id FROM assets "
+                "WHERE status != 'REMBOURSE' "
+                "ORDER BY asset_id "
+                "LIMIT :limit OFFSET :offset"
+            )
+            res = await session.execute(stmt, {"limit": _SYNC_BATCH_SIZE, "offset": offset})
+            batch = res.scalars().all()
+            if not batch:
+                break
+            for a_id in batch:
+                sync_fabric_state.delay(a_id)
+            launched += len(batch)
+            offset += _SYNC_BATCH_SIZE
+            if len(batch) < _SYNC_BATCH_SIZE:
+                break
+    res_payload = {"launched": launched}
     await _log_audit_result("sync_fabric_state_all", res_payload)
     return res_payload
 
 @celery_app.task(queue="fabric_events")
 def sync_fabric_state_all() -> dict:
-    return asyncio.run(_do_sync_all())
+    return run_async(_do_sync_all())
 
 async def _do_process_event(event_type: str, payload: dict) -> None:
     async with AsyncSessionLocal() as session:
@@ -115,7 +140,7 @@ async def _do_process_event(event_type: str, payload: dict) -> None:
 
 @celery_app.task(queue="fabric_events")
 def process_fabric_event(event_type: str, payload: dict) -> None:
-    asyncio.run(_do_process_event(event_type, payload))
+    run_async(_do_process_event(event_type, payload))
 
 async def _do_update_cache(asset_id: str) -> None:
     async for redis_conn in get_redis():
@@ -124,4 +149,4 @@ async def _do_update_cache(asset_id: str) -> None:
 
 @celery_app.task(queue="fabric_events")
 def update_asset_cache(asset_id: str) -> None:
-    asyncio.run(_do_update_cache(asset_id))
+    run_async(_do_update_cache(asset_id))

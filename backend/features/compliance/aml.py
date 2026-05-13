@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import math
 from dataclasses import dataclass
 from uuid import UUID
 
@@ -70,6 +71,13 @@ class AMLScorer:
         elif amount > AML_HIGH_AMOUNT_BONUS_2_THRESHOLD:
             raw_score += AML_HIGH_AMOUNT_BONUS_2
 
+        if not math.isfinite(raw_score):
+            logger.error(
+                "AML score produced non-finite value for user=%s amount=%s indicators=%s — clamping to CRITIQUE",
+                user_id, amount, indicators,
+            )
+            raw_score = 1.0
+        raw_score = max(0.0, min(1.0, raw_score))
         final_score = round(raw_score, 4)
 
         if final_score < 0.30:

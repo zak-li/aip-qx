@@ -1,5 +1,6 @@
 import logging
 import os
+import threading
 
 from neo4j import AsyncGraphDatabase
 
@@ -106,6 +107,7 @@ class Neo4jClient:
         return await self._fraud_detector.run_full_scan()
 
 _neo4j_singleton: Neo4jClient | None = None
+_neo4j_singleton_lock = threading.Lock()
 
 
 def get_neo4j_client() -> Neo4jClient:
@@ -116,5 +118,7 @@ def get_neo4j_client() -> Neo4jClient:
     """
     global _neo4j_singleton
     if _neo4j_singleton is None:
-        _neo4j_singleton = Neo4jClient()
+        with _neo4j_singleton_lock:
+            if _neo4j_singleton is None:
+                _neo4j_singleton = Neo4jClient()
     return _neo4j_singleton

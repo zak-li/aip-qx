@@ -9,6 +9,7 @@ lifetime of the process.
 from __future__ import annotations
 
 import logging
+import threading
 import time
 from dataclasses import dataclass
 from uuid import UUID
@@ -160,12 +161,15 @@ class ComplianceService:
 # Process-wide singleton — settings is immutable, helpers carry no per-request
 # state, so this is safe to share across coroutines.
 _singleton: ComplianceService | None = None
+_singleton_lock = threading.Lock()
 
 
 def get_compliance_service() -> ComplianceService:
     global _singleton
     if _singleton is None:
-        _singleton = ComplianceService(_settings)
+        with _singleton_lock:
+            if _singleton is None:
+                _singleton = ComplianceService(_settings)
     return _singleton
 
 

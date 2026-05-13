@@ -1,4 +1,5 @@
-﻿from collections.abc import Callable
+﻿import threading
+from collections.abc import Callable
 from uuid import UUID
 
 import grpc
@@ -46,6 +47,7 @@ def resolve_identity(user: User) -> str:
 
 
 _fabric_client_instance: FabricClient | None = None
+_fabric_client_lock = threading.Lock()
 
 
 async def get_db():
@@ -56,8 +58,10 @@ async def get_db():
 def get_fabric() -> FabricClient:
     global _fabric_client_instance
     if _fabric_client_instance is None:
-        wallet = FabricWallet(settings)
-        _fabric_client_instance = FabricClient(settings, wallet)
+        with _fabric_client_lock:
+            if _fabric_client_instance is None:
+                wallet = FabricWallet(settings)
+                _fabric_client_instance = FabricClient(settings, wallet)
     return _fabric_client_instance
 
 

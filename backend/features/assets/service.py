@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.core.redis_client import get_redis
 from backend.dependencies import get_fabric
-from backend.exceptions import AssetFrozenError, ComplianceBlockedError
+from backend.exceptions import AssetFrozenError, AssetNotFoundException, ComplianceBlockedError
 from backend.features.assets.models import Asset
 from backend.features.assets.schemas import (
     AssetResponse,
@@ -103,7 +103,9 @@ async def transfer(
 ) -> AssetResponse:
     stmt_asset = select(Asset).where(Asset.asset_id == request.asset_id)
     result_asset = await db.execute(stmt_asset)
-    asset = result_asset.scalar_one()
+    asset = result_asset.scalar_one_or_none()
+    if asset is None:
+        raise AssetNotFoundException(request.asset_id)
 
     if asset.status == "GELE":
         raise AssetFrozenError(asset.asset_id, "AMF-INV-2026-001")
@@ -230,7 +232,9 @@ async def freeze(
     block_num = int(payload["blockNumber"]) if payload.get("blockNumber") else None
 
     result = await db.execute(select(Asset).where(Asset.asset_id == request.asset_id))
-    asset = result.scalar_one()
+    asset = result.scalar_one_or_none()
+    if asset is None:
+        raise AssetNotFoundException(request.asset_id)
     initiator_id = current_user.id if current_user else asset.current_owner_id
 
     asset.status = "GELE"
@@ -307,7 +311,9 @@ async def unfreeze_asset(
     block_num = int(payload["blockNumber"]) if payload.get("blockNumber") else None
 
     result = await db.execute(select(Asset).where(Asset.asset_id == request.asset_id))
-    asset = result.scalar_one()
+    asset = result.scalar_one_or_none()
+    if asset is None:
+        raise AssetNotFoundException(request.asset_id)
     initiator_id = current_user.id if current_user else asset.current_owner_id
 
     asset.status = "ACTIF"

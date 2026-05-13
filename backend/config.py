@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from pydantic import Field, field_validator, model_validator
+from pydantic import Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -15,8 +15,8 @@ class FabricSettings(BaseSettings):
     redis_url: str
     secret_key: str
 
-    vault_addr: str = Field(default="http://127.0.0.1:8200")
-    vault_token: str = Field(...)
+    vault_addr: str = Field(default="https://127.0.0.1:8200")
+    vault_token: SecretStr = Field(...)
 
     groq_api_key: str = Field(default="")
     groq_model: str = Field(default="llama-3.3-70b-versatile")

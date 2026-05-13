@@ -24,7 +24,7 @@ class Transaction(Base, UUIDMixin, TimestampMixin):
     chaincode_name: Mapped[str] = mapped_column(String, server_default="'rwa-token'", nullable=False, default="rwa-token")
 
     tx_type: Mapped[str] = mapped_column(
-        Enum('TOKENISATION', 'TRANSFERT', 'GEL', 'DEGEL', 'RACHAT', 'COUPON_PAIEMENT', 'MISE_A_JOUR_VALEUR', 'ANNULATION', 'REGLEMENT', name="transaction_types", create_type=False),
+        Enum('TOKENISATION', 'TRANSFERT', 'GEL', 'DEGEL', 'RACHAT', 'COUPON_PAIEMENT', 'MISE_A_JOUR_VALEUR', 'ANNULATION', 'REGLEMENT', name="transaction_type_enum", create_type=False),
         nullable=False,
     )
 

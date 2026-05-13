@@ -11,7 +11,7 @@ import redis.asyncio as aioredis
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import StreamingResponse
 
-from backend.core.redis_client import redis_pool
+from backend.core.redis_client import get_redis_pool
 from backend.dependencies import get_current_user
 from backend.features.auth.models import User
 
@@ -31,7 +31,7 @@ async def stream_events(
     """SSE stream of live Hyperledger Fabric asset events."""
 
     async def generator():
-        client = aioredis.Redis.from_pool(redis_pool)
+        client = aioredis.Redis(connection_pool=get_redis_pool())
         pubsub = client.pubsub()
         await pubsub.subscribe(_CHANNEL)
         last_hb = time.monotonic()
@@ -59,7 +59,15 @@ async def stream_events(
                 if msg is None:
                     continue
 
-                raw: str = msg["data"]
+                data = msg.get("data")
+                if isinstance(data, bytes):
+                    raw = data.decode("utf-8", errors="replace")
+                elif isinstance(data, str):
+                    raw = data
+                else:
+                    logger.warning("[EVENTS] Discarding non-string SSE payload: %r", type(data))
+                    continue
+
                 parts = raw.split(":", 1)
                 if len(parts) != 2:
                     continue

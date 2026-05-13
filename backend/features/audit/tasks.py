@@ -1,5 +1,4 @@
-﻿import asyncio
-import json
+﻿import json
 import os
 from datetime import UTC, datetime
 
@@ -7,6 +6,7 @@ from celery import Task
 from sqlalchemy import text
 
 from backend.core.celery_app import celery_app
+from backend.core.celery_async import run_async
 from backend.core.database import AsyncSessionLocal
 from backend.dependencies import get_fabric
 from backend.features.audit.integrity_checker import IntegrityChecker
@@ -67,7 +67,7 @@ async def _do_generate_audit(asset_id: str, requested_by_id: str) -> dict:
 
 @celery_app.task(queue="reports", bind=True, max_retries=2)
 def generate_audit_report(self: Task, asset_id: str, requested_by_id: str) -> dict:
-    return asyncio.run(_do_generate_audit(asset_id, requested_by_id))
+    return run_async(_do_generate_audit(asset_id, requested_by_id))
 
 async def _do_generate_portfolio(org_id: str) -> dict:
     async with AsyncSessionLocal() as session:
@@ -103,4 +103,4 @@ async def _do_generate_portfolio(org_id: str) -> dict:
 
 @celery_app.task(queue="reports", bind=True, max_retries=2)
 def generate_portfolio_report(self: Task, org_id: str) -> dict:
-    return asyncio.run(_do_generate_portfolio(org_id))
+    return run_async(_do_generate_portfolio(org_id))

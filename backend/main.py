@@ -187,8 +187,15 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[o.strip() for o in settings.allowed_origins.split(",")],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=[
+        "Authorization",
+        "Content-Type",
+        "X-Requested-With",
+        "X-CSRF-Token",
+        "Accept",
+        "Origin",
+    ],
 )
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(AuthMiddleware)
@@ -276,7 +283,7 @@ async def check_health_deep(request: Request) -> JSONResponse:
         checks["neo4j"] = "error"
 
     try:
-        vault_client = hvac.Client(url=settings.vault_addr, token=settings.vault_token)
+        vault_client = hvac.Client(url=settings.vault_addr, token=settings.vault_token.get_secret_value())
         checks["vault"] = "ok" if vault_client.is_authenticated() else "unauthenticated"
     except Exception:
         logger.exception("health: vault check failed")

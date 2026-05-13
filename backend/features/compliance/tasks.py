@@ -1,4 +1,3 @@
-import asyncio
 import json
 import logging
 
@@ -6,6 +5,7 @@ from sqlalchemy import text
 
 from backend.core.audit_helpers import log_task_audit
 from backend.core.celery_app import celery_app
+from backend.core.celery_async import run_async
 from backend.core.database import AsyncSessionLocal
 from backend.features.compliance.aml import AMLScorer
 from backend.features.compliance.sar_reporter import SARReporter
@@ -60,7 +60,7 @@ async def _do_kyc_expiry() -> dict:
 
 @celery_app.task(queue="compliance")
 def check_kyc_expiry() -> dict:
-    return asyncio.run(_do_kyc_expiry())
+    return run_async(_do_kyc_expiry())
 
 async def _do_aml_screening() -> dict:
     from uuid import UUID
@@ -107,7 +107,7 @@ async def _do_aml_screening() -> dict:
 
 @celery_app.task(queue="compliance")
 def run_periodic_aml_screening() -> dict:
-    return asyncio.run(_do_aml_screening())
+    return run_async(_do_aml_screening())
 
 async def _do_generate_sar(participant_id: str, tx_id: str | None, reason_code: str, amount: float, regulatory_ref: str | None) -> str:
     from uuid import UUID
@@ -129,7 +129,7 @@ async def _do_generate_sar(participant_id: str, tx_id: str | None, reason_code: 
 
 @celery_app.task(queue="compliance")
 def generate_sar(participant_id: str, tx_id: str | None, reason_code: str, amount: float, regulatory_ref: str | None) -> str:
-    return asyncio.run(_do_generate_sar(participant_id, tx_id, reason_code, amount, regulatory_ref))
+    return run_async(_do_generate_sar(participant_id, tx_id, reason_code, amount, regulatory_ref))
 
 async def _do_fraud_graph_scan() -> dict:
     client = get_neo4j_client()
@@ -144,4 +144,4 @@ async def _do_fraud_graph_scan() -> dict:
 
 @celery_app.task(queue="compliance")
 def fraud_graph_scan() -> dict:
-    return asyncio.run(_do_fraud_graph_scan())
+    return run_async(_do_fraud_graph_scan())
