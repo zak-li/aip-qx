@@ -312,7 +312,7 @@ def make_asset_payload(seq: int) -> dict:
     atype = random.choice(ASSET_TYPES)
     prefix = ASSET_PREFIX[atype]
     year = random.randint(2024, 2026)
-    asset_id = f"RWA-{prefix}-SIM-{year}-{seq:04d}"
+    asset_id = f"RWA-{prefix}-SIM-{year}-{(seq % 1000):03d}"
     issuance = date(year, random.randint(1, 12), random.randint(1, 28))
     nominal = random.choice([5_000_000, 10_000_000, 25_000_000, 50_000_000, 100_000_000])
     return {
@@ -466,7 +466,7 @@ async def phase_async_heavy(
     task_ids: list[str] = []
 
     # Generate audit reports -> Celery reports queue
-    sample_assets = STATS.assets_minted[: max(1, reports)] or [f"RWA-OBL-SIM-2026-{i:04d}" for i in range(1, reports + 1)]
+    sample_assets = STATS.assets_minted[: max(1, reports)] or [f"RWA-OBL-SIM-2026-{i:03d}" for i in range(1, reports + 1)]
     for asset_id in sample_assets[:reports]:
         resp = await hit(
             client, p, "POST", f"/api/v1/audit/report/generate/{asset_id}",
