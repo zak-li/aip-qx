@@ -1,17 +1,18 @@
 ﻿import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from decimal import Decimal
-from unittest.mock import AsyncMock, patch
+from unittest.mock import patch
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.features.compliance.kyc import KYCVerifier
+from backend.config import settings
 from backend.features.compliance.aml import AMLScorer
+from backend.features.compliance.kyc import KYCVerifier
+from backend.features.compliance.models import ComplianceRecord
 from backend.features.compliance.rules_mica import MiCAChecker
 from backend.features.compliance.sanctions import SanctionsScreener
-from backend.config import settings
-from backend.features.compliance.models import ComplianceRecord
-from tests.conftest import THOMAS_USER_ID, JAMES_USER_ID
+from tests.conftest import JAMES_USER_ID, THOMAS_USER_ID
+
 
 async def _seed_compliance(session: AsyncSession, user_id: uuid.UUID, level: int, status: str, expires_at: datetime, score: Decimal):
     rec = ComplianceRecord(
@@ -31,7 +32,7 @@ async def test_kyc_thomas_martin_approved_level_3(
 ):
     await _seed_compliance(
         async_session, THOMAS_USER_ID, 3, "APPROUVE",
-        datetime(2027, 6, 15, tzinfo=timezone.utc), Decimal("0.042"),
+        datetime(2027, 6, 15, tzinfo=UTC), Decimal("0.042"),
     )
     verifier = KYCVerifier(settings, async_session)
     result = await verifier.verify(THOMAS_USER_ID)
@@ -43,8 +44,8 @@ async def test_kyc_james_wilson_expired_after_20260228(
     async_session: AsyncSession, test_org, test_user_thomas,
 ):
     james_id = JAMES_USER_ID
-    from backend.features.auth.models import Organization, User
     from backend.core.security import hash_password
+    from backend.features.auth.models import Organization, User
     bank04 = Organization(
         id=uuid.UUID("00000000-0000-0000-0000-000000000003"),
         org_code="NW", legal_name="Bank 04", org_type="BANQUE",
@@ -61,11 +62,11 @@ async def test_kyc_james_wilson_expired_after_20260228(
 
     await _seed_compliance(
         async_session, james_id, 3, "APPROUVE",
-        datetime(2026, 2, 28, tzinfo=timezone.utc), Decimal("0.089"),
+        datetime(2026, 2, 28, tzinfo=UTC), Decimal("0.089"),
     )
 
     with patch("backend.features.compliance.kyc.datetime") as mock_dt:
-        mock_dt.now.return_value = datetime(2026, 3, 1, tzinfo=timezone.utc)
+        mock_dt.now.return_value = datetime(2026, 3, 1, tzinfo=UTC)
         mock_dt.side_effect = lambda *a, **kw: datetime(*a, **kw)
         verifier = KYCVerifier(settings, async_session)
         result = await verifier.verify(james_id)
@@ -102,11 +103,11 @@ async def test_kyc_james_wilson_needs_renewal_flag(
 
     await _seed_compliance(
         async_session, james_id, 3, "APPROUVE",
-        datetime(2026, 2, 28, tzinfo=timezone.utc), Decimal("0.089"),
+        datetime(2026, 2, 28, tzinfo=UTC), Decimal("0.089"),
     )
 
     with patch("backend.features.compliance.kyc.datetime") as mock_dt:
-        mock_dt.now.return_value = datetime(2026, 1, 30, tzinfo=timezone.utc)
+        mock_dt.now.return_value = datetime(2026, 1, 30, tzinfo=UTC)
         mock_dt.side_effect = lambda *a, **kw: datetime(*a, **kw)
         verifier = KYCVerifier(settings, async_session)
         result = await verifier.verify(james_id)

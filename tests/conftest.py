@@ -1,41 +1,38 @@
-import os
-import uuid
 import json
-import asyncpg
-from datetime import datetime, timedelta, timezone
-from collections.abc import AsyncGenerator
-from unittest.mock import AsyncMock, patch
-from pathlib import Path
-
-import pytest
-import fakeredis.aioredis
-from httpx import ASGITransport, AsyncClient
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-from sqlalchemy.pool import NullPool
-from sqlalchemy import text
-
-from backend.core.celery_app import celery_app
-
-from backend.main import app
-from backend.config import Settings, settings
-from backend.core.database_base import Base
-from backend.dependencies import get_db, get_fabric
-from backend.core.redis_client import get_redis
-from backend.core.security import create_access_token
-from backend.fabric_client.network import FabricClient
-from backend.exceptions import AssetNotFoundException, AssetFrozenError
-
-from backend.features.audit.trail import ProvenanceRecord
-from backend.features.audit.integrity_checker import IntegrityChecker, IntegrityReport
-
-
-from backend.features.auth.models import User, Organization
-from backend.features.compliance.models import ComplianceRecord
+import os
 
 # Derive test DB URLs from the configured DATABASE_URL so the same conftest
 # works locally (via .env) and in CI (via workflow env vars).
 # CI overrides via TEST_DATABASE_URL / TEST_ADMIN_DB_URL take precedence.
 import re as _re
+import uuid
+from collections.abc import AsyncGenerator
+from datetime import UTC, datetime, timedelta
+from pathlib import Path
+from unittest.mock import AsyncMock, patch
+
+import asyncpg
+import fakeredis.aioredis
+import pytest
+from httpx import ASGITransport, AsyncClient
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.pool import NullPool
+
+from backend.config import Settings, settings
+from backend.core.celery_app import celery_app
+from backend.core.database_base import Base
+from backend.core.redis_client import get_redis
+from backend.core.security import create_access_token
+from backend.dependencies import get_db, get_fabric
+from backend.exceptions import AssetFrozenError, AssetNotFoundException
+from backend.fabric_client.network import FabricClient
+from backend.features.audit.integrity_checker import IntegrityChecker, IntegrityReport
+from backend.features.audit.trail import ProvenanceRecord
+from backend.features.auth.models import Organization, User
+from backend.features.compliance.models import ComplianceRecord
+from backend.main import app
+
 _db_url = str(settings.database_url)
 TEST_DATABASE_URL = (
     os.environ.get("TEST_DATABASE_URL")
@@ -326,7 +323,7 @@ async def test_user_thomas(async_session: AsyncSession, test_org: Organization) 
         kyc_level=3,
         aml_score=Decimal("0.0"),
         risk_category="FAIBLE",
-        expires_at=datetime.now(timezone.utc) + timedelta(days=365),
+        expires_at=datetime.now(UTC) + timedelta(days=365),
     )
     await async_session.merge(kyc)
     await async_session.flush()
@@ -355,7 +352,7 @@ async def test_user_sophie(async_session: AsyncSession, test_amf_org: Organizati
         kyc_level=3,
         aml_score=Decimal("0.0"),
         risk_category="FAIBLE",
-        expires_at=datetime.now(timezone.utc) + timedelta(days=365),
+        expires_at=datetime.now(UTC) + timedelta(days=365),
     )
     await async_session.merge(kyc)
     await async_session.flush()
@@ -387,7 +384,7 @@ def token_expired(monkeypatch_session) -> str:
 
 @pytest.fixture
 def sample_provenance() -> list[ProvenanceRecord]:
-    _base_ts = datetime.now(timezone.utc)
+    _base_ts = datetime.now(UTC)
     return [
         ProvenanceRecord(
             tx_id=REAL_TX_1,

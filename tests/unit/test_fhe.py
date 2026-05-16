@@ -1,7 +1,9 @@
 import pytest
 import tenseal as ts
-from backend.features.fhe.context import create_ckks_context, serialize_context, deserialize_context
+
+from backend.features.fhe.context import create_ckks_context, deserialize_context, serialize_context
 from backend.features.fhe.scorer import FHEClient, FHEScorer
+
 
 @pytest.fixture(scope="module")
 def fhe_context():

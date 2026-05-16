@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [master, main]
 
+env:
+  # Opt into the Node.js 24 runner so the deprecation notice on JS-based
+  # actions stops showing up before the June 2026 hard cut-over.
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 jobs:
   python-lint:
     runs-on: ubuntu-latest
@@ -22,12 +27,19 @@ jobs:
           python -m pip install --upgrade pip
           pip install ruff==0.7.4 bandit==1.8.0
 
-      - name: Ruff (style + bugs)
-        run: ruff check backend/
+      - name: Ruff (backend + scripts + tests)
+        run: ruff check backend/ scripts/ tests/
 
-      - name: Bandit (security)
-        # Skip B101 (assert in tests) — keeps the rule set tight without noise.
+      - name: Bandit (security, backend)
+        # Skip B101 (assert in tests) -- keeps the rule set tight without noise.
         run: bandit -r backend/ -ll --skip B101
+
+      - name: Bandit (security, scripts)
+        # scripts/_deploy_*.py and deploy_frontend_to_vm.py are dev-only SSH
+        # helpers — paramiko host-key trust (B507), shell-interpolated remote
+        # commands (B601), and remote /tmp paths (B108) are intentional and
+        # acknowledged in source via noqa. Block on anything else Medium+.
+        run: bandit -r scripts/ -ll --skip B101,B507,B601,B108
 
   python-syntax:
     runs-on: ubuntu-latest
@@ -112,9 +124,30 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install pytest-cov
 
-      - name: Run unit tests
-        run: pytest tests/ -q --ignore=tests/integration --ignore=tests/unit/test_fhe.py
+      - name: Run unit tests with coverage
+        # Integration / e2e suites need Fabric + Vault -- excluded from CI.
+        # Without them the realistic backend coverage is ~43% (routers and
+        # grpc servicers are exercised only by integration tests). The 70%
+        # target in pyproject.toml is for the full local suite; CI enforces
+        # a softer floor to catch regressions without forcing a green that
+        # doesn't reflect reality.
+        run: |
+          pytest tests/ -q \
+            --ignore=tests/integration \
+            --ignore=tests/e2e \
+            --ignore=tests/unit/test_fhe.py \
+            --cov=backend --cov-report=term-missing --cov-report=xml \
+            --cov-fail-under=40
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-xml
+          path: coverage.xml
+          if-no-files-found: ignore
 
   go-build:
     runs-on: ubuntu-latest

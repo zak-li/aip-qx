@@ -6,12 +6,13 @@ from unittest.mock import AsyncMock, patch
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.features.assets.models import Asset
-from backend.features.auth.models import Organization, User
-from backend.features.assets.schemas import TokenizeRequest, FreezeRequest, TransferRequest
-from backend.features.assets.service import tokenize, transfer, freeze
 from backend.exceptions import AssetFrozenError
+from backend.features.assets.models import Asset
+from backend.features.assets.schemas import FreezeRequest, TokenizeRequest, TransferRequest
+from backend.features.assets.service import freeze, tokenize, transfer
+from backend.features.auth.models import Organization, User
 from tests.conftest import BANK01_ORG_ID, THOMAS_USER_ID
+
 
 async def test_tokenize_creates_asset_and_calls_fabric(
     async_session: AsyncSession, test_org: Organization, test_user_thomas: User, mock_fabric_client: AsyncMock

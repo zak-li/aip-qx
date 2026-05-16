@@ -1,12 +1,12 @@
-﻿from decimal import Decimal
-from datetime import datetime, timedelta, timezone
+﻿from datetime import UTC, datetime, timedelta
+from decimal import Decimal
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.features.compliance.models import ComplianceRecord
 from backend.features.auth.models import Organization, User
+from backend.features.compliance.models import ComplianceRecord
 from tests.conftest import THOMAS_USER_ID
 
 
@@ -18,7 +18,7 @@ async def user_with_expiring_kyc(async_session: AsyncSession, test_org: Organiza
         kyc_level=3,
         aml_score=Decimal("0.042"),
         risk_category="FAIBLE",
-        expires_at=datetime.now(timezone.utc) + timedelta(days=15),
+        expires_at=datetime.now(UTC) + timedelta(days=15),
     )
     async_session.add(rec)
     await async_session.flush()
@@ -35,12 +35,12 @@ async def test_check_kyc_expiry_detects_expiring_records(
         mock_session_local.return_value.__aenter__ = AsyncMock(return_value=mock_ctx)
         mock_session_local.return_value.__aexit__ = AsyncMock(return_value=False)
 
-        mock_rows = [(THOMAS_USER_ID, "thomas.martin@bank01.fr", datetime.now(timezone.utc) + timedelta(days=15))]
+        mock_rows = [(THOMAS_USER_ID, "thomas.martin@bank01.fr", datetime.now(UTC) + timedelta(days=15))]
         mock_result = MagicMock()
         mock_result.fetchall.return_value = mock_rows
 
         now_result = MagicMock()
-        now_result.scalar.return_value = datetime.now(timezone.utc)
+        now_result.scalar.return_value = datetime.now(UTC)
 
         mock_ctx.execute = AsyncMock(side_effect=[mock_result, now_result, MagicMock()])
         mock_ctx.commit = AsyncMock()

@@ -1,9 +1,10 @@
-from unittest.mock import AsyncMock, patch, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
 from backend.features.audit.integrity_checker import IntegrityChecker
 from backend.features.audit.report_generator import ReportGenerator
+
 
 async def test_integrity_checker_3_real_records_all_valid(sample_provenance):
     checker = IntegrityChecker()

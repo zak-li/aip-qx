@@ -1,6 +1,9 @@
 import uuid
+
 import pytest
+
 from backend.features.tribunal.service import TribunalService, compute_commit_hash
+
 
 # Mock DB Session for testing logic
 class MockAsyncSession:
@@ -79,12 +82,13 @@ async def test_tribunal_game_theory_slashing():
     
     # Create Session
     import datetime as _dt
+
     from backend.features.tribunal.models import TribunalSession
     session = TribunalSession(
         id=uuid.uuid4(),
         asset_id=uuid.uuid4(),
         reason="Suspicious AML Volume",
-        expires_at=_dt.datetime.now(_dt.timezone.utc) + _dt.timedelta(hours=1),
+        expires_at=_dt.datetime.now(_dt.UTC) + _dt.timedelta(hours=1),
     )
     db.add(session)
     
@@ -137,6 +141,7 @@ async def test_tribunal_game_theory_slashing():
 async def test_tribunal_invalid_reveal():
     """Test that a malicious auditor cannot change their vote during reveal."""
     import datetime as _dt
+
     from backend.features.tribunal.models import TribunalSession
 
     db = MockAsyncSession()
@@ -147,7 +152,7 @@ async def test_tribunal_invalid_reveal():
         id=session_id,
         asset_id=uuid.uuid4(),
         reason="Test invalid reveal",
-        expires_at=_dt.datetime.now(_dt.timezone.utc) + _dt.timedelta(hours=1),
+        expires_at=_dt.datetime.now(_dt.UTC) + _dt.timedelta(hours=1),
     )
     db.add(session)
 

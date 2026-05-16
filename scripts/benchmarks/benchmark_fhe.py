@@ -7,9 +7,9 @@ Usage:
   python scripts/benchmarks/benchmark_fhe.py
 """
 
+import os
 import sys
 import time
-import os
 from statistics import mean, stdev
 
 # Add the project root to python path to import the backend
@@ -51,9 +51,10 @@ def benchmark_fhe():
     print(f"Running FHE benchmarks ({ITERATIONS} iterations)...")
     
     for i in range(ITERATIONS):
-        # 1. Plaintext baseline
+        # 1. Plaintext baseline — we time the arithmetic itself; the
+        # result isn't used (we benchmark latency, not correctness).
         t0 = time.perf_counter()
-        plain_score = (j_risk * 0.3) + (cb_risk * 0.4) + (v_risk * 0.3)
+        _ = (j_risk * 0.3) + (cb_risk * 0.4) + (v_risk * 0.3)
         t1 = time.perf_counter()
         plain_times.append((t1 - t0) * 1000)
         

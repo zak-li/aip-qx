@@ -1,13 +1,14 @@
 ﻿import asyncio
 import os
-from datetime import datetime, timezone
 import sys
+from datetime import UTC, datetime
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from backend.features.audit.trail import ProvenanceRecord
 from backend.features.audit.integrity_checker import IntegrityChecker
 from backend.features.audit.report_generator import ReportGenerator
+from backend.features.audit.trail import ProvenanceRecord
+
 
 async def main():
     print("Prepping dummy data for report...")
@@ -28,7 +29,7 @@ async def main():
     provenance = [
         ProvenanceRecord(
             tx_id="185861c04e4744c0c10f07ac82011b1534fe3a7642507db322172ab39fa2ad43",
-            timestamp=datetime.now(timezone.utc),
+            timestamp=datetime.now(UTC),
             actor_msp="BANK01MSP",
             actor_dn="CN=admin@bank01.finance-trust.com,OU=admin",
             action="TOKENISE",
@@ -40,7 +41,7 @@ async def main():
         ),
         ProvenanceRecord(
             tx_id="7a4508a19663ea42115d16ef010048636c3b0670c62a0706731a006a9afe4611",
-            timestamp=datetime.now(timezone.utc),
+            timestamp=datetime.now(UTC),
             actor_msp="BANK01MSP",
             actor_dn="CN=admin@bank01.finance-trust.com,OU=admin",
             action="TRANSFERE",
@@ -61,7 +62,8 @@ async def main():
     tex_content = gen._build_tex(asset_id, asset_state, provenance, integrity, generated_by, "--- TEX SOURCE CODE ---")
     
     tex_path = os.path.join(os.path.dirname(__file__), "..", "report_source.tex")
-    with open(tex_path, "w", encoding="utf-8") as f:
+    # CLI tool, sync I/O is intentional here.
+    with open(tex_path, "w", encoding="utf-8") as f:  # noqa: ASYNC230
         f.write(tex_content)
     print(f"LaTeX source generated: {tex_path}")
     
@@ -69,7 +71,7 @@ async def main():
     try:
         pdf_bytes = await gen.generate(asset_id, asset_state, provenance, integrity, generated_by)
         pdf_path = os.path.join(os.path.dirname(__file__), "..", "audit_RWA-OBL-BANK01-2025-001.pdf")
-        with open(pdf_path, "wb") as f:
+        with open(pdf_path, "wb") as f:  # noqa: ASYNC230 - CLI tool, sync I/O intentional
             f.write(pdf_bytes)
         print(f"PDF generated: {pdf_path}")
     except Exception as e:

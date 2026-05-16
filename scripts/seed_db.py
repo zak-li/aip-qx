@@ -5,8 +5,7 @@ Usage: python scripts/seed_db.py
 import asyncio
 import json
 import os
-import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from decimal import Decimal
 from pathlib import Path
 
@@ -60,7 +59,7 @@ async def seed_compliance(conn: asyncpg.Connection, data: dict) -> None:
         )
         next_review = screening.get("next_review_date")
         expires_at = (
-            datetime.fromisoformat(next_review).replace(tzinfo=timezone.utc)
+            datetime.fromisoformat(next_review).replace(tzinfo=UTC)
             if next_review
             else None
         )

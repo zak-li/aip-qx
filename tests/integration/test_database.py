@@ -1,5 +1,5 @@
 import uuid
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, datetime, timedelta
 from decimal import Decimal
 
 from sqlalchemy import text
@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from backend.features.assets.models import Asset
 from backend.features.transactions.models import Transaction
 from tests.conftest import BANK01_ORG_ID, THOMAS_USER_ID
+
 
 async def test_trigger_flag_high_risk_on_6m_transaction(
     async_session: AsyncSession, test_org, test_user_thomas,

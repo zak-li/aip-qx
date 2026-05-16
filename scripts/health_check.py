@@ -1,7 +1,7 @@
 ﻿
 import socket
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 VM_HOST = "10.10.10.150"
 
@@ -26,11 +26,11 @@ def check_tcp(host: str, port: int, timeout: float = 3.0) -> bool:
         sock = socket.create_connection((host, port), timeout=timeout)
         sock.close()
         return True
-    except (socket.timeout, ConnectionRefusedError, OSError):
+    except (TimeoutError, ConnectionRefusedError, OSError):
         return False
 
 def run_health_check() -> bool:
-    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
+    now = datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S UTC")
 
     print()
     print("═" * 66)
@@ -92,7 +92,7 @@ def run_health_check() -> bool:
     if optional_down:
         print(f"  🟡  {len(optional_down)} service(s) optionnel(s) DOWN")
         for name, port, desc in optional_down:
-            print(f"      ℹ  {name} (:{port}) — {desc}")
+            print(f"      [i] {name} (:{port}) -- {desc}")
 
     print(f"\n      Score : {up_count}/{total} services UP")
     print("═" * 66)

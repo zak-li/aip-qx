@@ -3,9 +3,10 @@
 Deployment script to upload the frontend `dist` directory to the remote VM via SFTP.
 """
 import os
-import sys
-import paramiko
 import posixpath
+import sys
+
+import paramiko
 
 HOST = os.environ.get("DEPLOY_HOST", "")
 USERNAME = os.environ.get("DEPLOY_USER", "")
@@ -20,7 +21,7 @@ REMOTE_DEST = f"/home/{USERNAME}/rwa-platform/frontend/src"
 def create_remote_dir_if_missing(sftp, remote_path):
     try:
         sftp.stat(remote_path)
-    except IOError:
+    except OSError:
         # Parent might not exist, but let's just assume we can mkdir
         try:
             sftp.mkdir(remote_path)
@@ -35,7 +36,7 @@ def deploy_frontend():
 
     print(f"Connecting to {HOST} as {USERNAME}...")
     ssh = paramiko.SSHClient()
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())  # noqa: S507 - dev tooling against a known VM
     
     try:
         ssh.connect(HOST, username=USERNAME, password=PASSWORD, timeout=10)
@@ -44,18 +45,18 @@ def deploy_frontend():
         # Ensure remote base directory exists
         try:
             sftp.stat("/home/zakaria/rwa-platform")
-        except IOError:
+        except OSError:
             sftp.mkdir("/home/zakaria/rwa-platform")
             
         try:
             sftp.stat("/home/zakaria/rwa-platform/frontend")
-        except IOError:
+        except OSError:
             sftp.mkdir("/home/zakaria/rwa-platform/frontend")
             
         create_remote_dir_if_missing(sftp, REMOTE_DEST)
         
         print("Uploading files...")
-        for root, dirs, files in os.walk(LOCAL_SRC):
+        for root, _dirs, files in os.walk(LOCAL_SRC):
             # Convert local path to remote path
             rel_path = os.path.relpath(root, LOCAL_SRC)
             if rel_path == ".":

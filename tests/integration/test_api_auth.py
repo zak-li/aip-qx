@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from tests.conftest import BANK01_ORG_ID, THOMAS_USER_ID
 
+
 async def test_login_thomas_martin_returns_valid_jwt(
     test_client: AsyncClient,
     async_session: AsyncSession, test_org, test_user_thomas,
@@ -78,9 +79,10 @@ async def test_regulateur_can_access_freeze_endpoint(
     test_client: AsyncClient, token_sophie_lambert: str,
     async_session: AsyncSession, test_org, test_user_thomas, test_amf_org, test_user_sophie,
 ):
-    from backend.features.assets.models import Asset
-    from decimal import Decimal
     from datetime import date
+    from decimal import Decimal
+
+    from backend.features.assets.models import Asset
     asset = Asset(
         asset_id="RWA-OBL-AUTHFR-001",
         isin="FR0014004L86",

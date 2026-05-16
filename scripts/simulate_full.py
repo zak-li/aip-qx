@@ -52,7 +52,8 @@ try:
     import httpx
 except ImportError:
     import subprocess
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "httpx", "-q"])
+    # Self-bootstrap install — args are hard-coded, no user input.
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "httpx", "-q"])  # noqa: S603
     import httpx
 
 try:
@@ -183,7 +184,7 @@ async def hit(
     *,
     headers: dict | None = None,
     json_body: dict | None = None,
-    timeout: float = 15.0,
+    timeout: float = 15.0,  # noqa: ASYNC109 - per-call HTTP deadline, forwarded to httpx
     accept_codes: tuple[int, ...] = (200, 201, 202, 204),
 ) -> httpx.Response | None:
     url = f"{BASE_URL}{path}"
@@ -217,7 +218,7 @@ def fresh_pubkey() -> tuple[str, str]:
             sk = ec.generate_private_key(ec.SECP256K1())
             nums = sk.public_key().public_numbers()
             return f"{nums.x:064x}", f"{nums.y:064x}"
-        except Exception:
+        except Exception:  # noqa: S110 - fall back to random hex when EC unavailable
             pass
     return secrets.token_hex(32), secrets.token_hex(32)
 
@@ -478,7 +479,7 @@ async def phase_async_heavy(
                 if tid:
                     task_ids.append(tid)
                     STATS.tasks_dispatched.append(tid)
-            except Exception:
+            except Exception:  # noqa: S110 - malformed body shouldn't abort the run
                 pass
 
     # Fraud graph scan -> Celery compliance queue

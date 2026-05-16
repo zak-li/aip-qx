@@ -9,15 +9,15 @@ Usage:
   python scripts/benchmarks/benchmark_zkp.py
 """
 
+import os
 import sys
 import time
-import os
 from statistics import mean, stdev
 
 # Add the project root to python path to import the backend
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-from backend.features.zkp.crypto import schnorr_prove, schnorr_verify, Point, generate_keypair
+from backend.features.zkp.crypto import generate_keypair, schnorr_prove, schnorr_verify
 
 ITERATIONS = 500
 
@@ -102,4 +102,4 @@ if __name__ == "__main__":
         }
     ]
     
-    print_benchmark_table([schnorr_result] + baselines)
+    print_benchmark_table([schnorr_result, *baselines])

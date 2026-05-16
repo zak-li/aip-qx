@@ -6,22 +6,21 @@ Usage:
     python scripts/simulate_dashboard.py [--duration 120] [--rps 8]
 """
 
+import argparse
 import asyncio
 import os
 import random
 import sys
 import time
 import uuid
-import argparse
-from datetime import date, timedelta
-from decimal import Decimal
+from datetime import date
 
 try:
     import httpx
 except ImportError:
     print("Installing httpx...")
     import subprocess
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "httpx", "-q"])
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "httpx", "-q"])  # noqa: S603
     import httpx
 
 BASE_URL = os.environ.get("API_URL", "http://localhost:8000")

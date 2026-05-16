@@ -1,8 +1,9 @@
-from unittest.mock import AsyncMock, patch, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from backend.fabric_client.network import FabricClient, AssetFrozenError, AssetNotFoundException
+from backend.fabric_client.network import AssetFrozenError, AssetNotFoundException, FabricClient
+
 
 async def test_submit_transaction_calls_peer_chaincode_invoke():
     mock_process = AsyncMock()
@@ -51,7 +52,7 @@ async def test_evaluate_transaction_calls_peer_chaincode_query():
 
 async def test_submit_raises_asset_frozen_error_on_stderr_match():
     mock_process = AsyncMock()
-    mock_process.communicate = AsyncMock(return_value=(b"", "Asset gel\u00e9 ref: REG01-INV-2026-001".encode("utf-8")))
+    mock_process.communicate = AsyncMock(return_value=(b"", "Asset gel\u00e9 ref: REG01-INV-2026-001".encode()))
     mock_process.returncode = 1
 
     settings = MagicMock()

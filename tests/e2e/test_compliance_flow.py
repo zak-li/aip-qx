@@ -1,7 +1,7 @@
 import uuid
-from datetime import date, datetime, timezone
-from unittest.mock import patch
+from datetime import UTC, date, datetime
 from decimal import Decimal
+from unittest.mock import patch
 
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from backend.features.assets.models import Asset
 from backend.features.auth.models import Organization, User
 from tests.conftest import BANK01_ORG_ID, THOMAS_USER_ID
+
 
 async def test_freeze_and_block_transfer_flow(
     test_client: AsyncClient,
@@ -94,14 +95,15 @@ async def test_compliance_check_blocks_expired_kyc_james_wilson(
         kyc_level=3,
         aml_score=Decimal("0.0"),
         risk_category="FAIBLE",
-        expires_at=datetime(2025, 12, 31, tzinfo=timezone.utc),
+        expires_at=datetime(2025, 12, 31, tzinfo=UTC),
     )
     async_session.add(kyc)
     
     await async_session.flush()
 
-    from backend.core.security import create_access_token
     from datetime import timedelta
+
+    from backend.core.security import create_access_token
     token_james = create_access_token(
         {"sub": str(james.id), "role": "TRADER", "org_id": str(bank04.id)},
         expires_delta=timedelta(hours=24),
@@ -126,8 +128,8 @@ async def test_compliance_check_blocks_expired_kyc_james_wilson(
     class MockDatetime:
         @classmethod
         def now(cls, tz=None):
-            from datetime import datetime, timezone
-            return datetime(2026, 3, 1, tzinfo=timezone.utc)
+            from datetime import datetime
+            return datetime(2026, 3, 1, tzinfo=UTC)
 
     with patch("backend.features.compliance.kyc.datetime", new=MockDatetime):
         transfer_payload = {

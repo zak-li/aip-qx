@@ -3,24 +3,20 @@
 Simulation visuelle du Tribunal de Compliance et de la Théorie des Jeux.
 Utilise 'rich' pour un rendu dans le terminal.
 """
-import sys
-import os
 import hashlib
-import time
+import os
 import random
+import sys
+import time
 from dataclasses import dataclass
-from typing import List
 
 # Add the project root to python path to import the backend
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-from rich.console import Console
-from rich.table import Table
-from rich.panel import Panel
-from rich.text import Text
-from rich.progress import track
-from rich.layout import Layout
 from rich import box
+from rich.console import Console
+from rich.panel import Panel
+from rich.table import Table
 
 console = Console()
 
@@ -61,7 +57,7 @@ def simulate_tribunal():
     
     # 2. Anomaly Detected
     ground_truth = "FRAUD"
-    console.print(f"\n[bold red][!] ALERT: AI Compliance Engine flagged Transaction #8932 as SUSPICIOUS.[/]")
+    console.print("\n[bold red][!] ALERT: AI Compliance Engine flagged Transaction #8932 as SUSPICIOUS.[/]")
     console.print(f"Ground Truth (Unknown to network): [bold]{ground_truth}[/]\n")
     
     time.sleep(1)
@@ -71,7 +67,7 @@ def simulate_tribunal():
     console.print("Auditors analyze evidence and submit a salted hash to prevent copying (free-riding).")
     
     commitments = []
-    with console.status("[bold green]Auditors are committing votes...") as status:
+    with console.status("[bold green]Auditors are committing votes..."):
         for a in auditors:
             time.sleep(0.5)
             # The malicious node votes LEGITIMATE despite evidence

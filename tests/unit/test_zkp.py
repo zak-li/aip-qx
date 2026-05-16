@@ -1,6 +1,6 @@
-import pytest
-from backend.features.zkp.crypto import generate_keypair, schnorr_prove, schnorr_verify, SchnorrProof
+from backend.features.zkp.crypto import SchnorrProof, generate_keypair, schnorr_prove, schnorr_verify
 from backend.features.zkp.merkle import MerkleTree, verify_non_membership
+
 
 def test_schnorr_proof_validity():
     """Test that a valid Schnorr proof verifies correctly."""

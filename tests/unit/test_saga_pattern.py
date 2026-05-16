@@ -9,8 +9,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from backend.core.security import hash_password
 from backend.exceptions import AssetFrozenError
 from backend.features.assets.models import Asset
-from backend.features.auth.models import User
 from backend.features.assets.schemas import FreezeRequest, TransferRequest
+from backend.features.auth.models import User
 from tests.conftest import BANK01_ORG_ID, REG01_ORG_ID, THOMAS_USER_ID
 
 
@@ -116,8 +116,8 @@ async def test_freeze_saga_compensation_on_db_failure(
 async def test_fabric_endorsement_error_propagates(
     async_session: AsyncSession, test_org, test_user_thomas, mock_fabric_client, seeded_asset
 ):
-    from backend.features.assets.service import freeze
     from backend.fabric_client.network import FabricEndorsementError
+    from backend.features.assets.service import freeze
 
     mock_fabric_client.submit_transaction.side_effect = FabricEndorsementError("Endorsement failed")
 
