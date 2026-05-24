@@ -62,8 +62,13 @@ class Settings(FabricSettings):
     keycloak_callback_url: str = Field(
         default="http://10.10.10.150:8000/api/v1/auth/callback"
     )
-    # Set False only for dev with self-signed TLS
+    # Set False only for dev (no TLS). In production prefer setting
+    # keycloak_ca_cert_path to pin a custom CA when Keycloak uses a self-signed
+    # or private-CA certificate.
     keycloak_verify_tls: bool = Field(default=False)
+    # Path inside the container to a PEM bundle that signs Keycloak's TLS cert.
+    # When set, httpx uses this instead of the system trust store.
+    keycloak_ca_cert_path: str | None = Field(default=None)
 
     # ── gRPC server ──────────────────────────────────────────────────────────
     grpc_port: int = Field(default=50051)
@@ -83,8 +88,11 @@ class Settings(FabricSettings):
                 raise ValueError("TLS must be enabled in production.")
             if "localhost" in self.database_url:
                 raise ValueError("localhost database URL is not allowed in production.")
-            if not self.keycloak_verify_tls:
-                raise ValueError("KEYCLOAK_VERIFY_TLS must be true in production.")
+            if not (self.keycloak_verify_tls or self.keycloak_ca_cert_path):
+                raise ValueError(
+                    "In production, either KEYCLOAK_VERIFY_TLS=true (system trust store) "
+                    "or KEYCLOAK_CA_CERT_PATH=/path/to/ca.crt (pinned CA) must be set."
+                )
         return self
 
 

@@ -11,6 +11,10 @@ services:
       - .env
     environment:
       - ENVIRONMENT=production
+    volumes:
+      # Pinned CA used to validate Keycloak's self-signed TLS cert.
+      # Path inside the container must match KEYCLOAK_CA_CERT_PATH in .env.
+      - ./deployment/keycloak/tls/tls.crt:/etc/ssl/keycloak/ca.crt:ro
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
@@ -36,6 +40,8 @@ services:
       - .env
     environment:
       - ENVIRONMENT=production
+    volumes:
+      - ./deployment/keycloak/tls/tls.crt:/etc/ssl/keycloak/ca.crt:ro
     # Celery needs Redis (broker) and Postgres (result backend / DB tasks).
     # Both are expected to be running externally or added as services here.
     # No dependency on `api` — the worker connects to the broker directly.

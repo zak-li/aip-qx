@@ -73,9 +73,12 @@ def _logout_url() -> str:
 
 
 def _http_client() -> httpx.AsyncClient:
+    # A pinned CA path takes precedence over the bool: httpx accepts either a
+    # string path (custom trust anchor) or a bool (system store / no verify).
+    verify: str | bool = settings.keycloak_ca_cert_path or settings.keycloak_verify_tls
     return httpx.AsyncClient(
         timeout=httpx.Timeout(connect=5.0, read=15.0, write=10.0, pool=5.0),
-        verify=settings.keycloak_verify_tls,
+        verify=verify,
     )
 
 

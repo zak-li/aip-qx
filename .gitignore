@@ -3,10 +3,12 @@
 !.env.example
 *.pem
 *.key
+*.crt
 *.p12
 *.pfx
 network/wallets/
 network/crypto-config/
+deployment/keycloak/tls/
 
 logs/
 *.log
