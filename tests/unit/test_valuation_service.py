@@ -6,9 +6,9 @@ import pytest
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.features.assets.models import Asset
-from backend.features.assets.valuation_service import get_history, record_valuation
-from backend.features.auth.models import Organization, User
+from core.features.assets.models import Asset
+from core.features.assets.valuation_service import get_history, record_valuation
+from core.features.auth.models import Organization, User
 
 
 @pytest.fixture

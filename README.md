@@ -119,8 +119,8 @@ The setup-realm.py script prints a `KEYCLOAK_CLIENT_SECRET` — copy it into you
 ```bash
 docker compose up -d              # API + Celery worker
 # Or without Docker:
-uvicorn backend.main:app --host 0.0.0.0 --port 8000 --workers 1
-celery -A backend.core.celery_app worker --loglevel=info -Q celery,compliance,reports,fabric_events
+uvicorn core.main:app --host 0.0.0.0 --port 8000 --workers 1
+celery -A core.core.celery_app worker --loglevel=info -Q celery,compliance,reports,fabric_events
 ```
 
 The API is live at `http://localhost:8000`.
@@ -231,7 +231,7 @@ curl -H "Authorization: Bearer <token>" http://localhost:8000/api/v1/assets
 
 ```
 regx/
-├── backend/
+├── core/
 │   ├── main.py                 # FastAPI app, middleware, metrics
 │   ├── config.py
 │   ├── features/
@@ -245,7 +245,7 @@ regx/
 │   ├── fabric_client/          # Wallet, events, retry, circuit breaker
 │   └── grpc_server/            # gRPC servicers
 ├── chaincode/rwa-token/        # Go chaincode (CCaaS)
-├── network/
+├── dlt-nodes/
 │   ├── config/                 # core.yaml, connection_profile.yaml
 │   ├── docker/                 # docker-compose.yaml
 │   └── scripts/                # Network lifecycle scripts

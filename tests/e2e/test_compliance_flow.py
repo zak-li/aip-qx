@@ -6,8 +6,8 @@ from unittest.mock import patch
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.features.assets.models import Asset
-from backend.features.auth.models import Organization, User
+from core.features.assets.models import Asset
+from core.features.auth.models import Organization, User
 from tests.conftest import BANK01_ORG_ID, THOMAS_USER_ID
 
 
@@ -65,7 +65,7 @@ async def test_compliance_check_blocks_expired_kyc_james_wilson(
     async_session: AsyncSession,
     test_org, test_user_thomas,
 ):
-    from backend.core.security import hash_password
+    from core.core.security import hash_password
 
     bank04 = Organization(
         id=uuid.UUID("00000000-0000-0000-0000-000000000003"),
@@ -88,7 +88,7 @@ async def test_compliance_check_blocks_expired_kyc_james_wilson(
     )
     async_session.add(james)
     
-    from backend.features.compliance.models import ComplianceRecord
+    from core.features.compliance.models import ComplianceRecord
     kyc = ComplianceRecord(
         participant_id=james.id,
         kyc_status="VERIFIE",
@@ -103,7 +103,7 @@ async def test_compliance_check_blocks_expired_kyc_james_wilson(
 
     from datetime import timedelta
 
-    from backend.core.security import create_access_token
+    from core.core.security import create_access_token
     token_james = create_access_token(
         {"sub": str(james.id), "role": "TRADER", "org_id": str(bank04.id)},
         expires_delta=timedelta(hours=24),
@@ -131,7 +131,7 @@ async def test_compliance_check_blocks_expired_kyc_james_wilson(
             from datetime import datetime
             return datetime(2026, 3, 1, tzinfo=UTC)
 
-    with patch("backend.features.compliance.kyc.datetime", new=MockDatetime):
+    with patch("core.features.compliance.kyc.datetime", new=MockDatetime):
         transfer_payload = {
             "asset_id": "RWA-OBL-BANK02-2025-002",
             "to_owner": "james.e2e@bank04.com",

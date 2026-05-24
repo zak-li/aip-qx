@@ -15,8 +15,8 @@ from statistics import mean, stdev
 # Add the project root to python path to import the backend
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-from backend.features.fhe.context import create_ckks_context, serialize_context
-from backend.features.fhe.scorer import FHEClient, FHEScorer
+from core.features.fhe.context import create_ckks_context, serialize_context
+from core.features.fhe.scorer import FHEClient, FHEScorer
 
 ITERATIONS = 100
 

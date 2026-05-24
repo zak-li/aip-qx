@@ -14,7 +14,7 @@ The repo currently has hand-written `database/sql/0[1-7]_*.sql` seeds but no
 Alembic baseline. To bootstrap:
 
 1. Apply the SQL seeds against an empty database (so the schema matches the
-   ORM models in `backend/features/*/models.py`).
+   ORM models in `core/features/*/models.py`).
 2. Stamp the database as if it were already at the head of an empty Alembic
    tree:
 
@@ -31,7 +31,7 @@ Alembic baseline. To bootstrap:
 
 ## Configuration
 
-Connection details come from `backend.config.settings.database_url` (env var
+Connection details come from `core.config.settings.database_url` (env var
 `DATABASE_URL`). `alembic.ini` does **not** contain credentials.
 
 ## Models registered for autogenerate
@@ -39,9 +39,9 @@ Connection details come from `backend.config.settings.database_url` (env var
 `env.py` imports the model modules below — adding a new feature with its own
 models means adding the import there too:
 
-- `backend.features.assets.models`
-- `backend.features.auth.models`
-- `backend.features.compliance.models`
-- `backend.features.transactions.models`
-- `backend.features.tribunal.models`
-- `backend.features.zkp.models`
+- `core.features.assets.models`
+- `core.features.auth.models`
+- `core.features.compliance.models`
+- `core.features.transactions.models`
+- `core.features.tribunal.models`
+- `core.features.zkp.models`

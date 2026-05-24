@@ -4,7 +4,7 @@ from decimal import Decimal
 import pytest
 from pydantic import ValidationError
 
-from backend.features.assets.schemas import FreezeRequest, TokenizeRequest, TransferRequest
+from core.features.assets.schemas import FreezeRequest, TokenizeRequest, TransferRequest
 
 
 def test_tokenize_request_valid_oat_bnp():

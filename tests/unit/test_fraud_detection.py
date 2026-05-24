@@ -2,8 +2,8 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from backend.features.fraud_detection.fraud_detection import FraudDetector
-from backend.features.fraud_detection.neo4j_sync import Neo4jClient
+from core.features.fraud_detection.fraud_detection import FraudDetector
+from core.features.fraud_detection.neo4j_sync import Neo4jClient
 
 
 def _make_mock_record(data: dict):

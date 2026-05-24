@@ -7,14 +7,14 @@ Scoring formula: score = J*0.3 + CB*0.4 + V*0.3
 """
 import pytest
 
-from backend.features.fhe.scorer import FHEClient, FHEScorer
+from core.features.fhe.scorer import FHEClient, FHEScorer
 
 
 @pytest.fixture(scope="module")
 def fhe_available():
     """Skip the entire module if HElib CKKS is not built."""
     try:
-        from backend.features.fhe.context import get_session
+        from core.features.fhe.context import get_session
         get_session()
     except RuntimeError:
         pytest.skip("HElib CKKS native extension not compiled — skipping FHE tests")

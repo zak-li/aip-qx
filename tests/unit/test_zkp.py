@@ -1,5 +1,5 @@
-from backend.features.zkp.crypto import SchnorrProof, generate_keypair, schnorr_prove, schnorr_verify
-from backend.features.zkp.merkle import MerkleTree, verify_non_membership
+from core.features.zkp.crypto import SchnorrProof, generate_keypair, schnorr_prove, schnorr_verify
+from core.features.zkp.merkle import MerkleTree, verify_non_membership
 
 
 def test_schnorr_proof_validity():

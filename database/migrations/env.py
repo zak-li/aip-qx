@@ -1,7 +1,7 @@
 """Alembic environment.
 
 Imports the project's SQLAlchemy Base and *all* model modules so autogenerate
-sees every table. Reads the connection URL from `backend.config.settings`,
+sees every table. Reads the connection URL from `core.config.settings`,
 not from alembic.ini, so secrets never live in version control.
 """
 from __future__ import annotations
@@ -15,14 +15,14 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 # Project models — importing forces every table to be registered on Base.metadata.
-from backend.config import settings
-from backend.core.database_base import Base
-from backend.features.assets import models as _assets_models  # noqa: F401
-from backend.features.auth import models as _auth_models      # noqa: F401
-from backend.features.compliance import models as _compl_models  # noqa: F401
-from backend.features.transactions import models as _tx_models  # noqa: F401
-from backend.features.tribunal import models as _tribunal_models  # noqa: F401
-from backend.features.zkp import models as _zkp_models  # noqa: F401
+from core.config import settings
+from core.core.database_base import Base
+from core.features.assets import models as _assets_models  # noqa: F401
+from core.features.auth import models as _auth_models      # noqa: F401
+from core.features.compliance import models as _compl_models  # noqa: F401
+from core.features.transactions import models as _tx_models  # noqa: F401
+from core.features.tribunal import models as _tribunal_models  # noqa: F401
+from core.features.zkp import models as _zkp_models  # noqa: F401
 
 config = context.config
 

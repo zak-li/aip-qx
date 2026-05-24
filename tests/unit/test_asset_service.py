@@ -6,11 +6,11 @@ from unittest.mock import AsyncMock, patch
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.exceptions import AssetFrozenError
-from backend.features.assets.models import Asset
-from backend.features.assets.schemas import FreezeRequest, TokenizeRequest, TransferRequest
-from backend.features.assets.service import freeze, tokenize, transfer
-from backend.features.auth.models import Organization, User
+from core.exceptions import AssetFrozenError
+from core.features.assets.models import Asset
+from core.features.assets.schemas import FreezeRequest, TokenizeRequest, TransferRequest
+from core.features.assets.service import freeze, tokenize, transfer
+from core.features.auth.models import Organization, User
 from tests.conftest import BANK01_ORG_ID, THOMAS_USER_ID
 
 
@@ -29,8 +29,8 @@ async def test_tokenize_creates_asset_and_calls_fabric(
         justification="Tokenisation test unitaire bond primaire",
     )
 
-    with patch("backend.features.assets.service.get_fabric", return_value=mock_fabric_client):
-        with patch("backend.features.assets.service.get_redis", side_effect=Exception("skip redis")):
+    with patch("core.features.assets.service.get_fabric", return_value=mock_fabric_client):
+        with patch("core.features.assets.service.get_redis", side_effect=Exception("skip redis")):
             result = await tokenize(request, "admin@bank01", async_session)
 
     assert result.asset_id == "RWA-OBL-TEST-2026-001"
@@ -43,7 +43,7 @@ async def test_tokenize_creates_asset_and_calls_fabric(
 async def test_tokenize_raises_if_asset_already_exists(
     async_session: AsyncSession, test_org: Organization, test_user_thomas: User, mock_fabric_client: AsyncMock
 ):
-    from backend.exceptions import AssetAlreadyExistsError
+    from core.exceptions import AssetAlreadyExistsError
     mock_fabric_client.submit_transaction.side_effect = AssetAlreadyExistsError("RWA-OBL-TEST-2026-002")
 
     request = TokenizeRequest(
@@ -58,7 +58,7 @@ async def test_tokenize_raises_if_asset_already_exists(
         justification="Tentative duplication test unitaire",
     )
 
-    with patch("backend.features.assets.service.get_fabric", return_value=mock_fabric_client):
+    with patch("core.features.assets.service.get_fabric", return_value=mock_fabric_client):
         with pytest.raises(AssetAlreadyExistsError) as exc_info:
             await tokenize(request, "admin@bank01", async_session)
 
@@ -107,8 +107,8 @@ async def test_transfer_updates_owner_to_pierre_moreau(
         justification="Cession bloc Inv01 portefeuille ESG test",
     )
 
-    with patch("backend.features.assets.service.get_fabric", return_value=mock_fabric_client):
-        with patch("backend.features.assets.service.full_check", return_value=(False, None, None)):
+    with patch("core.features.assets.service.get_fabric", return_value=mock_fabric_client):
+        with patch("core.features.assets.service.full_check", return_value=(False, None, None)):
             result = await transfer(request, "admin@bank01", async_session)
 
     assert result.current_value == Decimal("24739375")
@@ -154,8 +154,8 @@ async def test_transfer_blocked_on_frozen_asset_returns_frozen_error(
         justification="Tentative transfert actif gele test",
     )
 
-    with patch("backend.features.assets.service.get_fabric", return_value=mock_fabric_client):
-        with patch("backend.features.assets.service.full_check", return_value=(False, None, None)):
+    with patch("core.features.assets.service.get_fabric", return_value=mock_fabric_client):
+        with patch("core.features.assets.service.full_check", return_value=(False, None, None)):
             with pytest.raises(AssetFrozenError) as exc_info:
                 await transfer(request, "admin@bank01", async_session)
 
@@ -191,7 +191,7 @@ async def test_freeze_sets_status_gele_in_fabric_and_postgres(
         regulatory_ref="REG01-INV-2026-001",
     )
 
-    with patch("backend.features.assets.service.get_fabric", return_value=mock_fabric_client):
+    with patch("core.features.assets.service.get_fabric", return_value=mock_fabric_client):
         result = await freeze(request, "admin@reg01-regulateur", async_session)
 
     assert result.status == "GELE"

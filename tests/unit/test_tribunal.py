@@ -2,7 +2,7 @@ import uuid
 
 import pytest
 
-from backend.features.tribunal.service import TribunalService, compute_commit_hash
+from core.features.tribunal.service import TribunalService, compute_commit_hash
 
 
 # Mock DB Session for testing logic
@@ -83,7 +83,7 @@ async def test_tribunal_game_theory_slashing():
     # Create Session
     import datetime as _dt
 
-    from backend.features.tribunal.models import TribunalSession
+    from core.features.tribunal.models import TribunalSession
     session = TribunalSession(
         id=uuid.uuid4(),
         asset_id=uuid.uuid4(),
@@ -142,7 +142,7 @@ async def test_tribunal_invalid_reveal():
     """Test that a malicious auditor cannot change their vote during reveal."""
     import datetime as _dt
 
-    from backend.features.tribunal.models import TribunalSession
+    from core.features.tribunal.models import TribunalSession
 
     db = MockAsyncSession()
     service = TribunalService(db)

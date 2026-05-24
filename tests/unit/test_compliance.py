@@ -5,12 +5,12 @@ from unittest.mock import patch
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.config import settings
-from backend.features.compliance.aml import AMLScorer
-from backend.features.compliance.kyc import KYCVerifier
-from backend.features.compliance.models import ComplianceRecord
-from backend.features.compliance.rules_mica import MiCAChecker
-from backend.features.compliance.sanctions import SanctionsScreener
+from core.config import settings
+from core.features.compliance.aml import AMLScorer
+from core.features.compliance.kyc import KYCVerifier
+from core.features.compliance.models import ComplianceRecord
+from core.features.compliance.rules_mica import MiCAChecker
+from core.features.compliance.sanctions import SanctionsScreener
 from tests.conftest import JAMES_USER_ID, THOMAS_USER_ID
 
 
@@ -44,7 +44,7 @@ async def test_kyc_james_wilson_expired_after_20260228(
     async_session: AsyncSession, test_org, test_user_thomas,
 ):
     james_id = JAMES_USER_ID
-    from backend.features.auth.models import Organization, User
+    from core.features.auth.models import Organization, User
     bank04 = Organization(
         id=uuid.UUID("00000000-0000-0000-0000-000000000003"),
         org_code="NW", legal_name="Bank 04", org_type="BANQUE",
@@ -64,7 +64,7 @@ async def test_kyc_james_wilson_expired_after_20260228(
         datetime(2026, 2, 28, tzinfo=UTC), Decimal("0.089"),
     )
 
-    with patch("backend.features.compliance.kyc.datetime") as mock_dt:
+    with patch("core.features.compliance.kyc.datetime") as mock_dt:
         mock_dt.now.return_value = datetime(2026, 3, 1, tzinfo=UTC)
         mock_dt.side_effect = lambda *a, **kw: datetime(*a, **kw)
         verifier = KYCVerifier(settings, async_session)
@@ -77,7 +77,7 @@ async def test_kyc_james_wilson_needs_renewal_flag(
     async_session: AsyncSession, test_org, test_user_thomas,
 ):
     james_id = JAMES_USER_ID
-    from backend.features.auth.models import Organization, User
+    from core.features.auth.models import Organization, User
     try:
         bank04 = Organization(
             id=uuid.UUID("00000000-0000-0000-0000-000000000003"),
@@ -105,7 +105,7 @@ async def test_kyc_james_wilson_needs_renewal_flag(
         datetime(2026, 2, 28, tzinfo=UTC), Decimal("0.089"),
     )
 
-    with patch("backend.features.compliance.kyc.datetime") as mock_dt:
+    with patch("core.features.compliance.kyc.datetime") as mock_dt:
         mock_dt.now.return_value = datetime(2026, 1, 30, tzinfo=UTC)
         mock_dt.side_effect = lambda *a, **kw: datetime(*a, **kw)
         verifier = KYCVerifier(settings, async_session)
@@ -144,7 +144,7 @@ async def test_aml_blocked_when_score_above_060(
 ):
     scorer = AMLScorer(settings, async_session)
     with patch.object(scorer, "_load_indicators") as mock_ind:
-        from backend.features.compliance.aml import AMLIndicators
+        from core.features.compliance.aml import AMLIndicators
         mock_ind.return_value = AMLIndicators(0.7, 0.7, 0.7)
         result = await scorer.score(THOMAS_USER_ID, 1000.0, uuid.uuid4())
     assert result.blocked is True
@@ -155,7 +155,7 @@ async def test_aml_sar_required_when_score_above_075(
 ):
     scorer = AMLScorer(settings, async_session)
     with patch.object(scorer, "_load_indicators") as mock_ind:
-        from backend.features.compliance.aml import AMLIndicators
+        from core.features.compliance.aml import AMLIndicators
         mock_ind.return_value = AMLIndicators(0.9, 0.9, 0.9)
         result = await scorer.score(THOMAS_USER_ID, 1000.0, uuid.uuid4())
     assert result.sar_required is True

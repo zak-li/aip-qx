@@ -17,8 +17,8 @@ services:
       - ./deployment/keycloak/tls/tls.crt:/etc/ssl/keycloak/ca.crt:ro
       # Fabric identity wallet and crypto material — excluded from the image
       # by .dockerignore, so they must be mounted at runtime.
-      - ./network/wallets:/app/network/wallets:ro
-      - ./network/crypto-config:/app/network/crypto-config:ro
+      - ./dlt-nodes/wallets:/app/dlt-nodes/wallets:ro
+      - ./dlt-nodes/crypto-config:/app/dlt-nodes/crypto-config:ro
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
@@ -39,7 +39,7 @@ services:
       dockerfile: Dockerfile
     container_name: rwa-celery-worker
     restart: unless-stopped
-    command: celery -A backend.core.celery_app worker -l INFO --concurrency=2
+    command: celery -A core.core.celery_app worker -l INFO --concurrency=2
     env_file:
       - .env
     environment:
@@ -49,7 +49,7 @@ services:
     # Celery doesn't expose HTTP — use `inspect ping` which round-trips through
     # the broker and proves the worker is actually consuming.
     healthcheck:
-      test: ["CMD-SHELL", "celery -A backend.core.celery_app inspect ping -d celery@$$(hostname) -t 5 | grep -q pong"]
+      test: ["CMD-SHELL", "celery -A core.core.celery_app inspect ping -d celery@$$(hostname) -t 5 | grep -q pong"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -72,7 +72,7 @@ networks:
     # The platform uses THREE separate Docker networks by design:
     #   1. rwa-network       — API + Celery (this file)
     #   2. rwa-network       — Fabric peers, orderer, CouchDB, Neo4j
-    #                          (network/docker/docker-compose.yaml)
+    #                          (dlt-nodes/docker/docker-compose.yaml)
     #   3. (default)         — Keycloak
     #                          (deployment/keycloak/docker-compose.keycloak.yml)
     #

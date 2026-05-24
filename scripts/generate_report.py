@@ -5,9 +5,9 @@ from datetime import UTC, datetime
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from backend.features.audit.integrity_checker import IntegrityChecker
-from backend.features.audit.report_generator import ReportGenerator
-from backend.features.audit.trail import ProvenanceRecord
+from core.features.audit.integrity_checker import IntegrityChecker
+from core.features.audit.report_generator import ReportGenerator
+from core.features.audit.trail import ProvenanceRecord
 
 
 async def main():

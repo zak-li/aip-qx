@@ -6,10 +6,10 @@ from unittest.mock import patch
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.exceptions import AssetFrozenError
-from backend.features.assets.models import Asset
-from backend.features.assets.schemas import FreezeRequest, TransferRequest
-from backend.features.auth.models import User
+from core.exceptions import AssetFrozenError
+from core.features.assets.models import Asset
+from core.features.assets.schemas import FreezeRequest, TransferRequest
+from core.features.auth.models import User
 from tests.conftest import BANK01_ORG_ID, REG01_ORG_ID, THOMAS_USER_ID
 
 
@@ -56,7 +56,7 @@ async def seeded_frozen_asset(async_session: AsyncSession, test_org, test_user_t
 async def test_transfer_saga_compensation_on_db_failure(
     async_session: AsyncSession, test_org, test_user_thomas, test_amf_org, mock_fabric_client, seeded_asset
 ):
-    from backend.features.assets.service import transfer
+    from core.features.assets.service import transfer
 
     recipient = User(
         id=uuid.UUID("30000000-0000-0000-0000-000000000001"),
@@ -72,7 +72,7 @@ async def test_transfer_saga_compensation_on_db_failure(
     transfer_result = {"txID": "SAGA_TX_001", "blockNumber": 10, "status": "TRANSFERE"}
     mock_fabric_client.submit_transaction.return_value = transfer_result
 
-    with patch("backend.features.assets.service.full_check", return_value=(False, "", "")):
+    with patch("core.features.assets.service.full_check", return_value=(False, "", "")):
         with patch.object(async_session, "commit", side_effect=[Exception("Simulated DB failure")]):
             with pytest.raises(Exception, match="Simulated DB failure"):
                 request = TransferRequest(
@@ -92,7 +92,7 @@ async def test_transfer_saga_compensation_on_db_failure(
 async def test_freeze_saga_compensation_on_db_failure(
     async_session: AsyncSession, test_org, test_user_thomas, test_amf_org, mock_fabric_client, seeded_asset
 ):
-    from backend.features.assets.service import freeze
+    from core.features.assets.service import freeze
 
     freeze_result = {"txID": "SAGA_FREEZE_001", "blockNumber": 11}
     mock_fabric_client.submit_transaction.return_value = freeze_result
@@ -115,8 +115,8 @@ async def test_freeze_saga_compensation_on_db_failure(
 async def test_fabric_endorsement_error_propagates(
     async_session: AsyncSession, test_org, test_user_thomas, mock_fabric_client, seeded_asset
 ):
-    from backend.fabric_client.network import FabricEndorsementError
-    from backend.features.assets.service import freeze
+    from core.fabric_client.network import FabricEndorsementError
+    from core.features.assets.service import freeze
 
     mock_fabric_client.submit_transaction.side_effect = FabricEndorsementError("Endorsement failed")
 
@@ -132,7 +132,7 @@ async def test_fabric_endorsement_error_propagates(
 async def test_fabric_frozen_error_propagates_on_transfer(
     async_session: AsyncSession, test_org, test_user_thomas, test_amf_org, mock_fabric_client
 ):
-    from backend.features.assets.service import transfer
+    from core.features.assets.service import transfer
 
     frozen_asset = Asset(
         asset_id="RWA-OBL-BANK01-2025-001",
@@ -161,7 +161,7 @@ async def test_fabric_frozen_error_propagates_on_transfer(
     async_session.add(recipient)
     await async_session.flush()
 
-    with patch("backend.features.assets.service.full_check", return_value=(False, "", "")):
+    with patch("core.features.assets.service.full_check", return_value=(False, "", "")):
         with pytest.raises(AssetFrozenError):
             request = TransferRequest(
                 asset_id="RWA-OBL-BANK01-2025-001",

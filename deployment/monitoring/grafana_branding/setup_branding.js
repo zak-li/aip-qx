@@ -19,7 +19,7 @@ const fs = require('fs');
 const path = require('path');
 
 // ── Connection config ─────────────────────────────────────────────────────────
-const SSH = { host: '10.10.10.150', port: 22, username: 'zakaria', password: 'zakaria' };
+const SSH = { host: '10.10.10.150', port: 22, username: 'zakaria', password: process.env.SSH_PASSWORD || 'zakaria' };
 const SUDO = `echo '${SSH.password}' | sudo -S`;
 
 // ── Local assets ──────────────────────────────────────────────────────────────

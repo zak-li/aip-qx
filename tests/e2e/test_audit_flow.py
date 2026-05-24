@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, patch
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.features.audit.integrity_checker import IntegrityChecker
+from core.features.audit.integrity_checker import IntegrityChecker
 
 
 async def test_generate_audit_report_pdf_latex(

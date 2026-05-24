@@ -19,19 +19,19 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.pool import NullPool
 
-from backend.config import settings
-from backend.core.celery_app import celery_app
-from backend.core.database_base import Base
-from backend.core.redis_client import get_redis
-from backend.core.security import _TEST_SIGNING_KEY, create_access_token
-from backend.dependencies import get_db, get_fabric
-from backend.exceptions import AssetFrozenError, AssetNotFoundException
-from backend.fabric_client.network import FabricClient
-from backend.features.audit.integrity_checker import IntegrityChecker, IntegrityReport
-from backend.features.audit.trail import ProvenanceRecord
-from backend.features.auth.models import Organization, User
-from backend.features.compliance.models import ComplianceRecord
-from backend.main import app
+from core.config import settings
+from core.core.celery_app import celery_app
+from core.core.database_base import Base
+from core.core.redis_client import get_redis
+from core.core.security import _TEST_SIGNING_KEY, create_access_token
+from core.dependencies import get_db, get_fabric
+from core.exceptions import AssetFrozenError, AssetNotFoundException
+from core.fabric_client.network import FabricClient
+from core.features.audit.integrity_checker import IntegrityChecker, IntegrityReport
+from core.features.audit.trail import ProvenanceRecord
+from core.features.auth.models import Organization, User
+from core.features.compliance.models import ComplianceRecord
+from core.main import app
 
 _db_url = str(settings.database_url)
 TEST_DATABASE_URL = (
@@ -230,8 +230,8 @@ def mock_fabric_client() -> AsyncMock:
     client.connect = AsyncMock()
     client.disconnect = AsyncMock()
     
-    with patch("backend.fabric_client.network.FabricClient", return_value=client):
-        with patch("backend.dependencies._fabric_client_instance", client):
+    with patch("core.fabric_client.network.FabricClient", return_value=client):
+        with patch("core.dependencies._fabric_client_instance", client):
             yield client
 
 @pytest.fixture(scope="function")
@@ -268,8 +268,8 @@ async def test_client(
             raise exc
 
     transport = ASGITransport(app=app)
-    with patch("backend.api.middleware.rate_limiter.get_redis", fake_get_redis):
-        with patch("backend.api.middleware.auth_middleware.validate_token", fake_validate_token):
+    with patch("core.api.middleware.rate_limiter.get_redis", fake_get_redis):
+        with patch("core.api.middleware.auth_middleware.validate_token", fake_validate_token):
             async with AsyncClient(transport=transport, base_url="http://testserver") as client:
                 yield client
 

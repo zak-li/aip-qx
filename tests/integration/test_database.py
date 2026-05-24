@@ -5,8 +5,8 @@ from decimal import Decimal
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.features.assets.models import Asset
-from backend.features.transactions.models import Transaction
+from core.features.assets.models import Asset
+from core.features.transactions.models import Transaction
 from tests.conftest import BANK01_ORG_ID, THOMAS_USER_ID
 
 
@@ -124,7 +124,7 @@ async def test_view_asset_portfolio_returns_data(
 async def test_view_compliance_dashboard_thomas_martin_approuve(
     async_session: AsyncSession, test_org, test_user_thomas,
 ):
-    from backend.features.compliance.models import ComplianceRecord
+    from core.features.compliance.models import ComplianceRecord
     rec = ComplianceRecord(
         participant_id=THOMAS_USER_ID,
         kyc_level=3,

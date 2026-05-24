@@ -23,8 +23,8 @@ WORKDIR /app
 
 COPY --from=builder /install /usr/local
 
-COPY backend/ ./backend/
-COPY network/ ./network/
+COPY core/ ./core/
+COPY dlt-nodes/ ./dlt-nodes/
 COPY database/migrations/ ./database/migrations/
 COPY alembic.ini ./
 
@@ -42,4 +42,4 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD curl -f http://localhost:8000/health || exit 1
 
-CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]
+CMD ["uvicorn", "core.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]

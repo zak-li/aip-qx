@@ -93,7 +93,7 @@ async def test_regulateur_can_access_freeze_endpoint(
     from datetime import date
     from decimal import Decimal
 
-    from backend.features.assets.models import Asset
+    from core.features.assets.models import Asset
     asset = Asset(
         asset_id="RWA-OBL-AUTHFR-001",
         isin="FR0014004L86",

@@ -5,8 +5,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.features.auth.models import Organization, User
-from backend.features.compliance.models import ComplianceRecord
+from core.features.auth.models import Organization, User
+from core.features.compliance.models import ComplianceRecord
 from tests.conftest import THOMAS_USER_ID
 
 
@@ -28,9 +28,9 @@ async def user_with_expiring_kyc(async_session: AsyncSession, test_org: Organiza
 async def test_check_kyc_expiry_detects_expiring_records(
     async_session: AsyncSession, test_org, user_with_expiring_kyc
 ):
-    from backend.features.compliance.tasks import _do_kyc_expiry
+    from core.features.compliance.tasks import _do_kyc_expiry
 
-    with patch("backend.features.compliance.tasks.AsyncSessionLocal") as mock_session_local:
+    with patch("core.features.compliance.tasks.AsyncSessionLocal") as mock_session_local:
         mock_ctx = AsyncMock()
         mock_session_local.return_value.__aenter__ = AsyncMock(return_value=mock_ctx)
         mock_session_local.return_value.__aexit__ = AsyncMock(return_value=False)
@@ -45,7 +45,7 @@ async def test_check_kyc_expiry_detects_expiring_records(
         mock_ctx.execute = AsyncMock(side_effect=[mock_result, now_result, MagicMock()])
         mock_ctx.commit = AsyncMock()
 
-        with patch("backend.features.compliance.tasks.log_task_audit", AsyncMock()):
+        with patch("core.features.compliance.tasks.log_task_audit", AsyncMock()):
             result = await _do_kyc_expiry()
 
     assert result["checked"] == 1
@@ -55,9 +55,9 @@ async def test_check_kyc_expiry_detects_expiring_records(
 async def test_generate_sar_creates_sar_report(
     async_session: AsyncSession, test_org, test_user_thomas
 ):
-    from backend.features.compliance.tasks import _do_generate_sar
+    from core.features.compliance.tasks import _do_generate_sar
 
-    with patch("backend.features.compliance.tasks.AsyncSessionLocal") as mock_session_local:
+    with patch("core.features.compliance.tasks.AsyncSessionLocal") as mock_session_local:
         mock_ctx = AsyncMock()
         mock_session_local.return_value.__aenter__ = AsyncMock(return_value=mock_ctx)
         mock_session_local.return_value.__aexit__ = AsyncMock(return_value=False)
@@ -69,12 +69,12 @@ async def test_generate_sar_creates_sar_report(
             captured_sar_ref.append(ref)
             return ref
 
-        with patch("backend.features.compliance.tasks.SARReporter") as mock_reporter_class:
+        with patch("core.features.compliance.tasks.SARReporter") as mock_reporter_class:
             mock_reporter = AsyncMock()
             mock_reporter.generate.side_effect = fake_sar_generate
             mock_reporter_class.return_value = mock_reporter
 
-            with patch("backend.features.compliance.tasks.log_task_audit", AsyncMock()):
+            with patch("core.features.compliance.tasks.log_task_audit", AsyncMock()):
                 ref = await _do_generate_sar(
                     participant_id=str(THOMAS_USER_ID),
                     tx_id=None,
@@ -87,7 +87,7 @@ async def test_generate_sar_creates_sar_report(
 
 
 async def test_fraud_graph_scan_returns_summary():
-    from backend.features.compliance.tasks import _do_fraud_graph_scan
+    from core.features.compliance.tasks import _do_fraud_graph_scan
 
     mock_results = {
         "circular_flow": [{"actor_dn": "actor1", "cycle_length": 3, "total_volume": 1000.0, "pattern": "CIRCULAR_FLOW"}],
@@ -96,14 +96,14 @@ async def test_fraud_graph_scan_returns_summary():
         "transfer_concentration": [],
     }
 
-    with patch("backend.features.compliance.tasks.get_neo4j_client") as mock_get_client:
+    with patch("core.features.compliance.tasks.get_neo4j_client") as mock_get_client:
         mock_client = AsyncMock()
         mock_client.connect = AsyncMock()
         mock_client.close = AsyncMock()
         mock_client.run_fraud_scan = AsyncMock(return_value=mock_results)
         mock_get_client.return_value = mock_client
 
-        with patch("backend.features.compliance.tasks.log_task_audit", AsyncMock()):
+        with patch("core.features.compliance.tasks.log_task_audit", AsyncMock()):
             result = await _do_fraud_graph_scan()
 
     assert result["total_anomalies"] == 1
@@ -112,9 +112,9 @@ async def test_fraud_graph_scan_returns_summary():
 
 
 async def test_run_periodic_aml_screening_uses_real_scorer():
-    from backend.features.compliance.tasks import _do_aml_screening
+    from core.features.compliance.tasks import _do_aml_screening
 
-    with patch("backend.features.compliance.tasks.AsyncSessionLocal") as mock_session_local:
+    with patch("core.features.compliance.tasks.AsyncSessionLocal") as mock_session_local:
         mock_ctx = AsyncMock()
         mock_session_local.return_value.__aenter__ = AsyncMock(return_value=mock_ctx)
         mock_session_local.return_value.__aexit__ = AsyncMock(return_value=False)
@@ -124,8 +124,8 @@ async def test_run_periodic_aml_screening_uses_real_scorer():
         mock_ctx.execute = AsyncMock(return_value=mock_users_result)
         mock_ctx.commit = AsyncMock()
 
-        with patch("backend.features.compliance.tasks.AMLScorer") as mock_scorer_class:
-            from backend.features.compliance.aml import AMLResult as AMLResultInternal
+        with patch("core.features.compliance.tasks.AMLScorer") as mock_scorer_class:
+            from core.features.compliance.aml import AMLResult as AMLResultInternal
             mock_scorer = AsyncMock()
             mock_scorer.score = AsyncMock(return_value=AMLResultInternal(
                 score=0.42,
@@ -137,7 +137,7 @@ async def test_run_periodic_aml_screening_uses_real_scorer():
             ))
             mock_scorer_class.return_value = mock_scorer
 
-            with patch("backend.features.compliance.tasks.log_task_audit", AsyncMock()):
+            with patch("core.features.compliance.tasks.log_task_audit", AsyncMock()):
                 result = await _do_aml_screening()
 
     assert "screened" in result

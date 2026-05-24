@@ -2,7 +2,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from backend.fabric_client.network import AssetFrozenError, AssetNotFoundException, FabricClient
+from core.fabric_client.network import AssetFrozenError, AssetNotFoundException, FabricClient
 
 
 async def test_submit_transaction_calls_peer_chaincode_invoke():

@@ -17,7 +17,7 @@ from statistics import mean, stdev
 # Add the project root to python path to import the backend
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-from backend.features.zkp.crypto import generate_keypair, schnorr_prove, schnorr_verify
+from core.features.zkp.crypto import generate_keypair, schnorr_prove, schnorr_verify
 
 ITERATIONS = 500
 

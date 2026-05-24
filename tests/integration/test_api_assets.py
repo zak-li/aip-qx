@@ -4,7 +4,7 @@ from decimal import Decimal
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.features.assets.models import Asset
+from core.features.assets.models import Asset
 from tests.conftest import BANK01_ORG_ID, THOMAS_USER_ID
 
 
