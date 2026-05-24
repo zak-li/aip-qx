@@ -131,9 +131,14 @@ def ensure_roles(client: httpx.Client) -> None:
 
 
 def ensure_client(client: httpx.Client) -> str:
-    """Create or update the rwa-api client. Returns the client UUID."""
+    """Create or update the rwa-api client. Returns the client UUID.
+
+    Re-running this must not invalidate a previously-issued secret: if the
+    client already exists we leave its secret alone. Only the first creation
+    prints a new secret to copy into KEYCLOAK_CLIENT_SECRET.
+    """
     existing = client.get(f"/{REALM}/clients", params={"clientId": CLIENT_ID}).json()
-    client_secret = secrets.token_urlsafe(48)
+    client_secret = None if existing else secrets.token_urlsafe(48)
 
     payload = {
         "clientId": CLIENT_ID,
@@ -165,22 +170,21 @@ def ensure_client(client: httpx.Client) -> str:
             "https://10.10.10.150:8443",
             "http://localhost:8000",
         ],
-        "secret": client_secret,
     }
+    if client_secret is not None:
+        payload["secret"] = client_secret
 
     if existing:
         uuid = existing[0]["id"]
-        print(f"  Updating client '{CLIENT_ID}' (uuid={uuid})")
+        print(f"  Updating client '{CLIENT_ID}' (uuid={uuid}) — keeping existing secret")
         client.put(f"/{REALM}/clients/{uuid}", content=json.dumps(payload)).raise_for_status()
     else:
         print(f"  Creating client '{CLIENT_ID}'")
         r = client.post(f"/{REALM}/clients", content=json.dumps(payload))
         r.raise_for_status()
         uuid = client.get(f"/{REALM}/clients", params={"clientId": CLIENT_ID}).json()[0]["id"]
-
-    # Print the secret — store it immediately in .env
-    print(f"\n  *** CLIENT SECRET (copy to KEYCLOAK_CLIENT_SECRET in .env) ***")
-    print(f"  {client_secret}\n")
+        print("\n  *** CLIENT SECRET (copy to KEYCLOAK_CLIENT_SECRET in .env) ***")
+        print(f"  {client_secret}\n")
 
     return uuid
 

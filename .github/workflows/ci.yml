@@ -27,8 +27,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install ruff==0.7.4 bandit==1.8.0
 
-      - name: Ruff (backend + scripts + tests)
-        run: ruff check backend/ scripts/ tests/
+      - name: Ruff (backend + scripts + tests + deployment)
+        run: ruff check backend/ scripts/ tests/ deployment/
 
       - name: Bandit (security, backend)
         # Skip B101 (assert in tests) -- keeps the rule set tight without noise.
@@ -40,6 +40,10 @@ jobs:
         # commands (B601), and remote /tmp paths (B108) are intentional and
         # acknowledged in source via noqa. Block on anything else Medium+.
         run: bandit -r scripts/ -ll --skip B101,B507,B601,B108
+
+      - name: Bandit (security, deployment)
+        # No SSH helpers in deployment/ — strict mode, no skips beyond B101.
+        run: bandit -r deployment/ -ll --skip B101
 
   python-syntax:
     runs-on: ubuntu-latest

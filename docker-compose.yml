@@ -42,6 +42,14 @@ services:
       - ENVIRONMENT=production
     volumes:
       - ./deployment/keycloak/tls/tls.crt:/etc/ssl/keycloak/ca.crt:ro
+    # Celery doesn't expose HTTP — use `inspect ping` which round-trips through
+    # the broker and proves the worker is actually consuming.
+    healthcheck:
+      test: ["CMD-SHELL", "celery -A backend.core.celery_app inspect ping -d celery@$$HOSTNAME -t 5 | grep -q pong"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     # Celery needs Redis (broker) and Postgres (result backend / DB tasks).
     # Both are expected to be running externally or added as services here.
     # No dependency on `api` — the worker connects to the broker directly.

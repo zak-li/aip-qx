@@ -43,14 +43,9 @@ services:
       - ./themes/regx:/opt/keycloak/themes/regx:ro
     ports:
       - "8443:8443"
-    healthcheck:
-      # Keycloak's self-signed cert isn't in the curl trust store inside the
-      # container — `-k` skips verification for the in-container probe only.
-      test: ["CMD-SHELL", "curl -fsk https://localhost:8443/health/ready || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 60s
+    # No in-container healthcheck — Keycloak 24's distroless image ships no
+    # curl/wget/openssl and TLS-from-bash is impractical. The /health/ready
+    # endpoint is probed externally by Prometheus/Blackbox via the host port.
     logging:
       driver: "json-file"
       options:

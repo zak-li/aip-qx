@@ -1,5 +1,9 @@
+# Grafana dashboard generator — one-off script, panels are kept on single
+# lines on purpose (compact layout maths). Ruff style rules waived locally.
+# ruff: noqa: E701,E702,I001
 import json
 import os
+
 import requests
 
 GRAFANA = os.environ.get("GRAFANA_URL", "http://localhost:3000")
