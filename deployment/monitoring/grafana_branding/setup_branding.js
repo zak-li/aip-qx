@@ -23,7 +23,7 @@ const SSH = { host: '10.10.10.150', port: 22, username: 'zakaria', password: pro
 const SUDO = `echo '${SSH.password}' | sudo -S`;
 
 // ── Local assets ──────────────────────────────────────────────────────────────
-const ICON_SVG_PATH = path.resolve(__dirname, '../assets/vector/icon.svg');
+const ICON_SVG_PATH = path.resolve(__dirname, '../../../.github/assets/vector/icon.svg');
 
 // ── CSS injected into index.html ──────────────────────────────────────────────
 // Hides the default Grafana sidemenu footer logo text and adds our fixed badge.

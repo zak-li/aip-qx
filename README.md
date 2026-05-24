@@ -2,9 +2,9 @@
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/vector/logo-monochrome.svg">
-    <source media="(prefers-color-scheme: light)" srcset="assets/vector/logo-light-monochrome.svg">
-    <img src="assets/vector/logo-monochrome.svg" alt="RegX" width="300">
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/vector/logo-monochrome.svg">
+    <source media="(prefers-color-scheme: light)" srcset=".github/assets/vector/logo-light-monochrome.svg">
+    <img src=".github/assets/vector/logo-monochrome.svg" alt="RegX" width="300">
   </picture>
 </p>
 
@@ -41,7 +41,7 @@ The Fabric network runs two organizations, BANK01 and REG01, each with a dedicat
 The platform embeds compliance directly into transaction execution and asset lifecycle management. Sanctions screening is backed by Ed25519-authenticated manifests, while the MiCA enforcement layer validates exposure boundaries, restricted asset classes, and supervisory reporting requirements. zk-KYC workflows enable cryptographic identity attestation through Merkle proofs without exposing underlying credentials. Encrypted fraud analytics powered by Fully Homomorphic Encryption evaluate AML risk in confidential datasets, with persistent monitoring of KYC validity and systemic concentration exposure.
 
 <p align="center">
-  <img src="assets/compliance-flow-v2.svg" alt="Compliance Flow" width="800">
+  <img src=".github/assets/compliance-flow-v2.svg" alt="Compliance Flow" width="800">
 </p>
 
 RegX exposes a FastAPI REST API and a gRPC server in parallel. Authentication is OIDC-based via Keycloak with PKCE (authorization_code flow). Private keys for Fabric identities are stored in HashiCorp Vault (KV v2), and every response carries six security headers with rate limiting and host filtering.
@@ -90,7 +90,7 @@ Open `.env` and fill in at minimum `DATABASE_URL`, `REDIS_URL`, the Fabric varia
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate         # Windows: .venv\Scripts\activate
+source .venv/bin/activate                # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
@@ -117,7 +117,7 @@ The setup-realm.py script prints a `KEYCLOAK_CLIENT_SECRET` — copy it into you
 **Step 5: Start the API and worker**
 
 ```bash
-docker compose up -d              # API + Celery worker
+docker compose up -d                     # API + Celery worker
 # Or without Docker:
 uvicorn core.main:app --host 0.0.0.0 --port 8000 --workers 1
 celery -A core.core.celery_app worker --loglevel=info -Q celery,compliance,reports,fabric_events
