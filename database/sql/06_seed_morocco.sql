@@ -22,14 +22,12 @@ ON CONFLICT (id) DO NOTHING;
 
 -- password_changed_at = NULL forces a password-change prompt on first login
 INSERT INTO users (
-  id, org_id, email, hashed_password, first_name, last_name,
-  role, msp_id, fabric_cert_serial, phone, department, employee_id,
-  mfa_enabled, password_changed_at, created_at
+  id, org_id, email, first_name, last_name,
+  role, msp_id, fabric_cert_serial, phone, department, employee_id, created_at
 ) VALUES
   ('a0000011-0011-0011-0011-000000000011',
    'a1b2c3d4-0008-0008-0008-000000000008',
    'zakaria.rahali@bank03.regx.demo',
-   crypt('ChangeMe2025!', gen_salt('bf', 12)),
    'Zakaria', 'Rahali', 'EMETTEUR', 'Bank03MSP',
    'SN-ATW-PEER-E5F6A1B2C3D8',
    '+212 5 22 58 88 88', 'Digital Assets & Tokenization',
@@ -37,7 +35,6 @@ INSERT INTO users (
   ('a0000012-0012-0012-0012-000000000012',
    'a1b2c3d4-0009-0009-0009-000000000009',
    'aya.belakhouad@reg03.regx.demo',
-   crypt('ChangeMe2025!', gen_salt('bf', 12)),
    'Aya', 'Belakhouad', 'REGULATEUR', 'REG03MSP',
    'SN-REG03-PEER-F6A1B2C3D4E9',
    '+212 5 37 68 98 00', 'Division Innovation Financiere',
@@ -45,7 +42,6 @@ INSERT INTO users (
   ('a0000013-0013-0013-0013-000000000013',
    'a1b2c3d4-0008-0008-0008-000000000008',
    'youssef.alami@bank03.regx.demo',
-   crypt('ChangeMe2025!', gen_salt('bf', 12)),
    'Youssef', 'Alami', 'TRADER', 'Bank03MSP',
    'SN-ATW-PEER-A1B2C3D4E5F8',
    '+212 5 22 58 80 00', 'Fixed Income & Sukuk Trading',
@@ -53,7 +49,6 @@ INSERT INTO users (
   ('a0000014-0014-0014-0014-000000000014',
    'a1b2c3d4-0008-0008-0008-000000000008',
    'fatima.benali@bank03.regx.demo',
-   crypt('ChangeMe2025!', gen_salt('bf', 12)),
    'Fatima Zahra', 'Benali', 'COMPLIANCE_OFFICER', 'Bank03MSP',
    'SN-ATW-PEER-B2C3D4E5F6A8',
    '+212 5 22 58 82 30', 'Conformite et LAB',
@@ -61,7 +56,6 @@ INSERT INTO users (
   ('a0000015-0015-0015-0015-000000000015',
    'a1b2c3d4-0009-0009-0009-000000000009',
    'mehdi.tahiri@reg03.regx.demo',
-   crypt('ChangeMe2025!', gen_salt('bf', 12)),
    'Mehdi', 'Tahiri', 'AUDITEUR', 'REG03MSP',
    'SN-REG03-PEER-C3D4E5F6A1B9',
    '+212 5 37 68 98 11', 'Audit et Surveillance des Marches',

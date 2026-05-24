@@ -83,7 +83,8 @@ class OrganizationsServicer(organizations_pb2_grpc.OrganizationsServiceServicer)
                 employee_id=u.employee_id or "",
                 phone=u.phone or "",
                 msp_id=u.msp_id or "",
-                mfa_enabled=bool(u.mfa_enabled),
+                # mfa_enabled is left at proto default (False); MFA is owned
+                # by Keycloak now and not surfaced via this RPC.
                 is_active=bool(u.is_active),
                 org_id=str(u.org_id),
                 org_name=org.legal_name or "",

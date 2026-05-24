@@ -46,11 +46,14 @@ CREATE TABLE organizations (
     created_at          TIMESTAMPTZ  DEFAULT NOW(),
     updated_at          TIMESTAMPTZ  DEFAULT NOW()
 );
+-- Authentication is delegated to Keycloak (OIDC). keycloak_sub is the link
+-- back to the Keycloak user (subject claim); password hash and MFA fields
+-- live in Keycloak's DB, not here.
 CREATE TABLE users (
     id                  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     org_id              UUID NOT NULL REFERENCES organizations(id),
     email               VARCHAR(255) UNIQUE NOT NULL,
-    hashed_password     VARCHAR(255) NOT NULL,
+    keycloak_sub        VARCHAR(255),
     first_name          VARCHAR(100) NOT NULL,
     last_name           VARCHAR(100) NOT NULL,
     role                user_role_enum NOT NULL,
@@ -60,14 +63,11 @@ CREATE TABLE users (
     department          VARCHAR(100),
     employee_id         VARCHAR(50),
     is_active           BOOLEAN      DEFAULT TRUE,
-    mfa_enabled         BOOLEAN      DEFAULT FALSE,
-    failed_login_count  INT          DEFAULT 0,
-    locked_until        TIMESTAMPTZ,
     last_login          TIMESTAMPTZ,
-    password_changed_at TIMESTAMPTZ  DEFAULT NOW(),
     created_at          TIMESTAMPTZ  DEFAULT NOW(),
     updated_at          TIMESTAMPTZ  DEFAULT NOW()
 );
+CREATE UNIQUE INDEX uq_users_keycloak_sub ON users(keycloak_sub) WHERE keycloak_sub IS NOT NULL;
 CREATE TABLE assets (
     id                  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     asset_id            VARCHAR(50)  UNIQUE NOT NULL,

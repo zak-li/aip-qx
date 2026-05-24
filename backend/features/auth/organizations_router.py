@@ -24,7 +24,6 @@ class UserSummary(BaseModel):
     employee_id: str | None
     phone: str | None
     msp_id: str | None
-    mfa_enabled: bool
     is_active: bool
     org_id: UUID
     org_name: str | None = None
@@ -98,7 +97,6 @@ async def list_users(
                 employee_id=user.employee_id,
                 phone=user.phone,
                 msp_id=user.msp_id,
-                mfa_enabled=user.mfa_enabled,
                 is_active=user.is_active,
                 org_id=user.org_id,
                 org_name=org.legal_name,

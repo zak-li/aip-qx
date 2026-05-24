@@ -145,7 +145,6 @@ jobs:
             --ignore=tests/integration \
             --ignore=tests/e2e \
             --ignore=tests/unit/test_fhe.py \
-            --ignore=tests/unit/test_mfa.py \
             --cov=backend --cov-report=term-missing --cov-report=xml \
             --cov-fail-under=40
 
