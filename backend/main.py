@@ -1,4 +1,5 @@
 import asyncio
+import ipaddress
 import logging
 from collections.abc import AsyncGenerator, Awaitable, Callable
 from contextlib import asynccontextmanager
@@ -228,8 +229,26 @@ async def check_health() -> JSONResponse:
     return JSONResponse(status_code=200, content={"status": "healthy"})
 
 
+# Subnets allowed to reach /metrics and /health/deep without auth.
+# Covers loopback + every RFC1918 private range so the API can be scraped
+# from the host (10.10.10.*), a Docker bridge (172.16-31.*), or a corporate
+# LAN (192.168.*).
+_INTERNAL_NETWORKS: tuple[ipaddress.IPv4Network, ...] = (
+    ipaddress.IPv4Network("127.0.0.0/8"),
+    ipaddress.IPv4Network("10.0.0.0/8"),
+    ipaddress.IPv4Network("172.16.0.0/12"),
+    ipaddress.IPv4Network("192.168.0.0/16"),
+)
+
+
 def _is_trusted_internal(client_ip: str) -> bool:
-    return client_ip.startswith("127.") or client_ip.startswith("10.10.10.")
+    try:
+        addr = ipaddress.ip_address(client_ip)
+    except ValueError:
+        return False
+    if not isinstance(addr, ipaddress.IPv4Address):
+        return False
+    return any(addr in net for net in _INTERNAL_NETWORKS)
 
 
 @app.get("/health/deep", tags=["System"], include_in_schema=False)
