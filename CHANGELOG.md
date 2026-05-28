@@ -6,7 +6,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
-## [3.0.0] - 2026-05-28
+## [1.3.0] - 2026-05-28
 
 ### Added
 - **Pex CLI**: Complete overhaul of the Command Line Interface featuring a modernized, full-screen TUI (Text User Interface) dashboard (`Pex CLI`).
@@ -45,7 +45,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - **AI Agent**: Regulatory RAG agent powered by ChromaDB and Groq LLM.
 - **Security & Ops**: HashiCorp Vault integration, Neo4j graph scanning, and complete Prometheus/Grafana monitoring stack.
 
-[3.0.0]: https://github.com/zak-li/Pex/releases/tag/v3.0.0
+[1.3.0]: https://github.com/zak-li/Pex/releases/tag/v1.3.0
 [1.2.0]: https://github.com/zak-li/Pex/releases/tag/v1.2.0
 [1.1.0]: https://github.com/zak-li/Pex/releases/tag/v1.1.0
 [1.0.0]: https://github.com/zak-li/Pex/releases/tag/v1.0.0
