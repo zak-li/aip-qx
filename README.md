@@ -46,7 +46,7 @@ The platform embeds compliance directly into transaction execution and asset lif
   <img src=".github/assets/diagrams/compliance-flow-v2.svg" alt="Compliance Flow" width="800">
 </p>
 
-### Interactive TUI & AI Assistant
+### Pex CLI
 
 Pex comes with a powerful Command Line Interface and a full-screen TUI (Text User Interface) that streams network health and events in real-time. It also includes an embedded **RAG-based AI Assistant** to answer regulatory questions dynamically.
 
