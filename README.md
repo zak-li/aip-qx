@@ -2,9 +2,9 @@
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/vector/logo-monochrome.svg">
-    <source media="(prefers-color-scheme: light)" srcset=".github/assets/vector/logo-light-monochrome.svg">
-    <img src=".github/assets/vector/logo-monochrome.svg" alt="RegX" width="300">
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/logo-light.svg">
+    <source media="(prefers-color-scheme: light)" srcset=".github/assets/logo.svg">
+    <img src=".github/assets/logo.svg" alt="RegX" width="300">
   </picture>
 </p>
 
