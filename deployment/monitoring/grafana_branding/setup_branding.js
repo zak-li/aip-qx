@@ -1,10 +1,10 @@
 /**
- * RegX – Grafana branding setup
+ * Pex – Grafana branding setup
  *
  * What this script does:
  *  1. Diagnoses current state on the VM
  *  2. Configures grafana.ini (app_name, login titles)
- *  3. Uploads the RegX SVG icon and replaces all logo assets
+ *  3. Uploads the Pex SVG icon and replaces all logo assets
  *  4. Patches index.html to inject custom CSS + "Powered by Grafana" footer
  *  5. Restarts grafana-server
  *
@@ -28,7 +28,7 @@ const ICON_SVG_PATH = path.resolve(__dirname, '../../../.github/assets/vector/ic
 // ── CSS injected into index.html ──────────────────────────────────────────────
 // Hides the default Grafana sidemenu footer logo text and adds our fixed badge.
 const CUSTOM_CSS = `
-  /* ── RegX custom branding ─────────────────────────────────── */
+  /* ── Pex custom branding ─────────────────────────────────── */
 
   /* Hide the Grafana wordmark that appears in the top-left nav */
   [class*="sidemenu"] [class*="logoText"],
@@ -37,7 +37,7 @@ const CUSTOM_CSS = `
   [data-testid="grafana-wordmark"] { display: none !important; }
 
   /* "Powered by Grafana" badge – bottom-right corner, always visible */
-  #regx-powered-badge {
+  #pex-powered-badge {
     position: fixed;
     bottom: 8px;
     right: 12px;
@@ -49,20 +49,20 @@ const CUSTOM_CSS = `
     pointer-events: none;
     user-select: none;
   }
-  #regx-powered-badge a {
+  #pex-powered-badge a {
     color: inherit;
     text-decoration: none;
   }
-  #regx-powered-badge a:hover { color: #f46800; }
+  #pex-powered-badge a:hover { color: #f46800; }
 
   /* Login page: replace Grafana logo area text */
   [class*="loginLogo"] + h1,
   [class*="login"] h1 { font-size: 0; }
-  [class*="login"] h1::after { content: "RegX"; font-size: 24px; }
+  [class*="login"] h1::after { content: "Pex"; font-size: 24px; }
 `.trim();
 
 // ── HTML badge injected just before </body> ───────────────────────────────────
-const BADGE_HTML = `<div id="regx-powered-badge">Powered by <a href="https://grafana.com" target="_blank" rel="noopener">Grafana</a></div>`;
+const BADGE_HTML = `<div id="pex-powered-badge">Powered by <a href="https://grafana.com" target="_blank" rel="noopener">Grafana</a></div>`;
 
 // ── grafana.ini snippet (appended / merged) ───────────────────────────────────
 // We write an override file to /etc/grafana/grafana.ini.d/ if the directory
@@ -70,10 +70,10 @@ const BADGE_HTML = `<div id="regx-powered-badge">Powered by <a href="https://gra
 const INI_BLOCK = `
 [server]
 # Custom app name shown in browser tab and login page
-app_name = RegX
+app_name = Pex
 
 [auth]
-login_title = RegX – Regulatory Intelligence Platform
+login_title = Pex – Regulatory Intelligence Platform
 
 [users]
 # Keeps the welcome e-mail subject branded
@@ -116,7 +116,7 @@ function runDiagnostics(conn) {
 
 // ── Step 2 & 3: upload icon + patch logos ─────────────────────────────────────
 function uploadIconAndPatch(conn) {
-  console.log('\n[2/5] Uploading RegX icon to VM…');
+  console.log('\n[2/5] Uploading Pex icon to VM…');
 
   if (!fs.existsSync(ICON_SVG_PATH)) {
     console.error('[ERROR] Icon not found at:', ICON_SVG_PATH);
@@ -127,9 +127,9 @@ function uploadIconAndPatch(conn) {
   conn.sftp((err, sftp) => {
     if (err) { console.error('[SFTP] Error:', err.message); applyIniConfig(conn); return; }
 
-    const writeStream = sftp.createWriteStream('/tmp/regx_icon.svg');
+    const writeStream = sftp.createWriteStream('/tmp/pex_icon.svg');
     writeStream.on('close', () => {
-      console.log('[SFTP] Icon uploaded to /tmp/regx_icon.svg');
+      console.log('[SFTP] Icon uploaded to /tmp/pex_icon.svg');
       replaceLogos(conn);
     });
     writeStream.on('error', (e) => {
@@ -141,10 +141,10 @@ function uploadIconAndPatch(conn) {
 }
 
 function replaceLogos(conn) {
-  console.log('\n[3/5] Replacing Grafana logos with RegX icon…');
+  console.log('\n[3/5] Replacing Grafana logos with Pex icon…');
   // Target every known logo/favicon location in Grafana public assets
   const cmd = `
-    ICON=/tmp/regx_icon.svg
+    ICON=/tmp/pex_icon.svg
     IMG=/usr/share/grafana/public/img
 
     # Main SVG logos
@@ -182,7 +182,7 @@ function applyIniConfig(conn) {
   console.log('\n[4/5] Applying grafana.ini branding settings…');
 
   // Write the INI block to a temp file then merge it
-  const tmpIni = '/tmp/regx_branding.ini';
+  const tmpIni = '/tmp/pex_branding.ini';
   const iniEscaped = INI_BLOCK.replace(/'/g, "'\\''");
 
   const cmd = `
@@ -193,23 +193,23 @@ INIEOF
 
     INI=/etc/grafana/grafana.ini
 
-    # Remove any previous RegX blocks to avoid duplicates
-    ${SUDO} sed -i '/# RegX branding start/,/# RegX branding end/d' $INI
+    # Remove any previous Pex blocks to avoid duplicates
+    ${SUDO} sed -i '/# Pex branding start/,/# Pex branding end/d' $INI
 
     # Patch [server] section: replace or append app_name
     if grep -q "^app_name" $INI; then
-      ${SUDO} sed -i 's/^app_name.*/app_name = RegX/' $INI
+      ${SUDO} sed -i 's/^app_name.*/app_name = Pex/' $INI
     elif grep -q "^\\[server\\]" $INI; then
-      ${SUDO} sed -i '/^\\[server\\]/a app_name = RegX' $INI
+      ${SUDO} sed -i '/^\\[server\\]/a app_name = Pex' $INI
     else
       echo "" | ${SUDO} tee -a $INI
       echo "[server]" | ${SUDO} tee -a $INI
-      echo "app_name = RegX" | ${SUDO} tee -a $INI
+      echo "app_name = Pex" | ${SUDO} tee -a $INI
     fi
 
     # Patch login_title under [auth]
     if grep -q "^login_title" $INI; then
-      ${SUDO} sed -i 's/^login_title.*/login_title = RegX – Regulatory Intelligence Platform/' $INI
+      ${SUDO} sed -i 's/^login_title.*/login_title = Pex – Regulatory Intelligence Platform/' $INI
     fi
 
     echo "grafana.ini updated"
@@ -235,15 +235,15 @@ import re, sys
 with open('${INDEX}', 'r', encoding='utf-8') as f:
     html = f.read()
 
-STYLE_TAG = """<style id="regx-custom">
+STYLE_TAG = """<style id="pex-custom">
 ${CUSTOM_CSS.replace(/`/g, '\\`').replace(/\$/g, '\\$').replace(/\\/g, '\\\\')}
 </style>"""
 
 BADGE_TAG = """${BADGE_HTML}"""
 
 # Remove previous injections to keep idempotent
-html = re.sub(r'<style id="regx-custom">.*?</style>', '', html, flags=re.DOTALL)
-html = re.sub(r'<div id="regx-powered-badge">.*?</div>', '', html)
+html = re.sub(r'<style id="pex-custom">.*?</style>', '', html, flags=re.DOTALL)
+html = re.sub(r'<div id="pex-powered-badge">.*?</div>', '', html)
 
 # Inject style before </head>
 html = html.replace('</head>', STYLE_TAG + '\\n</head>', 1)
@@ -267,14 +267,14 @@ import re
 
 INDEX = '${INDEX}'
 
-STYLE = """<style id="regx-custom">
-/* RegX custom branding */
+STYLE = """<style id="pex-custom">
+/* Pex custom branding */
 [class*="sidemenu"] [class*="logoText"],
 [class*="NavBar"] [class*="logoText"],
 .css-sidebar-logo-text,
 [data-testid="grafana-wordmark"] { display: none !important; }
 
-#regx-powered-badge {
+#pex-powered-badge {
   position: fixed;
   bottom: 8px;
   right: 12px;
@@ -286,18 +286,18 @@ STYLE = """<style id="regx-custom">
   pointer-events: none;
   user-select: none;
 }
-#regx-powered-badge a { color: inherit; text-decoration: none; }
-#regx-powered-badge a:hover { color: #f46800; }
+#pex-powered-badge a { color: inherit; text-decoration: none; }
+#pex-powered-badge a:hover { color: #f46800; }
 </style>"""
 
-BADGE = '<div id="regx-powered-badge">Powered by <a href="https://grafana.com" target="_blank" rel="noopener">Grafana</a></div>'
+BADGE = '<div id="pex-powered-badge">Powered by <a href="https://grafana.com" target="_blank" rel="noopener">Grafana</a></div>'
 
 with open(INDEX, 'r', encoding='utf-8') as f:
     html = f.read()
 
 # Remove previous injections (idempotent)
-html = re.sub(r'<style id="regx-custom">.*?</style>', '', html, flags=re.DOTALL)
-html = re.sub(r'<div id="regx-powered-badge">.*?</div>', '', html)
+html = re.sub(r'<style id="pex-custom">.*?</style>', '', html, flags=re.DOTALL)
+html = re.sub(r'<div id="pex-powered-badge">.*?</div>', '', html)
 
 # Inject
 if '</head>' in html:
@@ -331,15 +331,15 @@ function restartGrafana(conn) {
     sleep 3
     ${SUDO} systemctl is-active grafana-server
     echo "--- Verify index.html injection ---"
-    grep -c "regx-custom" /usr/share/grafana/public/views/index.html && echo "CSS block present" || echo "CSS block MISSING"
-    grep -c "regx-powered-badge" /usr/share/grafana/public/views/index.html && echo "Badge present" || echo "Badge MISSING"
+    grep -c "pex-custom" /usr/share/grafana/public/views/index.html && echo "CSS block present" || echo "CSS block MISSING"
+    grep -c "pex-powered-badge" /usr/share/grafana/public/views/index.html && echo "Badge present" || echo "Badge MISSING"
     echo "--- Done ---"
   `;
   execCmd(conn, cmd, (output) => {
     console.log(output);
     console.log('\n✓ Branding setup complete. Open http://10.10.10.150:3000 in your browser.');
     console.log('  • Logo:            replaced in /usr/share/grafana/public/img/');
-    console.log('  • App title:       "RegX" (grafana.ini app_name)');
+    console.log('  • App title:       "Pex" (grafana.ini app_name)');
     console.log('  • Footer badge:    "Powered by Grafana" (bottom-right)');
     console.log('  If the browser still shows old logos, hard-refresh with Ctrl+Shift+R.\n');
     conn.end();

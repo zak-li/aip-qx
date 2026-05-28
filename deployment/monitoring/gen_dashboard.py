@@ -47,6 +47,7 @@ def stat(pid, title, expr, x, y, w, h, *, unit="short", thresholds=None,
         field["thresholds"] = thresholds or {"mode": "absolute", "steps": [{"color": "blue", "value": None}]}
     if mappings: field["mappings"] = mappings
     if decimals is not None: field["decimals"] = decimals
+    field["noValue"] = 0
     return {
         "id": pid, "title": title, "type": "stat",
         "datasource": prom(),
@@ -108,6 +109,7 @@ def timeseries(pid, title, targets, x, y, w, h, *, unit="short", fill=20,
         "fieldConfig": {
             "defaults": {
                 "unit": unit,
+                "noValue": 0,
                 "custom": {
                     "drawStyle": "line",
                     "lineInterpolation": "smooth" if smooth else "linear",
@@ -318,11 +320,11 @@ panels.append(stat(pid, "API Requests",
     unit="reqps", color_mode="value", fixed="blue", decimals=1)); pid += 1
 
 panels.append(stat(pid, "Latency p95",
-    'histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[2m])) by (le))',
+    'histogram_quantile(0.95, sum(rate(chaincode_shim_request_duration_bucket[5m])) by (le))',
     8, y, 4, 4, unit="s", thresholds=LATENCY, decimals=3)); pid += 1
 
 panels.append(stat(pid, "Error Rate",
-    'sum(rate(http_requests_total{status=~"4xx|5xx"}[5m])) / clamp_min(sum(rate(http_requests_total[5m])), 0.001) * 100',
+    '(sum(rate(http_requests_total{job="rwa-api",status=~"4..|5.."}[5m])) or vector(0)) / clamp_min(sum(rate(http_requests_total{job="rwa-api"}[5m])), 0.001) * 100',
     12, y, 4, 4, unit="percent", thresholds=ERR, decimals=2)); pid += 1
 
 panels.append(stat(pid, "CPU Usage",
@@ -394,7 +396,7 @@ panels.append(logs_volume(pid, "Log Volume by Severity",
 y += 5
 
 panels.append(logs_panel(pid, "API Logs",
-    '{job="rwa", service=~"uvicorn|grpc|celery"} | json | line_format "[{{.level}}] {{.logger}} {{.message}}"',
+    '{job="docker", service="rwa-api"} | json | line_format "[{{.level}}] {{.logger}} {{.message}}"',
     0, y, 12, 12)); pid += 1
 
 panels.append(logs_panel(pid, "Container Logs",
@@ -545,7 +547,7 @@ panels.append(piechart(pid, "Celery Tasks by Type",
     8, y, 8, 7)); pid += 1
 
 panels.append(timeseries(pid, "Celery Task Rate",
-    [q('sum by(status) (rate(rwa_celery_tasks_total[2m]))', "{{status}}", "A")],
+    [q('sum by(status) (rate(rwa_celery_tasks_total[5m])) or sum by(status) (rwa_celery_tasks_total * 0)', "{{status}}", "A")],
     16, y, 8, 7, unit="ops", fill=25, stacking=True,
     legend_mode="list",
     overrides=[
@@ -576,18 +578,21 @@ dash = {
     "templating": {"list": []}
 }
 
-for uid in ["rwa-ops-v2", "rwa-ops-professional", "rwa-monitoring"]:
-    dr = requests.delete(f"{GRAFANA}/api/dashboards/uid/{uid}", auth=AUTH, timeout=10)
-    print(f"Delete {uid}: HTTP {dr.status_code}")
-
 with open("deployment/monitoring/grafana_dashboard.json", "w") as f:
     json.dump(dash, f, indent=2)
 print(f"Saved JSON ({len(panels)} panels)")
 
-r = requests.post(
-    f"{GRAFANA}/api/dashboards/db",
-    json={"dashboard": dash, "overwrite": True, "folderId": 0},
-    headers={"Content-Type": "application/json"},
-    auth=AUTH, timeout=15
-)
-print(f"Deploy HTTP {r.status_code}: {r.json()}")
+try:
+    for uid in ["rwa-ops-v2", "rwa-ops-professional", "rwa-monitoring"]:
+        dr = requests.delete(f"{GRAFANA}/api/dashboards/uid/{uid}", auth=AUTH, timeout=10)
+        print(f"Delete {uid}: HTTP {dr.status_code}")
+
+    r = requests.post(
+        f"{GRAFANA}/api/dashboards/db",
+        json={"dashboard": dash, "overwrite": True, "folderId": 0},
+        headers={"Content-Type": "application/json"},
+        auth=AUTH, timeout=15
+    )
+    print(f"Deploy HTTP {r.status_code}: {r.json()}")
+except Exception as e:
+    print(f"Grafana API not reachable: {e}")

@@ -4,7 +4,7 @@
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset=".github/assets/logos/svg/logo-light.svg">
     <source media="(prefers-color-scheme: light)" srcset=".github/assets/logos/svg/logo.svg">
-    <img src=".github/assets/logos/svg/logo.svg" alt="RegX" width="300">
+    <img src=".github/assets/logos/svg/logo.svg" alt="Pex" width="300">
   </picture>
 </p>
 
@@ -19,9 +19,11 @@
 
 <br>
 
-## RegX
+## Pex
 
-RegX is an institutional platform for tokenizing Real World Assets on a permissioned Hyperledger Fabric network. It handles the full asset lifecycle from issuance to redemption, with built-in AML/KYC compliance, ZK-KYC identity proofs, FHE-based fraud scoring, and a RAG regulatory agent for MiCA queries.
+> **Pex** is a contraction of **P**rovenance (asset lifecycle) and **Ex**change (transfer of ownership).
+
+Pex is an institutional platform for tokenizing Real World Assets on a permissioned Hyperledger Fabric network. It handles the full asset lifecycle from issuance to redemption, with built-in AML/KYC compliance, ZK-KYC identity proofs, FHE-based fraud scoring, and a RAG regulatory agent for MiCA queries.
 
 ## Table of Contents
 
@@ -44,7 +46,7 @@ The platform embeds compliance directly into transaction execution and asset lif
   <img src=".github/assets/diagrams/compliance-flow-v2.svg" alt="Compliance Flow" width="800">
 </p>
 
-RegX exposes a FastAPI REST API and a gRPC server in parallel. Authentication is OIDC-based via Keycloak with PKCE (authorization_code flow). Private keys for Fabric identities are stored in HashiCorp Vault (KV v2), and every response carries six security headers with rate limiting and host filtering.
+Pex exposes a FastAPI REST API and a gRPC server in parallel. Authentication is OIDC-based via Keycloak with PKCE (authorization_code flow). Private keys for Fabric identities are stored in HashiCorp Vault (KV v2), and every response carries six security headers with rate limiting and host filtering.
 
 Every transaction produces an on-chain audit entry. An off-chain integrity checker verifies hashes independently, PDF audit reports are generated asynchronously via Celery, and the RAG agent answers regulatory questions by querying a ChromaDB vector store with Groq LLM.
 
@@ -79,8 +81,8 @@ Every transaction produces an on-chain audit entry. An off-chain integrity check
 **Step 1: Clone and configure**
 
 ```bash
-git clone https://github.com/zak-li/regx.git
-cd regx
+git clone https://github.com/zak-li/pex.git
+cd pex
 cp .env.example .env
 ```
 
@@ -230,7 +232,7 @@ curl -H "Authorization: Bearer <token>" http://localhost:8000/api/v1/assets
 ## Project Structure
 
 ```
-regx/
+pex/
 ├── core/
 │   ├── main.py                 # FastAPI app, middleware, metrics
 │   ├── config.py
@@ -261,7 +263,7 @@ regx/
 
 ## Observability
 
-RegX ships a full monitoring stack managed via systemd. Prometheus scrapes ten targets including Fabric peers, CouchDB, Redis, PostgreSQL, and the custom Celery exporter. Grafana provides dashboards for service health, API latency percentiles, infrastructure utilization, and compliance metrics. Loki aggregates structured JSON logs from the API, Celery workers, Docker containers, and systemd.
+Pex ships a full monitoring stack managed via systemd. Prometheus scrapes ten targets including Fabric peers, CouchDB, Redis, PostgreSQL, and the custom Celery exporter. Grafana provides dashboards for service health, API latency percentiles, infrastructure utilization, and compliance metrics. Loki aggregates structured JSON logs from the API, Celery workers, Docker containers, and systemd.
 
 | Component | Port |
 |---|---|

@@ -2,7 +2,7 @@ const { Client } = require('ssh2');
 const fs = require('fs');
 
 const conn = new Client();
-const localIconPath = 'd:\\\\WWW\\\\regx\\\\assets\\\\vector\\\\icon.svg';
+const localIconPath = 'd:\\\\WWW\\\\pex\\\\assets\\\\vector\\\\icon.svg';
 
 conn.on('ready', () => {
   console.log('Client :: ready');

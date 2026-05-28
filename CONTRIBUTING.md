@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for your interest in RegX.
+Thank you for your interest in Pex.
 
 ## Before you open a pull request
 
@@ -11,8 +11,8 @@ Thank you for your interest in RegX.
 ## Development setup
 
 ```bash
-git clone https://github.com/zak-li/regx.git
-cd regx
+git clone https://github.com/zak-li/pex.git
+cd pex
 python -m venv .venv
 source .venv/bin/activate         # Windows: .venv\Scripts\activate
 pip install -r requirements.txt

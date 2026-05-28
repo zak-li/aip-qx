@@ -10,7 +10,7 @@
 
 **Do not open a public issue for security vulnerabilities.**
 
-Send a report to [regx.yovtg@aleeas.com](mailto:regx.yovtg@aleeas.com) with the following:
+Send a report to [pex.yovtg@aleeas.com](mailto:pex.yovtg@aleeas.com) with the following:
 
 - A description of the vulnerability and its potential impact
 - Steps to reproduce or a minimal proof-of-concept

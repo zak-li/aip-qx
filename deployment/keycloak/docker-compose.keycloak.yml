@@ -38,9 +38,9 @@ services:
     volumes:
       - keycloak_data:/opt/keycloak/data
       - ./tls:/opt/keycloak/conf/tls:ro
-      # Mount the regx theme as a sibling of Keycloak's built-in themes so
+      # Mount the pex theme as a sibling of Keycloak's built-in themes so
       # `parent=base` resolution still finds the bundled base/common assets.
-      - ./themes/regx:/opt/keycloak/themes/regx:ro
+      - ./themes/pex:/opt/keycloak/themes/pex:ro
     ports:
       - "8443:8443"
     # No in-container healthcheck — Keycloak 24's distroless image ships no
