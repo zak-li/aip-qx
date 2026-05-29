@@ -54,8 +54,10 @@ services:
         max-file: "5"
 
 volumes:
-  # Pin the volume to the legacy name `keycloak_keycloak_data` so renaming the
-  # compose project (`name: pex-keycloak` above) does not orphan the realm /
-  # client / user data that was created when the project was `keycloak`.
+  # The volume was created under the legacy project name `keycloak` (when this
+  # compose file had no top-level `name:`). Marking it external so the rename
+  # to `pex-keycloak` doesn't orphan the realm / client / user / theme data.
+  # If you ever wipe state, run: docker volume create keycloak_keycloak_data
   keycloak_data:
+    external: true
     name: keycloak_keycloak_data
