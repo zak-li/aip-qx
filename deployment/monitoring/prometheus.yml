@@ -31,15 +31,23 @@ scrape_configs:
     static_configs:
       - targets: [localhost:9187]
 
-  - job_name: fabric-peer-bnp
+  - job_name: celery
+    static_configs:
+      - targets: [localhost:9808]
+
+  # Fabric peers are currently down (images pruned and not yet repulled). Kept
+  # here so that when Fabric is restored the dashboard immediately picks up its
+  # metrics — Prometheus marks them DOWN until they come back, which is the
+  # intended behaviour, not an error.
+  - job_name: fabric-peer-bank01
     static_configs:
       - targets: [localhost:9444]
 
-  - job_name: fabric-peer-amf
+  - job_name: fabric-peer-reg01
     static_configs:
       - targets: [localhost:9445]
 
-  - job_name: couchdb-bnp
+  - job_name: couchdb-bank01
     static_configs:
       - targets: [localhost:5984]
     metrics_path: /_node/_local/_prometheus
@@ -47,14 +55,10 @@ scrape_configs:
       username: admin
       password_file: /etc/prometheus/couchdb_pass.txt
 
-  - job_name: couchdb-amf
+  - job_name: couchdb-reg01
     static_configs:
       - targets: [localhost:7984]
     metrics_path: /_node/_local/_prometheus
     basic_auth:
       username: admin
       password_file: /etc/prometheus/couchdb_pass.txt
-
-  - job_name: celery
-    static_configs:
-      - targets: [localhost:9808]
