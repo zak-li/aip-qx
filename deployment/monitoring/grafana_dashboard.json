@@ -1830,13 +1830,6 @@
           "refId": "B",
           "instant": false,
           "range": true
-        },
-        {
-          "expr": "(redis_keyspace_hits_total or vector(0)) / clamp_min((redis_keyspace_hits_total or vector(0)) + (redis_keyspace_misses_total or vector(0)), 1) * 100",
-          "legendFormat": "Hit Rate %",
-          "refId": "C",
-          "instant": false,
-          "range": true
         }
       ],
       "gridPos": {
