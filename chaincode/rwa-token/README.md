@@ -7,28 +7,34 @@ workflow with the **2-of-2 endorsement quorum** between `BANK01MSP`
 
 ## Layout
 
-Flat single-package layout — Hyperledger Fabric chaincode convention
-(see `fabric-samples/chaincode-go`). Files are split by concern:
+Standard Go project layout — `cmd/` holds the binary entry point and
+`internal/` enforces that nothing outside this module can import the
+contract implementation.
 
-| File                | Role                                                              |
-|---------------------|-------------------------------------------------------------------|
-| `doc.go`            | Package documentation (Go convention — `go doc` reads it).        |
-| `main.go`           | Entry point. Selects peer-launched vs CCaaS mode at start-up.     |
-| `contract.go`       | `AssetTraceContract` — Tokenize/Transfer/Freeze/Unfreeze + reads. |
-| `access.go`         | `verifyRole`, MSP/DN extraction, per-function ACL map.            |
-| `compliance.go`     | Format validators (AssetID, ISIN, LEI, currency) + MiCA Art. 68.  |
-| `models.go`         | On-chain types (`FinancialAsset`, `ProvenanceRecord`, statuses).  |
-| `contract_test.go`  | Unit tests (`go test ./...`).                                     |
-| `Dockerfile.ccaas`  | Image for Chaincode-as-a-Service mode.                            |
-| `go.mod` / `go.sum` | Go module declaration and locked dependency tree.                 |
-| `.gitignore`        | Excludes Go build artefacts (`*.exe`, `*.test`, vendored deps).   |
+```
+chaincode/rwa-token/
+├── cmd/rwa-token/
+│   └── main.go             ← bootstrap: peer-launched vs CCaaS mode
+├── internal/contract/
+│   ├── doc.go              ← package documentation (godoc)
+│   ├── contract.go         ← AssetTraceContract + handlers
+│   ├── access.go           ← MSP/DN extraction + per-function ACL
+│   ├── compliance.go       ← ISIN/LEI/currency validators + MiCA Art. 68
+│   ├── models.go           ← FinancialAsset, ProvenanceRecord, statuses
+│   └── contract_test.go    ← unit tests
+├── Dockerfile.ccaas        ← image for Chaincode-as-a-Service mode
+├── go.mod                  ← module: github.com/zak-li/aip-qx/chaincode/rwa-token
+├── go.sum
+├── .gitignore
+└── README.md
+```
 
 ## Build & test
 
 ```bash
 go vet ./...
 go test ./...
-go build -o rwa-token .
+go build -o rwa-token ./cmd/rwa-token
 ```
 
 CI runs the same three commands — see [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml) (`go-build` job).
@@ -59,6 +65,7 @@ AND('BANK01MSP.peer','REG01MSP.peer')
 ```
 
 Declared in [`fabric/config/configtx.yaml`](../../fabric/config/configtx.yaml) and enforced by the peer at
-commit time. The function-level ACL in `access.go` is an extra gate
-on the proposal side — it rejects calls from a non-authorised MSP
-*before* the proposal is endorsed, saving a round-trip.
+commit time. The function-level ACL in `internal/contract/access.go`
+is an extra gate on the proposal side — it rejects calls from a
+non-authorised MSP *before* the proposal is endorsed, saving a
+round-trip.

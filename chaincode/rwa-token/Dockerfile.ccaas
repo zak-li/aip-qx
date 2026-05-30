@@ -1,7 +1,7 @@
 FROM golang:1.21-alpine AS builder
 WORKDIR /chaincode
 COPY . .
-RUN go build -o chaincode .
+RUN go build -o chaincode ./cmd/rwa-token
 
 FROM alpine:latest
 WORKDIR /chaincode
