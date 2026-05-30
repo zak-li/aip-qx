@@ -7,8 +7,8 @@ mtime changes.
 
 In production a detached ed25519 signature must accompany the manifest:
 
-    database/fixtures/json/compliance_kyc_aml.json
-    database/fixtures/json/compliance_kyc_aml.json.sig    ← signature (raw 64 bytes)
+    db/fixtures/json/compliance_kyc_aml.json
+    db/fixtures/json/compliance_kyc_aml.json.sig    ← signature (raw 64 bytes)
 
 The verification key lives in the env var ``SANCTIONS_MANIFEST_PUBKEY_HEX``
 (64 hex chars). When the env var and signature are present, the manifest is
@@ -29,7 +29,7 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 
-_FIXTURES_PATH = Path("database/fixtures/json/compliance_kyc_aml.json").resolve()
+_FIXTURES_PATH = Path("db/fixtures/json/compliance_kyc_aml.json").resolve()
 _SIGNATURE_PATH = _FIXTURES_PATH.with_suffix(_FIXTURES_PATH.suffix + ".sig")
 
 _lock = threading.Lock()

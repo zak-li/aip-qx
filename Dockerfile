@@ -24,8 +24,8 @@ WORKDIR /app
 COPY --from=builder /install /usr/local
 
 COPY core/ ./core/
-COPY dlt-nodes/ ./dlt-nodes/
-COPY database/migrations/ ./database/migrations/
+COPY fabric/ ./fabric/
+COPY db/migrations/ ./db/migrations/
 COPY alembic.ini ./
 
 RUN chown -R rwa:rwa /app

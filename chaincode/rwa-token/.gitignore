@@ -1,0 +1,12 @@
+# Go build artefacts
+*.exe
+*.test
+*.prof
+*.out
+rwa-token
+chaincode
+
+# Vendored deps and editor scratch
+vendor/
+.idea/
+.vscode/

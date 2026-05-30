@@ -27,8 +27,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install ruff==0.7.4 bandit==1.8.0
 
-      - name: Ruff (backend + scripts + tests + deployment)
-        run: ruff check core/ scripts/ tests/ deployment/
+      - name: Ruff (backend + scripts + tests + stack)
+        run: ruff check core/ scripts/ tests/ stack/
 
       - name: Bandit (security, backend)
         # Skip B101 (assert in tests) -- keeps the rule set tight without noise.
@@ -41,9 +41,9 @@ jobs:
         # acknowledged in source via noqa. Block on anything else Medium+.
         run: bandit -r scripts/ -ll --skip B101,B507,B601,B108
 
-      - name: Bandit (security, deployment)
-        # No SSH helpers in deployment/ — strict mode, no skips beyond B101.
-        run: bandit -r deployment/ -ll --skip B101
+      - name: Bandit (security, stack)
+        # No SSH helpers in stack/ — strict mode, no skips beyond B101.
+        run: bandit -r stack/ -ll --skip B101
 
   python-syntax:
     runs-on: ubuntu-latest
@@ -98,7 +98,7 @@ jobs:
       KEYCLOAK_CALLBACK_URL: http://localhost:8000/api/v1/auth/callback
       KEYCLOAK_VERIFY_TLS: "false"
       FABRIC_WALLET_PATH: tests/fixtures/json/fabric_wallets_test.json
-      FABRIC_CONNECTION_PROFILE: dlt-nodes/config/connection_profile.yaml
+      FABRIC_CONNECTION_PROFILE: fabric/config/connection_profile.yaml
       FABRIC_CHANNEL: rwa-channel
       FABRIC_CHAINCODE: rwa-token
       FABRIC_TLS_ENABLED: "false"

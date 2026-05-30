@@ -5,7 +5,7 @@ For each row in the local `users` table that has no `keycloak_sub` yet:
 
   1. Create a Keycloak user (username=email, email=email).
   2. Carry over attributes Keycloak needs to mint a useful JWT — primarily
-     `pex_role` (drives RBAC in the API) and `org_id` (drives row-level scoping).
+     `qx_role` (drives RBAC in the API) and `org_id` (drives row-level scoping).
   3. Force `UPDATE_PASSWORD` as a required action: we no longer store any
      password hash in the DB, so the user must set one on first login.
   4. Mark email as verified — we trust the email seeded from the DB.
@@ -74,7 +74,7 @@ def upsert_kc_user(c: httpx.Client, realm: str, row: dict) -> str:
         "enabled": bool(row["is_active"]),
         "emailVerified": True,
         "attributes": {
-            "pex_role": [row["role"]],
+            "qx_role": [row["role"]],
             "org_id": [str(row["org_id"])],
         },
         "requiredActions": ["UPDATE_PASSWORD"],

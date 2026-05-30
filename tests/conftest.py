@@ -104,7 +104,7 @@ def async_engine():
             await conn.run_sync(Base.metadata.drop_all)
             await conn.run_sync(Base.metadata.create_all)
 
-            views_file = Path("database/sql/05_views_functions.sql")
+            views_file = Path("db/sql/05_views_functions.sql")
             if views_file.exists():
                 sql_script = views_file.read_text(encoding="utf-8")
                 raw_conn = await conn.get_raw_connection()
@@ -370,22 +370,22 @@ async def test_user_sophie(async_session: AsyncSession, test_amf_org: Organizati
 
 @pytest.fixture
 def token_thomas_martin() -> str:
-    payload = {"sub": "kc-sub-thomas-martin", "email": "thomas.martin@bank01.fr", "pex_role": "EMETTEUR"}
+    payload = {"sub": "kc-sub-thomas-martin", "email": "thomas.martin@bank01.fr", "qx_role": "EMETTEUR"}
     return create_access_token(payload, expires_delta=timedelta(hours=24))
 
 @pytest.fixture
 def token_sophie_lambert() -> str:
-    payload = {"sub": "kc-sub-sophie-lambert", "email": "sophie.lambert@amf.fr", "pex_role": "REGULATEUR"}
+    payload = {"sub": "kc-sub-sophie-lambert", "email": "sophie.lambert@amf.fr", "qx_role": "REGULATEUR"}
     return create_access_token(payload, expires_delta=timedelta(hours=24))
 
 @pytest.fixture
 def token_james_wilson() -> str:
-    payload = {"sub": "kc-sub-james-wilson", "email": "james.wilson@natwest.com", "pex_role": "TRADER"}
+    payload = {"sub": "kc-sub-james-wilson", "email": "james.wilson@natwest.com", "qx_role": "TRADER"}
     return create_access_token(payload, expires_delta=timedelta(hours=24))
 
 @pytest.fixture
 def token_expired() -> str:
-    payload = {"sub": "kc-sub-thomas-martin", "email": "thomas.martin@bank01.fr", "pex_role": "EMETTEUR"}
+    payload = {"sub": "kc-sub-thomas-martin", "email": "thomas.martin@bank01.fr", "qx_role": "EMETTEUR"}
     return create_access_token(payload, expires_delta=timedelta(hours=-1))
 
 @pytest.fixture
@@ -437,7 +437,7 @@ def sample_integrity_report(sample_provenance: list[ProvenanceRecord]) -> Integr
 
 @pytest.fixture(scope="session", autouse=True)
 def sample_compliance_data() -> None:
-    path = Path("database/fixtures/json/compliance_kyc_aml.json")
+    path = Path("db/fixtures/json/compliance_kyc_aml.json")
     path.parent.mkdir(parents=True, exist_ok=True)
     if not path.exists():
         data = {

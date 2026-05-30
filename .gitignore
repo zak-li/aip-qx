@@ -8,9 +8,9 @@
 *.pfx
 network/wallets/
 network/crypto-config/
-deployment/keycloak/tls/
-deployment/keycloak/themes/
-deployment/keycloak/.env.kc
+stack/keycloak/tls/
+stack/keycloak/themes/
+stack/keycloak/.env.kc
 
 logs/
 *.log

@@ -164,10 +164,10 @@ def _check_audience(payload: dict[str, Any]) -> None:
 def extract_role(payload: dict[str, Any]) -> str | None:
     """Return the application role from the token payload.
 
-    Checks the custom `pex_role` claim first (set via Keycloak attribute mapper),
+    Checks the custom `qx_role` claim first (set via Keycloak attribute mapper),
     then falls back to scanning `realm_access.roles`.
     """
-    role = payload.get("pex_role")
+    role = payload.get("qx_role")
     if role and role in VALID_APP_ROLES:
         return role
     for r in payload.get("realm_access", {}).get("roles", []):

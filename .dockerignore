@@ -68,9 +68,9 @@ populate_wallet.py
 read_log.py
 run_audit.py
 
-deployment/
-database/
-!database/migrations/
+stack/
+db/
+!db/migrations/
 chaincode/
 
 frontend/

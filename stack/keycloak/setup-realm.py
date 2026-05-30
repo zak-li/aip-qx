@@ -190,7 +190,7 @@ def ensure_client(client: httpx.Client) -> str:
 
 
 def ensure_mappers(client: httpx.Client, client_uuid: str) -> None:
-    """Add protocol mappers so pex_role appears as a top-level JWT claim."""
+    """Add protocol mappers so qx_role appears as a top-level JWT claim."""
     existing_names = {
         m["name"]
         for m in client.get(f"/{REALM}/clients/{client_uuid}/protocol-mappers/models").json()
@@ -198,13 +198,13 @@ def ensure_mappers(client: httpx.Client, client_uuid: str) -> None:
 
     mappers = [
         {
-            "name": "pex_role",
+            "name": "qx_role",
             "protocol": "openid-connect",
             "protocolMapper": "oidc-usermodel-attribute-mapper",
             "consentRequired": False,
             "config": {
-                "user.attribute": "pex_role",
-                "claim.name": "pex_role",
+                "user.attribute": "qx_role",
+                "claim.name": "qx_role",
                 "jsonType.label": "String",
                 "id.token.claim": "true",
                 "access.token.claim": "true",

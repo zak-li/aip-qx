@@ -1,4 +1,4 @@
-module github.com/hyperledger/rwa-token
+module github.com/zak-li/aip-qx/chaincode/rwa-token
 
 go 1.21
 

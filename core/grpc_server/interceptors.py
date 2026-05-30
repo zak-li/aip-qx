@@ -2,7 +2,7 @@
 
 AuthInterceptor  — validates the Keycloak JWT from the `authorization` metadata key
                    (Bearer scheme), attaches the decoded payload to the context so
-                   servicers can read ctx.user_payload["sub"] / ["pex_role"].
+                   servicers can read ctx.user_payload["sub"] / ["qx_role"].
 
 LoggingInterceptor — structured request/response logging.
 """

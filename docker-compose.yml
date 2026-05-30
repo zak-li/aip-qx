@@ -18,11 +18,11 @@ services:
     volumes:
       # Pinned CA used to validate Keycloak's self-signed TLS cert.
       # Path inside the container must match KEYCLOAK_CA_CERT_PATH in .env.
-      - ./deployment/keycloak/tls/tls.crt:/etc/ssl/keycloak/ca.crt:ro
+      - ./stack/keycloak/tls/tls.crt:/etc/ssl/keycloak/ca.crt:ro
       # Fabric identity wallet and crypto material — excluded from the image
       # by .dockerignore, so they must be mounted at runtime.
-      - ./dlt-nodes/wallets:/app/dlt-nodes/wallets:ro
-      - ./dlt-nodes/crypto-config:/app/dlt-nodes/crypto-config:ro
+      - ./fabric/wallets:/app/fabric/wallets:ro
+      - ./fabric/crypto-config:/app/fabric/crypto-config:ro
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
@@ -59,7 +59,7 @@ services:
     environment:
       - ENVIRONMENT=production
     volumes:
-      - ./deployment/keycloak/tls/tls.crt:/etc/ssl/keycloak/ca.crt:ro
+      - ./stack/keycloak/tls/tls.crt:/etc/ssl/keycloak/ca.crt:ro
     # Celery doesn't expose HTTP — use `inspect ping` which round-trips through
     # the broker and proves the worker is actually consuming.
     healthcheck:
@@ -93,9 +93,9 @@ networks:
     # The platform uses THREE separate Docker networks by design:
     #   1. qx-network       — API + Celery (this file)
     #   2. rwa-network       — Fabric peers, orderer, CouchDB, Neo4j
-    #                          (dlt-nodes/docker/docker-compose.yaml)
+    #                          (fabric/docker/docker-compose.yaml)
     #   3. (default)         — Keycloak
-    #                          (deployment/keycloak/docker-compose.keycloak.yml)
+    #                          (stack/keycloak/docker-compose.keycloak.yml)
     #
     # Cross-network communication goes through the HOST IP (10.10.10.150)
     # via published ports. This is intentional: Fabric and Keycloak are

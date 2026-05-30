@@ -10,7 +10,7 @@ pip install -r requirements.txt
 
 ## Generating the initial revision
 
-The repo currently has hand-written `database/sql/0[1-7]_*.sql` seeds but no
+The repo currently has hand-written `db/sql/0[1-7]_*.sql` seeds but no
 Alembic baseline. To bootstrap:
 
 1. Apply the SQL seeds against an empty database (so the schema matches the

@@ -578,7 +578,7 @@ dash = {
     "templating": {"list": []}
 }
 
-with open("deployment/monitoring/grafana_dashboard.json", "w") as f:
+with open("stack/monitoring/grafana_dashboard.json", "w") as f:
     json.dump(dash, f, indent=2)
 print(f"Saved JSON ({len(panels)} panels)")
 

@@ -22,7 +22,7 @@ extend-exclude = [
     ".venv",
     "venv",
     "ENV",
-    "database/migrations/versions",
+    "db/migrations/versions",
 ]
 
 [tool.ruff.lint]

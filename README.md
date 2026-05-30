@@ -1,7 +1,7 @@
 <br>
 
 <p align="center">
-  <img src=".github/assets/logos/logo_qx.svg" alt="AIP Qx" width="300">
+  <img src=".github/assets/logos/logo_qx.svg" alt="AIP Qx" width="350">
 </p>
 
 <br>
@@ -17,7 +17,7 @@
 
 ## AIP Qx
 
-> **AIP Qx** — **A**sset **I**ssuance **P**latform · **Q**uorum **eX**change.
+> **AIP Qx**, **A**sset **I**ssuance **P**latform · **Q**uorum e**X**change.
 > The name captures the two pillars of the system: a regulated **issuance platform** for Real-World Assets on Hyperledger Fabric, and a **quorum-based exchange** layer where every state-changing transaction is multi-endorsed by the permissioned consortium (issuer + regulator) before it lands on-chain.
 
 AIP Qx is an institutional platform for tokenizing Real World Assets on a permissioned Hyperledger Fabric network. It handles the full asset lifecycle from issuance to redemption, with built-in AML/KYC compliance, ZK-KYC identity proofs, FHE-based fraud scoring, and a RAG regulatory agent for MiCA queries.
@@ -96,7 +96,7 @@ pip install -r requirements.txt
 **Step 3: Start the Fabric network**
 
 ```bash
-cd dlt-nodes
+cd fabric
 # generate crypto material + genesis block, then bring containers up
 docker run --rm -v "$PWD:/work" -w /work -e FABRIC_CFG_PATH=/work/config \
     hyperledger/fabric-tools:2.5.4 \
@@ -111,7 +111,7 @@ docker compose -f docker/docker-compose.yaml up -d
 **Step 4: Deploy Keycloak**
 
 ```bash
-cd deployment/keycloak
+cd stack/keycloak
 cp .env.keycloak.example .env.keycloak   # fill in admin/DB credentials
 bash deploy.sh
 ```
@@ -250,11 +250,11 @@ aip-qx/
 │   ├── fabric_client/          # Wallet, events, retry, circuit breaker
 │   └── grpc_server/            # gRPC servicers
 ├── chaincode/rwa-token/        # Go chaincode (CCaaS)
-├── dlt-nodes/
+├── fabric/
 │   ├── config/                 # core.yaml, connection_profile.yaml
 │   ├── docker/                 # docker-compose.yaml
 │   └── scripts/                # Network lifecycle scripts
-├── deployment/
+├── stack/
 │   ├── keycloak/               # Compose, TLS, realm setup
 │   ├── vault/                  # Vault config, policy, unseal service
 │   └── monitoring/             # Prometheus, Grafana, Loki
@@ -267,7 +267,7 @@ aip-qx/
 
 AIP Qx ships a full monitoring stack managed via systemd. Prometheus scrapes **twelve** targets — the API itself, Fabric peers (BANK01 + REG01), CouchDB for each peer, Keycloak, Vault, Redis, PostgreSQL, node-exporter, the Celery exporter, and Prometheus itself. Grafana renders one curated `AIP Qx` dashboard (uid `qx`, served at the root of `/dashboards`) covering service health, API throughput / latency percentiles, infrastructure utilization, datastores, blockchain activity, and compliance metrics. Loki aggregates structured JSON logs from the API container, Celery worker, Fabric peers, and the host's systemd journal.
 
-The dashboard is auto-provisioned from `deployment/monitoring/grafana_dashboard.json` via the file provider in `deployment/monitoring/grafana-provisioning/`. Datasource UIDs are pinned (`ffgx1hbr25a0wc` for Prometheus, `loki` for Loki) so the dashboard JSON is portable.
+The dashboard is auto-provisioned from `stack/monitoring/grafana_dashboard.json` via the file provider in `stack/monitoring/grafana-provisioning/`. Datasource UIDs are pinned (`ffgx1hbr25a0wc` for Prometheus, `loki` for Loki) so the dashboard JSON is portable.
 
 | Component | Port |
 |---|---|
