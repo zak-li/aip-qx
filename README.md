@@ -81,20 +81,20 @@ Every transaction produces an on-chain audit entry. An off-chain integrity check
 | Component | Role |
 |---|---|
 | Hyperledger Fabric 2.5 | Permissioned blockchain |
-| PostgreSQL 14+ | Application database |
+| PostgreSQL 14+ | Application database (Supabase in production, local PG for tests) |
 | Redis 7+ | Cache and Celery broker |
 | HashiCorp Vault | Fabric identity key storage (KV v2) |
 | Keycloak 24 | OIDC SSO / PKCE authentication |
-| Neo4j 5+ | Graph database for relationship analysis |
-| Docker + Compose | Peers, orderer, CouchDB, Keycloak containers |
+| Neo4j 5+ | Graph database for relationship analysis (Aura in production) |
+| Docker + Compose | Peers, orderer, CouchDB, Keycloak, API, Celery containers |
 
 ## Quick Start
 
 **Step 1: Clone and configure**
 
 ```bash
-git clone https://github.com/zak-li/pex.git
-cd pex
+git clone https://github.com/zak-li/Pex.git
+cd Pex
 cp .env.example .env
 ```
 
@@ -111,11 +111,16 @@ pip install -r requirements.txt
 **Step 3: Start the Fabric network**
 
 ```bash
-cd network
-./scripts/network-up.sh
-./scripts/create-channel.sh
+cd dlt-nodes
+# generate crypto material + genesis block, then bring containers up
+docker run --rm -v "$PWD:/work" -w /work -e FABRIC_CFG_PATH=/work/config \
+    hyperledger/fabric-tools:2.5.4 \
+    cryptogen generate --config=config/crypto_config.yaml --output=crypto-config
+docker run --rm -v "$PWD:/work" -w /work -e FABRIC_CFG_PATH=/work/config \
+    hyperledger/fabric-tools:2.5.4 \
+    configtxgen -profile RWAGenesis -outputBlock config/rwa-channel.pb -channelID rwa-channel
+docker compose -f docker/docker-compose.yaml up -d
 ./scripts/deploy-chaincode.sh
-./scripts/enroll-users.sh
 ```
 
 **Step 4: Deploy Keycloak**
@@ -222,7 +227,9 @@ curl -H "Authorization: Bearer <token>" http://localhost:8000/api/v1/assets
 | `FABRIC_CHANNEL` | Fabric channel name |
 | `FABRIC_CHAINCODE` | Chaincode name |
 | `VAULT_ADDR` | HashiCorp Vault address (`http://host:8200`) |
-| `VAULT_TOKEN` | Vault authentication token |
+| `VAULT_TOKEN` | Vault authentication token (for wallet KV access; metrics scrape uses `unauthenticated_metrics_access = true` in `vault.hcl`) |
+| `NEO4J_URI` | Neo4j bolt URI (`neo4j+s://<id>.databases.neo4j.io` for Aura) |
+| `NEO4J_USER` / `NEO4J_PASS` | Neo4j credentials |
 
 **Optional**
 
@@ -231,10 +238,10 @@ curl -H "Authorization: Bearer <token>" http://localhost:8000/api/v1/assets
 | `KEYCLOAK_REALM` | `pex` | Keycloak realm name |
 | `KEYCLOAK_CLIENT_ID` | `pex-api` | OIDC client identifier |
 | `KEYCLOAK_VERIFY_TLS` | `false` | Verify Keycloak TLS certificate |
-| `KEYCLOAK_CA_CERT_PATH` | | Path to pinned CA for Keycloak TLS |
+| `KEYCLOAK_CA_CERT_PATH` | | Path to pinned CA for Keycloak TLS (self-signed cert deployments) |
+| `NEO4J_DATABASE` | `neo4j` | Neo4j database name (set to the Aura instance ID when using Aura free tier) |
 | `GROQ_API_KEY` | `""` | Groq API key for the regulatory agent |
 | `GROQ_MODEL` | `llama-3.3-70b-versatile` | Groq model ID |
-| `NEO4J_URI` | | Neo4j bolt URI |
 | `FABRIC_TLS_ENABLED` | `true` | TLS for Fabric gRPC |
 | `FABRIC_GRPC_TIMEOUT` | `30` | gRPC timeout in seconds |
 | `FABRIC_RETRY_MAX_ATTEMPTS` | `5` | Retry attempts on Fabric errors |
@@ -275,7 +282,9 @@ pex/
 
 ## Observability
 
-Pex ships a full monitoring stack managed via systemd. Prometheus scrapes ten targets including Fabric peers, CouchDB, Redis, PostgreSQL, and the custom Celery exporter. Grafana provides dashboards for service health, API latency percentiles, infrastructure utilization, and compliance metrics. Loki aggregates structured JSON logs from the API, Celery workers, Docker containers, and systemd.
+Pex ships a full monitoring stack managed via systemd. Prometheus scrapes **twelve** targets — the API itself, Fabric peers (BANK01 + REG01), CouchDB for each peer, Keycloak, Vault, Redis, PostgreSQL, node-exporter, the Celery exporter, and Prometheus itself. Grafana renders one curated `Pex` dashboard (uid `pex`, served at the root of `/dashboards`) covering service health, API throughput / latency percentiles, infrastructure utilization, datastores, blockchain activity, and compliance metrics. Loki aggregates structured JSON logs from the API container, Celery worker, Fabric peers, and the host's systemd journal.
+
+The dashboard is auto-provisioned from `deployment/monitoring/grafana_dashboard.json` via the file provider in `deployment/monitoring/grafana-provisioning/`. Datasource UIDs are pinned (`ffgx1hbr25a0wc` for Prometheus, `loki` for Loki) so the dashboard JSON is portable.
 
 | Component | Port |
 |---|---|
