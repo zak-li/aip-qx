@@ -9,7 +9,7 @@
   ],
   "timezone": "browser",
   "refresh": "30s",
-  "schemaVersion": 38,
+  "schemaVersion": 39,
   "version": 1,
   "time": {
     "from": "now-1h",
@@ -92,7 +92,7 @@
       },
       "targets": [
         {
-          "expr": "sum(rate(http_requests_total{job=\"pex-api\"}[2m]))",
+          "expr": "sum(rate(http_requests_total{job=\"pex-api\"}[$__rate_interval]))",
           "legendFormat": "req/s",
           "refId": "A",
           "instant": false,
@@ -141,7 +141,7 @@
       },
       "targets": [
         {
-          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=\"pex-api\"}[2m])) by (le))",
+          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=\"pex-api\"}[$__rate_interval])) by (le))",
           "legendFormat": "p95",
           "refId": "A",
           "instant": false,
@@ -206,7 +206,7 @@
       },
       "targets": [
         {
-          "expr": "(sum(rate(http_requests_total{job=\"pex-api\",status=~\"4..|5..\"}[5m])) or vector(0)) / clamp_min(sum(rate(http_requests_total{job=\"pex-api\"}[5m])), 0.001) * 100",
+          "expr": "(sum(rate(http_requests_total{job=\"pex-api\",status=~\"4..|5..\"}[$__rate_interval])) or vector(0)) / clamp_min(sum(rate(http_requests_total{job=\"pex-api\"}[$__rate_interval])), 0.001) * 100",
           "legendFormat": "errors %",
           "refId": "A",
           "instant": false,
@@ -271,7 +271,7 @@
       },
       "targets": [
         {
-          "expr": "100 - (avg(rate(node_cpu_seconds_total{mode=\"idle\"}[2m])) * 100)",
+          "expr": "100 - (avg(rate(node_cpu_seconds_total{mode=\"idle\"}[$__rate_interval])) * 100)",
           "legendFormat": "CPU %",
           "refId": "A",
           "instant": false,
@@ -1036,7 +1036,7 @@
       },
       "targets": [
         {
-          "expr": "sum by(status) (rate(http_requests_total{job=\"pex-api\"}[2m]))",
+          "expr": "sum by(status) (rate(http_requests_total{job=\"pex-api\"}[$__rate_interval]))",
           "legendFormat": "{{status}}",
           "refId": "A",
           "instant": false,
@@ -1137,21 +1137,21 @@
       },
       "targets": [
         {
-          "expr": "histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket{job=\"pex-api\"}[2m])) by (le))",
+          "expr": "histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket{job=\"pex-api\"}[$__rate_interval])) by (le))",
           "legendFormat": "p50",
           "refId": "A",
           "instant": false,
           "range": true
         },
         {
-          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=\"pex-api\"}[2m])) by (le))",
+          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=\"pex-api\"}[$__rate_interval])) by (le))",
           "legendFormat": "p95",
           "refId": "B",
           "instant": false,
           "range": true
         },
         {
-          "expr": "histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket{job=\"pex-api\"}[2m])) by (le))",
+          "expr": "histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket{job=\"pex-api\"}[$__rate_interval])) by (le))",
           "legendFormat": "p99",
           "refId": "C",
           "instant": false,
@@ -1264,21 +1264,21 @@
       },
       "targets": [
         {
-          "expr": "avg(rate(node_cpu_seconds_total{mode=\"user\"}[2m])) * 100",
+          "expr": "avg(rate(node_cpu_seconds_total{mode=\"user\"}[$__rate_interval])) * 100",
           "legendFormat": "User",
           "refId": "A",
           "instant": false,
           "range": true
         },
         {
-          "expr": "avg(rate(node_cpu_seconds_total{mode=\"system\"}[2m])) * 100",
+          "expr": "avg(rate(node_cpu_seconds_total{mode=\"system\"}[$__rate_interval])) * 100",
           "legendFormat": "System",
           "refId": "B",
           "instant": false,
           "range": true
         },
         {
-          "expr": "avg(rate(node_cpu_seconds_total{mode=\"iowait\"}[2m])) * 100",
+          "expr": "avg(rate(node_cpu_seconds_total{mode=\"iowait\"}[$__rate_interval])) * 100",
           "legendFormat": "IOWait",
           "refId": "C",
           "instant": false,
@@ -1508,14 +1508,14 @@
       },
       "targets": [
         {
-          "expr": "sum(rate(node_network_receive_bytes_total{device!~\"lo|docker.*|br.*|veth.*\"}[2m]))",
+          "expr": "sum(rate(node_network_receive_bytes_total{device!~\"lo|docker.*|br.*|veth.*\"}[$__rate_interval]))",
           "legendFormat": "Inbound",
           "refId": "A",
           "instant": false,
           "range": true
         },
         {
-          "expr": "sum(rate(node_network_transmit_bytes_total{device!~\"lo|docker.*|br.*|veth.*\"}[2m]))",
+          "expr": "sum(rate(node_network_transmit_bytes_total{device!~\"lo|docker.*|br.*|veth.*\"}[$__rate_interval]))",
           "legendFormat": "Outbound",
           "refId": "B",
           "instant": false,
@@ -1613,14 +1613,14 @@
       },
       "targets": [
         {
-          "expr": "sum(rate(node_disk_read_bytes_total[2m]))",
+          "expr": "sum(rate(node_disk_read_bytes_total[$__rate_interval]))",
           "legendFormat": "Read",
           "refId": "A",
           "instant": false,
           "range": true
         },
         {
-          "expr": "sum(rate(node_disk_written_bytes_total[2m]))",
+          "expr": "sum(rate(node_disk_written_bytes_total[$__rate_interval]))",
           "legendFormat": "Write",
           "refId": "B",
           "instant": false,
@@ -1704,14 +1704,14 @@
       },
       "targets": [
         {
-          "expr": "sum(rate(pg_stat_database_xact_commit{datname=\"keycloak_db\"}[2m]))",
+          "expr": "sum(rate(pg_stat_database_xact_commit{datname=\"keycloak_db\"}[$__rate_interval]))",
           "legendFormat": "Commits/s",
           "refId": "A",
           "instant": false,
           "range": true
         },
         {
-          "expr": "sum(rate(pg_stat_database_xact_rollback{datname=\"keycloak_db\"}[2m]))",
+          "expr": "sum(rate(pg_stat_database_xact_rollback{datname=\"keycloak_db\"}[$__rate_interval]))",
           "legendFormat": "Rollbacks/s",
           "refId": "B",
           "instant": false,
@@ -1818,7 +1818,7 @@
       },
       "targets": [
         {
-          "expr": "rate(redis_commands_processed_total[2m])",
+          "expr": "rate(redis_commands_processed_total[$__rate_interval])",
           "legendFormat": "Commands/s",
           "refId": "A",
           "instant": false,
@@ -1940,28 +1940,28 @@
       },
       "targets": [
         {
-          "expr": "rate(couchdb_database_reads_total{job=\"couchdb-bank01\"}[2m])",
+          "expr": "rate(couchdb_database_reads_total{job=\"couchdb-bank01\"}[$__rate_interval])",
           "legendFormat": "Reads BANK01",
           "refId": "A",
           "instant": false,
           "range": true
         },
         {
-          "expr": "rate(couchdb_database_writes_total{job=\"couchdb-bank01\"}[2m])",
+          "expr": "rate(couchdb_database_writes_total{job=\"couchdb-bank01\"}[$__rate_interval])",
           "legendFormat": "Writes BANK01",
           "refId": "B",
           "instant": false,
           "range": true
         },
         {
-          "expr": "rate(couchdb_database_reads_total{job=\"couchdb-reg01\"}[2m])",
+          "expr": "rate(couchdb_database_reads_total{job=\"couchdb-reg01\"}[$__rate_interval])",
           "legendFormat": "Reads REG01",
           "refId": "C",
           "instant": false,
           "range": true
         },
         {
-          "expr": "rate(couchdb_database_writes_total{job=\"couchdb-reg01\"}[2m])",
+          "expr": "rate(couchdb_database_writes_total{job=\"couchdb-reg01\"}[$__rate_interval])",
           "legendFormat": "Writes REG01",
           "refId": "D",
           "instant": false,
@@ -2076,28 +2076,28 @@
       },
       "targets": [
         {
-          "expr": "rate(couchdb_httpd_requests_total{job=\"couchdb-bank01\"}[2m])",
+          "expr": "rate(couchdb_httpd_requests_total{job=\"couchdb-bank01\"}[$__rate_interval])",
           "legendFormat": "HTTP BANK01",
           "refId": "A",
           "instant": false,
           "range": true
         },
         {
-          "expr": "rate(couchdb_httpd_requests_total{job=\"couchdb-reg01\"}[2m])",
+          "expr": "rate(couchdb_httpd_requests_total{job=\"couchdb-reg01\"}[$__rate_interval])",
           "legendFormat": "HTTP REG01",
           "refId": "B",
           "instant": false,
           "range": true
         },
         {
-          "expr": "rate(couchdb_document_inserts_total{job=\"couchdb-bank01\"}[2m])",
+          "expr": "rate(couchdb_document_inserts_total{job=\"couchdb-bank01\"}[$__rate_interval])",
           "legendFormat": "Inserts BANK01",
           "refId": "C",
           "instant": false,
           "range": true
         },
         {
-          "expr": "rate(couchdb_document_inserts_total{job=\"couchdb-reg01\"}[2m])",
+          "expr": "rate(couchdb_document_inserts_total{job=\"couchdb-reg01\"}[$__rate_interval])",
           "legendFormat": "Inserts REG01",
           "refId": "D",
           "instant": false,
@@ -2226,7 +2226,7 @@
       },
       "targets": [
         {
-          "expr": "histogram_quantile(0.95, sum(rate(rwa_chaincode_duration_seconds_bucket[2m])) by (le, function)) or vector(0)",
+          "expr": "histogram_quantile(0.95, sum(rate(rwa_chaincode_duration_seconds_bucket[$__rate_interval])) by (le, function)) or vector(0)",
           "legendFormat": "{{function}}",
           "refId": "A",
           "instant": false,
@@ -2522,7 +2522,7 @@
       },
       "targets": [
         {
-          "expr": "sum by(status) (rate(rwa_celery_tasks_total[2m]))",
+          "expr": "sum by(status) (rate(rwa_celery_tasks_total[$__rate_interval]))",
           "legendFormat": "{{status}}",
           "refId": "A",
           "instant": false,
