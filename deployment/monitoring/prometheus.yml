@@ -35,6 +35,29 @@ scrape_configs:
     static_configs:
       - targets: [localhost:9808]
 
+  # Keycloak — KC_METRICS_ENABLED=true exposes /metrics on the main HTTPS port.
+  # The TLS cert is self-signed for 10.10.10.150, so we skip verification when
+  # scraping from localhost.
+  - job_name: keycloak
+    scheme: https
+    static_configs:
+      - targets: [10.10.10.150:8443]
+    metrics_path: /metrics
+    tls_config:
+      insecure_skip_verify: true
+
+  # Vault — /v1/sys/metrics requires a token; the token is rendered into a
+  # file at /etc/prometheus/vault_token by the bootstrap script.
+  - job_name: vault
+    static_configs:
+      - targets: [localhost:8200]
+    metrics_path: /v1/sys/metrics
+    params:
+      format: [prometheus]
+    authorization:
+      type: Bearer
+      credentials_file: /etc/prometheus/vault_token
+
   # Fabric peers are currently down (images pruned and not yet repulled). Kept
   # here so that when Fabric is restored the dashboard immediately picks up its
   # metrics — Prometheus marks them DOWN until they come back, which is the

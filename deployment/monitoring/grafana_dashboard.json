@@ -2226,7 +2226,7 @@
       },
       "targets": [
         {
-          "expr": "histogram_quantile(0.95, sum(rate(rwa_chaincode_duration_seconds_bucket[2m])) by (le, function))",
+          "expr": "histogram_quantile(0.95, sum(rate(rwa_chaincode_duration_seconds_bucket[2m])) by (le, function)) or vector(0)",
           "legendFormat": "{{function}}",
           "refId": "A",
           "instant": false,
@@ -2284,7 +2284,7 @@
       },
       "targets": [
         {
-          "expr": "rwa_assets_by_status",
+          "expr": "rwa_assets_by_status or vector(0)",
           "legendFormat": "{{status}}",
           "refId": "A",
           "instant": true,
@@ -2445,7 +2445,7 @@
       },
       "targets": [
         {
-          "expr": "rwa_aml_score_avg",
+          "expr": "rwa_aml_score_avg or vector(0)",
           "legendFormat": "{{risk_category}}",
           "refId": "A",
           "instant": false,
