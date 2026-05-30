@@ -10,6 +10,7 @@ network/wallets/
 network/crypto-config/
 deployment/keycloak/tls/
 deployment/keycloak/themes/
+deployment/keycloak/.env.kc
 
 logs/
 *.log
