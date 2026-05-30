@@ -574,7 +574,7 @@
       },
       "targets": [
         {
-          "expr": "(redis_keyspace_hits_total or vector(0)) / clamp_min((redis_keyspace_hits_total or vector(0)) + (redis_keyspace_misses_total or vector(0)), 1) * 100",
+          "expr": "sum(redis_keyspace_hits_total) / clamp_min(sum(redis_keyspace_hits_total) + sum(redis_keyspace_misses_total), 1) * 100",
           "legendFormat": "Hit %",
           "refId": "A",
           "instant": false,
