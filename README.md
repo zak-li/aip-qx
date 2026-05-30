@@ -236,31 +236,40 @@ curl -H "Authorization: Bearer <token>" http://localhost:8000/api/v1/assets
 
 ```
 aip-qx/
-├── core/
-│   ├── main.py                 # FastAPI app, middleware, metrics
+├── core/                       # FastAPI app + Celery worker
+│   ├── main.py                 #   ASGI entry, middleware, metrics
 │   ├── config.py
 │   ├── features/
-│   │   ├── assets/             # Asset lifecycle
-│   │   ├── compliance/         # AML, KYC, MiCA rules
-│   │   ├── audit/              # Trail, integrity, PDF reports
-│   │   ├── auth/               # Keycloak OIDC/PKCE, GDPR
-│   │   ├── zkp/                # ZK-KYC proofs
-│   │   ├── fhe/                # FHE fraud scorer (HElib CKKS)
-│   │   └── agent/              # RAG pipeline, ChromaDB
-│   ├── fabric_client/          # Wallet, events, retry, circuit breaker
-│   └── grpc_server/            # gRPC servicers
-├── chaincode/                  # Go chaincode (CCaaS) — rwa-token contract
-├── fabric/
-│   ├── config/                 # core.yaml, connection_profile.yaml
-│   ├── docker/                 # docker-compose.yaml
-│   └── scripts/                # Network lifecycle scripts
-├── stack/
-│   ├── keycloak/               # Compose, TLS, realm setup
-│   ├── vault/                  # Vault config, policy, unseal service
-│   └── monitoring/             # Prometheus, Grafana, Loki
-└── database/
-    ├── migrations/
-    └── fixtures/
+│   │   ├── assets/             #   Asset lifecycle
+│   │   ├── compliance/         #   AML, KYC, MiCA rules
+│   │   ├── audit/              #   Trail, integrity, PDF reports
+│   │   ├── auth/               #   Keycloak OIDC/PKCE, GDPR
+│   │   ├── zkp/                #   ZK-KYC proofs
+│   │   ├── fhe/                #   FHE fraud scorer (HElib CKKS)
+│   │   └── agent/              #   RAG pipeline, ChromaDB
+│   ├── fabric_client/          #   Wallet, events, retry, circuit breaker
+│   ├── grpc_server/            #   gRPC servicers
+│   └── grpc_generated/         #   protoc-generated stubs (regen via scripts/)
+├── chaincode/                  # Go smart contract (rwa-token, CCaaS)
+├── fabric/                     # Hyperledger Fabric network
+│   ├── config/                 #   configtx, connection profile, MSP material
+│   ├── docker/                 #   peers + orderer + CouchDB compose
+│   └── scripts/                #   deploy-chaincode.sh
+├── proto/                      # gRPC service definitions (.proto)
+├── stack/                      # Side services (run alongside the API)
+│   ├── keycloak/               #   compose, TLS, identity-first flow
+│   ├── monitoring/             #   Prometheus, Grafana, Loki, Promtail
+│   └── vault/                  #   policy + hcl config
+├── db/                         # Schema + seeds + Alembic migrations
+│   ├── migrations/             #   alembic env + versions/
+│   ├── sql/                    #   01_schema..08_zkp_tables
+│   └── fixtures/               #   csv/, json/ (sanctions manifest, etc.)
+├── scripts/                    # Operational scripts (Python + bash)
+│   ├── benchmarks/             #   fhe.py, zkp.py
+│   ├── simulations/            #   dashboard.py, full.py, jitter.py, game_theory.py
+│   ├── seed_db.py, health_check.py, generate_report.py, …
+│   └── generate_protos.sh, install_latex.sh
+└── tests/                      # pytest suite + fixtures
 ```
 
 ## Observability

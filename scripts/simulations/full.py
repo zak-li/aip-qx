@@ -22,10 +22,10 @@ Phases run sequentially. Each phase targets a specific dashboard area:
    12. cooldown     -> mixed reads + health + /metrics scrape
 
 Usage:
-    python scripts/simulate_full.py                  # full run, ~5 min
-    python scripts/simulate_full.py --quick          # ~90s
-    python scripts/simulate_full.py --concurrency 16 # higher load
-    python scripts/simulate_full.py --skip sse,agent
+    python scripts/simulations/full.py                  # full run, ~5 min
+    python scripts/simulations/full.py --quick          # ~90s
+    python scripts/simulations/full.py --concurrency 16 # higher load
+    python scripts/simulations/full.py --skip sse,agent
 
 Environment:
     API_URL              default http://localhost:8000

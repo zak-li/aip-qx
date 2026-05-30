@@ -1,3 +1,4 @@
+# Secrets and certs
 .env
 .env.*
 !.env.example
@@ -6,24 +7,31 @@
 *.crt
 *.p12
 *.pfx
-network/wallets/
-network/crypto-config/
+
+# Keycloak deployment state (TLS, themes, .env.kc) — generated on the VM
 stack/keycloak/tls/
 stack/keycloak/themes/
 stack/keycloak/.env.kc
 
+# Logs
 logs/
 *.log
 
+# Python build / cache
 __pycache__/
 *.py[cod]
 *$py.class
 .pytest_cache/
 .coverage
+.ruff_cache/
+.mypy_cache/
+
+# Virtualenvs
 .venv/
 venv/
 ENV/
 
+# Test / report dumps
 *.xml
 *_results.txt
 out*.txt
@@ -32,55 +40,41 @@ pytest_*.txt
 coverage_out.txt
 summary.txt
 
-.DS_Store
-Thumbs.db
-.vscode/
-.idea/
-
-/tmp/rwa-reports/
-audit_report.pdf
-audit_report.tex
-
-templates/
-
-*.exe
-
-# Local tool settings and sensitive mock data
-.claude/
-.ruff_cache/
-.mypy_cache/
-tests/fixtures/crypto_config_mock/
-
-# Deployment / packaging archives that must never reach the repo
+# Packaging archives
 *.tar.gz
 *.tgz
 *.zip
 
-# LaTeX build by-products only — actual .tex sources under docs/
-# are part of the project and must remain trackable.
-/doc.tex
+# LaTeX build by-products (sources under docs/ stay trackable)
 *.aux
 *.toc
 *.synctex.gz
 *.fls
 *.fdb_latexmk
 
-# Local deploy scripts (contain credentials)
-scripts/_deploy_*.py
+# OS / editor state
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.claude/
 
-# Grafana customization scripts (contain VM credentials — never commit)
-grafana_scripts/
+# Sensitive mock data
+tests/fixtures/crypto_config_mock/
 
-# Node dependencies and npm files (grafana/tooling scripts only)
+# Node deps (tooling scripts only — no JS app in this repo)
 node_modules/
 package.json
 package-lock.json
 
-# Standalone ASCII tools (never commit)
+# Standalone ASCII tools (kept local)
 ascii2.py
 ascii_standalone.py
 
-# Local-only directories — never commit
+# Local-only directories that must never reach the repo
 dapp/
 cli/
 .git.backup-*/
+
+# Windows binaries
+*.exe

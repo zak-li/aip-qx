@@ -1,19 +1,26 @@
+# Python build / cache
 __pycache__/
 *.py[cod]
 *.pyo
-.pytest_cache/
-.coverage
 *.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
 
+# Virtualenvs
 .venv/
 venv/
 env/
 
+# Editor / OS state
 .vscode/
 .idea/
+.claude/
 *.swp
 *.swo
 
+# Git metadata never goes into the image
 .git/
 .gitignore
 
@@ -25,52 +32,30 @@ env/
 *.key
 *.p12
 *.pfx
-network/wallets/
-network/crypto-config/
 tests/fixtures/crypto_config_mock/
 
-# Editor / tooling state
-.claude/
-.ruff_cache/
-.mypy_cache/
-
-logs/
-*.log
-*.txt
-!requirements.txt
-!requirements-dev.txt
-
+# Build / packaging artefacts
 *.tar.gz
 *.pdf
-
 Dockerfile
 docker-compose.yml
 .dockerignore
 
-tests/
-pytest.ini
-setup.cfg
+# Logs and ad-hoc text dumps
+logs/
+*.log
+*.txt
+!requirements.txt
 
+# Anything not needed at runtime
+tests/
 scripts/
 *.sh
-simulate_traffic.py
-verify_infra.py
-verify_monitoring.py
-finalize_monitoring.py
-create_dashboard.py
-setup_exporters.py
-setup_grafana.py
-create_test_db.py
-test_db_diag.py
-generate_mock_report.py
-fix_identities.py
-populate_wallet.py
-read_log.py
-run_audit.py
 
+# Side modules — built/run independently from this image
 stack/
 db/
 !db/migrations/
 chaincode/
-
-frontend/
+fabric/
+proto/

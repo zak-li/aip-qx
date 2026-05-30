@@ -6,7 +6,7 @@ Compares local implementation with theoretical/literature baselines for
 Bulletproofs and Groth16.
 
 Usage:
-  python scripts/benchmarks/benchmark_zkp.py
+  python scripts/benchmarks/zkp.py
 """
 
 import os

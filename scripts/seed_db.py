@@ -18,7 +18,7 @@ PG_DSN = DATABASE_URL.replace("postgresql+asyncpg://", "postgresql://").replace(
     "postgresql://", "postgresql://"
 )
 
-SQL_FILE = ROOT / "db" / "sql" / "06_seed_morocco.sql"
+SQL_FILE = ROOT / "db" / "sql" / "07_seed_morocco.sql"
 FIXTURE_FILE = ROOT / "db" / "fixtures" / "json" / "compliance_kyc_aml.json"
 
 # ── Risk category normalisation ───────────────────────────────────────────────

@@ -3,7 +3,7 @@ AIP Qx — Dashboard Load Simulation
 Generates realistic API traffic so Prometheus metrics populate the Grafana dashboard.
 
 Usage:
-    python scripts/simulate_dashboard.py [--duration 120] [--rps 8]
+    python scripts/simulations/dashboard.py [--duration 120] [--rps 8]
 """
 
 import argparse

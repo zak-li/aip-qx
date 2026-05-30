@@ -104,7 +104,7 @@ def async_engine():
             await conn.run_sync(Base.metadata.drop_all)
             await conn.run_sync(Base.metadata.create_all)
 
-            views_file = Path("db/sql/05_views_functions.sql")
+            views_file = Path("db/sql/06_views_functions.sql")
             if views_file.exists():
                 sql_script = views_file.read_text(encoding="utf-8")
                 raw_conn = await conn.get_raw_connection()

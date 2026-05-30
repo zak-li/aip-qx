@@ -4,7 +4,7 @@ Benchmark suite for the FHE-AML Scoring Protocol (Plaintext vs TenSEAL CKKS).
 Measures Encryption Time, Server Evaluation Time, Decryption Time, and Size.
 
 Usage:
-  python scripts/benchmarks/benchmark_fhe.py
+  python scripts/benchmarks/fhe.py
 """
 
 import os
