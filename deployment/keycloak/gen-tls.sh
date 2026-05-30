@@ -12,7 +12,7 @@ mkdir -p tls
 openssl req -x509 -nodes -newkey rsa:4096 -days 825 \
   -keyout tls/tls.key \
   -out    tls/tls.crt \
-  -subj   "/CN=${HOST}/O=Pex/C=FR" \
+  -subj   "/CN=${HOST}/O=AIP Qx/C=FR" \
   -addext "subjectAltName=IP:${HOST},DNS:${HOST}" \
   -addext "keyUsage=critical,digitalSignature,keyEncipherment" \
   -addext "extendedKeyUsage=serverAuth"

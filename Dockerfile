@@ -11,8 +11,8 @@ RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 
 FROM python:3.12-slim AS runtime
 
-LABEL maintainer="Pex Team"
-LABEL description="Pex Tokenization Backend — FastAPI + Celery"
+LABEL maintainer="AIP Qx Team"
+LABEL description="AIP Qx Tokenization Backend — FastAPI + Celery"
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends libpq5 curl && \

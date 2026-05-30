@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for your interest in Pex.
+Thank you for your interest in AIP Qx.
 
 ## Before you open a pull request
 
@@ -11,8 +11,8 @@ Thank you for your interest in Pex.
 ## Development setup
 
 ```bash
-git clone https://github.com/zak-li/pex.git
-cd pex
+git clone https://github.com/zak-li/qx.git
+cd qx
 python -m venv .venv
 source .venv/bin/activate         # Windows: .venv\Scripts\activate
 pip install -r requirements.txt

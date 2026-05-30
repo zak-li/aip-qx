@@ -43,7 +43,7 @@
       }
     },
     {
-      "identity_label": "alexandre.leroy@bank02.pex.demo",
+      "identity_label": "alexandre.leroy@bank02.qx.demo",
       "mspId": "BANK02MSP",
       "type": "X.509",
       "version": 1,
@@ -64,7 +64,7 @@
       }
     },
     {
-      "identity_label": "isabelle.fontaine@bank02.pex.demo",
+      "identity_label": "isabelle.fontaine@bank02.qx.demo",
       "mspId": "BANK02MSP",
       "type": "X.509",
       "version": 1,
@@ -84,7 +84,7 @@
       }
     },
     {
-      "identity_label": "pierre.moreau@cust01.pex.demo",
+      "identity_label": "pierre.moreau@cust01.qx.demo",
       "mspId": "INV01MSP",
       "type": "X.509",
       "version": 1,
@@ -104,7 +104,7 @@
       }
     },
     {
-      "identity_label": "sophie.lambert@reg01.pex.demo",
+      "identity_label": "sophie.lambert@reg01.qx.demo",
       "mspId": "REG01MSP",
       "type": "X.509",
       "version": 1,
@@ -126,7 +126,7 @@
       }
     },
     {
-      "identity_label": "marc.bernard@reg01.pex.demo",
+      "identity_label": "marc.bernard@reg01.qx.demo",
       "mspId": "REG01MSP",
       "type": "X.509",
       "version": 1,
@@ -189,7 +189,7 @@
       }
     },
     {
-      "identity_label": "francois.pichon@reg02.pex.demo",
+      "identity_label": "francois.pichon@reg02.qx.demo",
       "mspId": "CBK01MSP",
       "type": "X.509",
       "version": 1,

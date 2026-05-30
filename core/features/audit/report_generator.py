@@ -139,7 +139,7 @@ class ReportGenerator:
 
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\textbf{Pex --- Audit Certifié}}
+\fancyhead[L]{\textbf{AIP Qx --- Audit Certifié}}
 \fancyhead[R]{\textbf{""" + esc_asset_id + r"""}}
 \fancyfoot[C]{Page \thepage\ / \pageref{LastPage} --- Généré par """ + esc_gen_by + r""" --- """ + esc_gen_date + r"""}
 

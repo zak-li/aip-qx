@@ -1,8 +1,8 @@
-name: pex-keycloak
+name: qx-keycloak
 services:
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.5
-    container_name: pex-keycloak
+    container_name: qx-keycloak
     restart: unless-stopped
     command: start
     # Secrets (KC_DB_PASSWORD, KEYCLOAK_ADMIN_PASSWORD) live in the gitignored
@@ -48,9 +48,9 @@ services:
     volumes:
       - keycloak_data:/opt/keycloak/data
       - ./tls:/opt/keycloak/conf/tls:ro
-      # Mount the pex theme as a sibling of Keycloak's built-in themes so
+      # Mount the qx theme as a sibling of Keycloak's built-in themes so
       # `parent=base` resolution still finds the bundled base/common assets.
-      - ./themes/pex:/opt/keycloak/themes/pex:ro
+      - ./themes/qx:/opt/keycloak/themes/qx:ro
     ports:
       - "8443:8443"
     deploy:
@@ -72,7 +72,7 @@ services:
 volumes:
   # The volume was created under the legacy project name `keycloak` (when this
   # compose file had no top-level `name:`). Marking it external so the rename
-  # to `pex-keycloak` doesn't orphan the realm / client / user / theme data.
+  # to `qx-keycloak` doesn't orphan the realm / client / user / theme data.
   # If you ever wipe state, run: docker volume create keycloak_keycloak_data
   keycloak_data:
     external: true

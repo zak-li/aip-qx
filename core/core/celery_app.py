@@ -8,7 +8,7 @@ _redis_url = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
 _celery_backend = re.sub(r"/\d+$", "/1", _redis_url)
 
 celery_app = Celery(
-    "pex-tasks",
+    "qx-tasks",
     broker=_redis_url,
     backend=_celery_backend,
 )

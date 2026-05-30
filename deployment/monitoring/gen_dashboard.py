@@ -324,7 +324,7 @@ panels.append(stat(pid, "Latency p95",
     8, y, 4, 4, unit="s", thresholds=LATENCY, decimals=3)); pid += 1
 
 panels.append(stat(pid, "Error Rate",
-    '(sum(rate(http_requests_total{job="pex-api",status=~"4..|5.."}[5m])) or vector(0)) / clamp_min(sum(rate(http_requests_total{job="pex-api"}[5m])), 0.001) * 100',
+    '(sum(rate(http_requests_total{job="qx-api",status=~"4..|5.."}[5m])) or vector(0)) / clamp_min(sum(rate(http_requests_total{job="qx-api"}[5m])), 0.001) * 100',
     12, y, 4, 4, unit="percent", thresholds=ERR, decimals=2)); pid += 1
 
 panels.append(stat(pid, "CPU Usage",
@@ -348,7 +348,7 @@ y += 1
 
 panels.append(state_timeline(pid, "Service Availability",
     [
-        q('up{job="pex-api"}', "Pex API", "A"),
+        q('up{job="qx-api"}', "AIP Qx API", "A"),
         q('up{job="postgres"}', "PostgreSQL", "B"),
         q('up{job="redis"}', "Redis", "C"),
         q('up{job="node-exporter"}', "System", "D"),
@@ -396,7 +396,7 @@ panels.append(logs_volume(pid, "Log Volume by Severity",
 y += 5
 
 panels.append(logs_panel(pid, "API Logs",
-    '{job="docker", service="pex-api"} | json | line_format "[{{.level}}] {{.logger}} {{.message}}"',
+    '{job="docker", service="qx-api"} | json | line_format "[{{.level}}] {{.logger}} {{.message}}"',
     0, y, 12, 12)); pid += 1
 
 panels.append(logs_panel(pid, "Container Logs",
@@ -560,8 +560,8 @@ y += 7
 # Build dashboard
 # ════════════════════════════════════════════════════════════════════════════
 dash = {
-    "uid": "pex",
-    "title": "Pex",
+    "uid": "qx",
+    "title": "AIP Qx",
     "tags": ["rwa", "blockchain", "production"],
     "timezone": "browser",
     "refresh": "30s",

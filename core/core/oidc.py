@@ -147,7 +147,7 @@ def _decode(token: str, jwks: dict, options: dict) -> dict[str, Any]:
 
 
 def _check_audience(payload: dict[str, Any]) -> None:
-    """Token must be intended for pex-api (aud) or issued by it (azp)."""
+    """Token must be intended for qx-api (aud) or issued by it (azp)."""
     aud: str | list[str] = payload.get("aud", [])
     if isinstance(aud, str):
         aud = [aud]

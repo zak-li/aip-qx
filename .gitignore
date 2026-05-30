@@ -79,3 +79,8 @@ package-lock.json
 # Standalone ASCII tools (never commit)
 ascii2.py
 ascii_standalone.py
+
+# Local-only directories — never commit
+dapp/
+cli/
+.git.backup-*/

@@ -55,8 +55,8 @@ class Settings(FabricSettings):
         default="https://10.10.10.150:8443",
         description="Base URL of the Keycloak server (no trailing slash)",
     )
-    keycloak_realm: str = Field(default="pex")
-    keycloak_client_id: str = Field(default="pex-api")
+    keycloak_realm: str = Field(default="qx")
+    keycloak_client_id: str = Field(default="qx-api")
     keycloak_client_secret: str = Field(...)
     # Full URL the browser is redirected to after Keycloak authentication.
     keycloak_callback_url: str = Field(

@@ -1,5 +1,5 @@
 """
-Pex -- Full-stack Grafana Dashboard Simulation
+AIP Qx -- Full-stack Grafana Dashboard Simulation
 ================================================
 Exercises every endpoint surface so that ALL Grafana panels populate with
 realistic data: HTTP throughput, latency histograms, Celery queues, custom
@@ -779,7 +779,7 @@ async def run(args: argparse.Namespace) -> None:
         "cooldown_seconds":   10.0 if quick else 25.0,
     }
 
-    banner("Pex -- Full-stack Grafana Dashboard Simulation")
+    banner("AIP Qx -- Full-stack Grafana Dashboard Simulation")
     print(f"  target       : {col('c', BASE_URL)}")
     print(f"  user         : {col('dim', SIM_EMAIL)}")
     print(f"  profile      : {col('y', 'quick' if quick else 'standard')}")
@@ -845,7 +845,7 @@ async def run(args: argparse.Namespace) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Pex full-stack Grafana simulation",
+        description="AIP Qx full-stack Grafana simulation",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=(
             "Phases: " + ", ".join(PHASE_REGISTRY.keys()) +

@@ -1,13 +1,13 @@
-name: pex
+name: qx
 services:
   api:
     build:
       context: .
       dockerfile: Dockerfile
       tags:
-        - pex-api:latest
-    image: pex-api:latest
-    container_name: pex-api
+        - qx-api:latest
+    image: qx-api:latest
+    container_name: qx-api
     restart: unless-stopped
     ports:
       - "8000:8000"
@@ -37,7 +37,7 @@ services:
         reservations:
           memory: 256M
     networks:
-      - pex-network
+      - qx-network
     logging:
       driver: "json-file"
       options:
@@ -49,9 +49,9 @@ services:
       context: .
       dockerfile: Dockerfile
       tags:
-        - pex-celery-worker:latest
-    image: pex-celery-worker:latest
-    container_name: pex-celery-worker
+        - qx-celery-worker:latest
+    image: qx-celery-worker:latest
+    container_name: qx-celery-worker
     restart: unless-stopped
     command: celery -A core.core.celery_app worker -l INFO --concurrency=2
     env_file:
@@ -79,7 +79,7 @@ services:
     # Both are expected to be running externally or added as services here.
     # No dependency on `api` — the worker connects to the broker directly.
     networks:
-      - pex-network
+      - qx-network
     logging:
       driver: "json-file"
       options:
@@ -87,11 +87,11 @@ services:
         max-file: "3"
 
 networks:
-  pex-network:
+  qx-network:
     driver: bridge
     # ── Network Architecture ─────────────────────────────────────────────
     # The platform uses THREE separate Docker networks by design:
-    #   1. pex-network       — API + Celery (this file)
+    #   1. qx-network       — API + Celery (this file)
     #   2. rwa-network       — Fabric peers, orderer, CouchDB, Neo4j
     #                          (dlt-nodes/docker/docker-compose.yaml)
     #   3. (default)         — Keycloak

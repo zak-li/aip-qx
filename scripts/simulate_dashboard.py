@@ -1,5 +1,5 @@
 ﻿"""
-Pex — Dashboard Load Simulation
+AIP Qx — Dashboard Load Simulation
 Generates realistic API traffic so Prometheus metrics populate the Grafana dashboard.
 
 Usage:
@@ -299,7 +299,7 @@ async def simulate(duration: float, rps: float) -> None:
 
     SEP = "=" * 70
     print(f"\n{c('bold', SEP)}")
-    print(f"{c('bold', '  Pex -- Dashboard Load Simulation')}")
+    print(f"{c('bold', '  AIP Qx -- Dashboard Load Simulation')}")
     print(f"{c('bold', SEP)}")
     print(f"  Target   : {c('cyan', BASE_URL)}")
     print(f"  Duration : {c('yellow', f'{duration:.0f}s')}")

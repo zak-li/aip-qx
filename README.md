@@ -4,7 +4,7 @@
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset=".github/assets/logos/svg/logo-light.svg">
     <source media="(prefers-color-scheme: light)" srcset=".github/assets/logos/svg/logo.svg">
-    <img src=".github/assets/logos/svg/logo.svg" alt="Pex" width="300">
+    <img src=".github/assets/logos/svg/logo.svg" alt="AIP Qx" width="300">
   </picture>
 </p>
 
@@ -19,11 +19,12 @@
 
 <br>
 
-## Pex
+## AIP Qx
 
-> **Pex** is a contraction of **P**rovenance (asset lifecycle) and **Ex**change (transfer of ownership).
+> **AIP Qx** — **A**sset **I**ssuance **P**latform · **Q**uorum **eX**change.
+> The name captures the two pillars of the system: a regulated **issuance platform** for Real-World Assets on Hyperledger Fabric, and a **quorum-based exchange** layer where every state-changing transaction is multi-endorsed by the permissioned consortium (issuer + regulator) before it lands on-chain.
 
-Pex is an institutional platform for tokenizing Real World Assets on a permissioned Hyperledger Fabric network. It handles the full asset lifecycle from issuance to redemption, with built-in AML/KYC compliance, ZK-KYC identity proofs, FHE-based fraud scoring, and a RAG regulatory agent for MiCA queries.
+AIP Qx is an institutional platform for tokenizing Real World Assets on a permissioned Hyperledger Fabric network. It handles the full asset lifecycle from issuance to redemption, with built-in AML/KYC compliance, ZK-KYC identity proofs, FHE-based fraud scoring, and a RAG regulatory agent for MiCA queries.
 
 ## Table of Contents
 
@@ -46,19 +47,19 @@ The platform embeds compliance directly into transaction execution and asset lif
   <img src=".github/assets/diagrams/compliance-flow-v3.svg" alt="Compliance Flow" width="800">
 </p>
 
-### Pex CLI
+### AIP Qx CLI
 
-Pex comes with a powerful Command Line Interface and a full-screen TUI (Text User Interface) that streams network health and events in real-time. It also includes an embedded **RAG-based AI Assistant** to answer regulatory questions dynamically.
+AIP Qx comes with a powerful Command Line Interface and a full-screen TUI (Text User Interface) that streams network health and events in real-time. It also includes an embedded **RAG-based AI Assistant** to answer regulatory questions dynamically.
 
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset=".github/assets/images/cli-demo.png">
     <source media="(prefers-color-scheme: light)" srcset=".github/assets/images/cli-demo-light.png">
-    <img src=".github/assets/images/cli-demo.png" alt="Pex CLI Demo" width="800">
+    <img src=".github/assets/images/cli-demo.png" alt="AIP Qx CLI Demo" width="800">
   </picture>
 </p>
 
-Pex exposes a FastAPI REST API and a gRPC server in parallel. Authentication is OIDC-based via Keycloak with PKCE (authorization_code flow). Private keys for Fabric identities are stored in HashiCorp Vault (KV v2), and every response carries six security headers with rate limiting and host filtering.
+AIP Qx exposes a FastAPI REST API and a gRPC server in parallel. Authentication is OIDC-based via Keycloak with PKCE (authorization_code flow). Private keys for Fabric identities are stored in HashiCorp Vault (KV v2), and every response carries six security headers with rate limiting and host filtering.
 
 Every transaction produces an on-chain audit entry. An off-chain integrity checker verifies hashes independently, PDF audit reports are generated asynchronously via Celery, and the RAG agent answers regulatory questions by querying a ChromaDB vector store with Groq LLM.
 
@@ -93,8 +94,8 @@ Every transaction produces an on-chain audit entry. An off-chain integrity check
 **Step 1: Clone and configure**
 
 ```bash
-git clone https://github.com/zak-li/Pex.git
-cd Pex
+git clone https://github.com/zak-li/AIP Qx.git
+cd AIP Qx
 cp .env.example .env
 ```
 
@@ -235,8 +236,8 @@ curl -H "Authorization: Bearer <token>" http://localhost:8000/api/v1/assets
 
 | Variable | Default | Description |
 |---|---|---|
-| `KEYCLOAK_REALM` | `pex` | Keycloak realm name |
-| `KEYCLOAK_CLIENT_ID` | `pex-api` | OIDC client identifier |
+| `KEYCLOAK_REALM` | `qx` | Keycloak realm name |
+| `KEYCLOAK_CLIENT_ID` | `qx-api` | OIDC client identifier |
 | `KEYCLOAK_VERIFY_TLS` | `false` | Verify Keycloak TLS certificate |
 | `KEYCLOAK_CA_CERT_PATH` | | Path to pinned CA for Keycloak TLS (self-signed cert deployments) |
 | `NEO4J_DATABASE` | `neo4j` | Neo4j database name (set to the Aura instance ID when using Aura free tier) |
@@ -251,7 +252,7 @@ curl -H "Authorization: Bearer <token>" http://localhost:8000/api/v1/assets
 ## Project Structure
 
 ```
-pex/
+qx/
 ├── core/
 │   ├── main.py                 # FastAPI app, middleware, metrics
 │   ├── config.py
@@ -282,7 +283,7 @@ pex/
 
 ## Observability
 
-Pex ships a full monitoring stack managed via systemd. Prometheus scrapes **twelve** targets — the API itself, Fabric peers (BANK01 + REG01), CouchDB for each peer, Keycloak, Vault, Redis, PostgreSQL, node-exporter, the Celery exporter, and Prometheus itself. Grafana renders one curated `Pex` dashboard (uid `pex`, served at the root of `/dashboards`) covering service health, API throughput / latency percentiles, infrastructure utilization, datastores, blockchain activity, and compliance metrics. Loki aggregates structured JSON logs from the API container, Celery worker, Fabric peers, and the host's systemd journal.
+AIP Qx ships a full monitoring stack managed via systemd. Prometheus scrapes **twelve** targets — the API itself, Fabric peers (BANK01 + REG01), CouchDB for each peer, Keycloak, Vault, Redis, PostgreSQL, node-exporter, the Celery exporter, and Prometheus itself. Grafana renders one curated `AIP Qx` dashboard (uid `qx`, served at the root of `/dashboards`) covering service health, API throughput / latency percentiles, infrastructure utilization, datastores, blockchain activity, and compliance metrics. Loki aggregates structured JSON logs from the API container, Celery worker, Fabric peers, and the host's systemd journal.
 
 The dashboard is auto-provisioned from `deployment/monitoring/grafana_dashboard.json` via the file provider in `deployment/monitoring/grafana-provisioning/`. Datasource UIDs are pinned (`ffgx1hbr25a0wc` for Prometheus, `loki` for Loki) so the dashboard JSON is portable.
 

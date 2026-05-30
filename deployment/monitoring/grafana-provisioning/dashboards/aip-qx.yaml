@@ -1,12 +1,12 @@
 apiVersion: 1
 
 providers:
-  - name: pex
+  - name: qx
     orgId: 1
     # Empty folder = root: the dashboard appears directly in the Dashboards
-    # list with no enclosing folder. A previous `folder: Pex` + `folderUid: pex`
+    # list with no enclosing folder. A previous `folder: AIP Qx` + `folderUid: qx`
     # caused a click-through bug because the folder UID collided with the
-    # dashboard UID (both `pex`).
+    # dashboard UID (both `qx`).
     folder: ''
     type: file
     disableDeletion: false

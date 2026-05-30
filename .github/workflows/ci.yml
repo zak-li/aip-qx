@@ -92,8 +92,8 @@ jobs:
       VAULT_ADDR: http://127.0.0.1:8200
       VAULT_TOKEN: ci-test-vault-token
       KEYCLOAK_URL: http://localhost:8080
-      KEYCLOAK_REALM: pex
-      KEYCLOAK_CLIENT_ID: pex-api
+      KEYCLOAK_REALM: qx
+      KEYCLOAK_CLIENT_ID: qx-api
       KEYCLOAK_CLIENT_SECRET: ci-test-keycloak-secret
       KEYCLOAK_CALLBACK_URL: http://localhost:8000/api/v1/auth/callback
       KEYCLOAK_VERIFY_TLS: "false"

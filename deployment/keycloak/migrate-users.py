@@ -19,7 +19,7 @@ users that exist in Keycloak by email but were never linked back.
     DATABASE_URL=postgresql://rwaadmin:****@10.10.10.150:5432/rwadb \\
         python3 migrate-users.py \\
             --keycloak-url https://10.10.10.150:8443 \\
-            --realm pex \\
+            --realm qx \\
             --ca-bundle /etc/ssl/keycloak/ca.crt
 """
 from __future__ import annotations

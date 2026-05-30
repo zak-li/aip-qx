@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""setup-realm.py — Configure the pex realm in Keycloak via Admin REST API.
+"""setup-realm.py — Configure the qx realm in Keycloak via Admin REST API.
 
 Run once after first boot:
     python3 setup-realm.py \
@@ -30,8 +30,8 @@ APP_ROLES = [
     "READONLY",
 ]
 
-REALM = "pex"
-CLIENT_ID = "pex-api"
+REALM = "qx"
+CLIENT_ID = "qx-api"
 
 
 def get_admin_token(base: str, user: str, password: str) -> str:
@@ -77,7 +77,7 @@ def ensure_realm(client: httpx.Client, base: str, token: str) -> None:
 def _realm_payload() -> dict:
     return {
         "realm": REALM,
-        "displayName": "Pex",
+        "displayName": "AIP Qx",
         "enabled": True,
         "sslRequired": "external",
         # Token lifetimes
@@ -131,7 +131,7 @@ def ensure_roles(client: httpx.Client) -> None:
 
 
 def ensure_client(client: httpx.Client) -> str:
-    """Create or update the pex-api client. Returns the client UUID.
+    """Create or update the qx-api client. Returns the client UUID.
 
     Re-running this must not invalidate a previously-issued secret: if the
     client already exists we leave its secret alone. Only the first creation
@@ -212,7 +212,7 @@ def ensure_mappers(client: httpx.Client, client_uuid: str) -> None:
             },
         },
         {
-            "name": "audience-pex-api",
+            "name": "audience-qx-api",
             "protocol": "openid-connect",
             "protocolMapper": "oidc-audience-mapper",
             "consentRequired": False,

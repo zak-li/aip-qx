@@ -1,5 +1,5 @@
 groups:
-  - name: pex-alerts
+  - name: qx-alerts
     rules:
       - alert: FabricPeerDown
         expr: up{job=~"fabric-peer.*"} == 0
