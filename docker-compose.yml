@@ -29,6 +29,13 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: "1.5"
+          memory: 1024M
+        reservations:
+          memory: 256M
     networks:
       - pex-network
     logging:
@@ -61,6 +68,13 @@ services:
       timeout: 10s
       retries: 3
       start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 768M
+        reservations:
+          memory: 192M
     # Celery needs Redis (broker) and Postgres (result backend / DB tasks).
     # Both are expected to be running externally or added as services here.
     # No dependency on `api` — the worker connects to the broker directly.

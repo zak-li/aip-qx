@@ -49,6 +49,13 @@ services:
       - ./themes/pex:/opt/keycloak/themes/pex:ro
     ports:
       - "8443:8443"
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1024M
+        reservations:
+          memory: 512M
     # No in-container healthcheck — Keycloak 24's distroless image ships no
     # curl/wget/openssl and TLS-from-bash is impractical. The /health/ready
     # endpoint is probed externally by Prometheus/Blackbox via the host port.
