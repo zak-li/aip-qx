@@ -1,11 +1,7 @@
 <br>
 
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/logos/svg/logo-light.svg">
-    <source media="(prefers-color-scheme: light)" srcset=".github/assets/logos/svg/logo.svg">
-    <img src=".github/assets/logos/svg/logo.svg" alt="AIP Qx" width="300">
-  </picture>
+  <img src=".github/assets/logos/logo_qx.svg" alt="AIP Qx" width="300">
 </p>
 
 <br>
@@ -47,18 +43,6 @@ The platform embeds compliance directly into transaction execution and asset lif
   <img src=".github/assets/diagrams/compliance-flow-v3.svg" alt="Compliance Flow" width="800">
 </p>
 
-### AIP Qx CLI
-
-AIP Qx comes with a powerful Command Line Interface and a full-screen TUI (Text User Interface) that streams network health and events in real-time. It also includes an embedded **RAG-based AI Assistant** to answer regulatory questions dynamically.
-
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/images/cli-demo.png">
-    <source media="(prefers-color-scheme: light)" srcset=".github/assets/images/cli-demo-light.png">
-    <img src=".github/assets/images/cli-demo.png" alt="AIP Qx CLI Demo" width="800">
-  </picture>
-</p>
-
 AIP Qx exposes a FastAPI REST API and a gRPC server in parallel. Authentication is OIDC-based via Keycloak with PKCE (authorization_code flow). Private keys for Fabric identities are stored in HashiCorp Vault (KV v2), and every response carries six security headers with rate limiting and host filtering.
 
 Every transaction produces an on-chain audit entry. An off-chain integrity checker verifies hashes independently, PDF audit reports are generated asynchronously via Celery, and the RAG agent answers regulatory questions by querying a ChromaDB vector store with Groq LLM.
@@ -94,8 +78,8 @@ Every transaction produces an on-chain audit entry. An off-chain integrity check
 **Step 1: Clone and configure**
 
 ```bash
-git clone https://github.com/zak-li/AIP Qx.git
-cd AIP Qx
+git clone https://github.com/zak-li/aip-qx.git
+cd aip-qx
 cp .env.example .env
 ```
 
@@ -132,7 +116,7 @@ cp .env.keycloak.example .env.keycloak   # fill in admin/DB credentials
 bash deploy.sh
 ```
 
-The setup-realm.py script prints a `KEYCLOAK_CLIENT_SECRET` — copy it into your `.env`.
+The `setup-realm.py` script prints a `KEYCLOAK_CLIENT_SECRET` — copy it into your `.env`.
 
 **Step 5: Start the API and worker**
 
@@ -202,12 +186,11 @@ curl -H "Authorization: Bearer <token>" http://localhost:8000/api/v1/assets
 
 | Method | Endpoint | Description |
 |---|---|---|
-| GET | `/api/v1/audit/` | List audit log entries |
 | GET | `/api/v1/audit/asset/{id}` | On-chain provenance trail for an asset |
 | POST | `/api/v1/audit/report/generate/{id}` | Generate PDF audit report (async) |
 | GET | `/api/v1/audit/report/status/{task_id}` | Check report generation status |
 | POST | `/api/v1/audit/fraud/scan` | Trigger Neo4j fraud graph scan |
-| GET | `/api/v1/transactions` | Ledger transaction history |
+| GET | `/api/v1/transactions/{tx_ref}` | Lookup a transaction by reference |
 | GET | `/api/v1/transactions/stats/summary` | Transaction statistics summary |
 | GET | `/api/v1/events/stream` | Live Fabric event stream (SSE) |
 | POST | `/api/v1/agent/chat` | RAG query over regulatory knowledge base |
@@ -252,7 +235,7 @@ curl -H "Authorization: Bearer <token>" http://localhost:8000/api/v1/assets
 ## Project Structure
 
 ```
-qx/
+aip-qx/
 ├── core/
 │   ├── main.py                 # FastAPI app, middleware, metrics
 │   ├── config.py
@@ -273,7 +256,6 @@ qx/
 │   └── scripts/                # Network lifecycle scripts
 ├── deployment/
 │   ├── keycloak/               # Compose, TLS, realm setup
-│   ├── systemd/                # Service units (deprecated, see Docker)
 │   ├── vault/                  # Vault config, policy, unseal service
 │   └── monitoring/             # Prometheus, Grafana, Loki
 └── database/
