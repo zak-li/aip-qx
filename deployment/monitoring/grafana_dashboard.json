@@ -517,7 +517,7 @@
             "type": "prometheus",
             "uid": "ffgx1hbr25a0wc"
           },
-          "expr": "up{job=\"fabric-peer-bnp\"}",
+          "expr": "up{job=\"fabric-peer-bank01\"}",
           "legendFormat": "Fabric BANK01",
           "refId": "F",
           "instant": false,
@@ -528,7 +528,7 @@
             "type": "prometheus",
             "uid": "ffgx1hbr25a0wc"
           },
-          "expr": "up{job=\"fabric-peer-amf\"}",
+          "expr": "up{job=\"fabric-peer-reg01\"}",
           "legendFormat": "Fabric REG01",
           "refId": "G",
           "instant": false,
@@ -539,7 +539,7 @@
             "type": "prometheus",
             "uid": "ffgx1hbr25a0wc"
           },
-          "expr": "up{job=\"couchdb-bnp\"}",
+          "expr": "up{job=\"couchdb-bank01\"}",
           "legendFormat": "CouchDB BANK01",
           "refId": "H",
           "instant": false,
@@ -550,7 +550,7 @@
             "type": "prometheus",
             "uid": "ffgx1hbr25a0wc"
           },
-          "expr": "up{job=\"couchdb-amf\"}",
+          "expr": "up{job=\"couchdb-reg01\"}",
           "legendFormat": "CouchDB REG01",
           "refId": "I",
           "instant": false,
@@ -888,7 +888,7 @@
             "type": "loki",
             "uid": "loki"
           },
-          "expr": "sum by(level) (count_over_time({job=~\"rwa|systemd|docker\"}[1m]))",
+          "expr": "sum by(level) (count_over_time({job=~\"pex|systemd|docker\"}[1m]))",
           "refId": "A",
           "queryType": "range",
           "legendFormat": "{{level}}"
@@ -1848,7 +1848,7 @@
             "type": "prometheus",
             "uid": "ffgx1hbr25a0wc"
           },
-          "expr": "sum(rate(pg_stat_database_xact_commit{datname=\"rwadb\"}[2m]))",
+          "expr": "sum(rate(pg_stat_database_xact_commit{datname=\"keycloak_db\"}[2m]))",
           "legendFormat": "PG Commits/s",
           "refId": "A",
           "instant": false,
