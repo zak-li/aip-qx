@@ -97,7 +97,7 @@ Open `.env` and fill in at minimum `DATABASE_URL`, `REDIS_URL`, the `FABRIC_*` v
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate                # Windows: .venv\Scripts\activate
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
@@ -129,7 +129,7 @@ The `setup-realm.py` script prints a `KEYCLOAK_CLIENT_SECRET` — copy it into y
 **Step 5: Start the API and worker**
 
 ```bash
-docker compose up -d                     # API + Celery worker
+docker compose up -d   API + Celery worker
 # Or without Docker:
 uvicorn core.main:app --host 0.0.0.0 --port 8000 --workers 1
 celery -A core.core.celery_app worker --loglevel=info -Q celery,compliance,reports,fabric_events
