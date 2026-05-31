@@ -11,13 +11,13 @@
 
 <p align="center">
   <a href="https://github.com/zak-li/pxtly/actions/workflows/ci.yml"><img src="https://github.com/zak-li/pxtly/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.12+-3776AB.svg?logo=python&logoColor=white" alt="Python 3.12+"></a>
-  <a href="https://hyperledger-fabric.readthedocs.io/"><img src="https://img.shields.io/badge/Hyperledger_Fabric-2.5-2F3134.svg?logo=hyperledger&logoColor=white" alt="Hyperledger Fabric 2.5"></a>
-  <a href="https://go.dev/"><img src="https://img.shields.io/badge/Go-1.21+-00ADD8.svg?logo=go&logoColor=white" alt="Go 1.21+"></a>
-  <a href="https://fastapi.tiangolo.com/"><img src="https://img.shields.io/badge/FastAPI-0.135-009688.svg?logo=fastapi&logoColor=white" alt="FastAPI"></a>
-  <a href="https://www.keycloak.org/"><img src="https://img.shields.io/badge/Keycloak-24-4D4D4D.svg?logo=keycloak&logoColor=white" alt="Keycloak 24"></a>
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.12+-3776AB.svg" alt="Python 3.12+"></a>
+  <a href="https://hyperledger-fabric.readthedocs.io/"><img src="https://img.shields.io/badge/Hyperledger_Fabric-2.5-2F3134.svg" alt="Hyperledger Fabric 2.5"></a>
+  <a href="https://go.dev/"><img src="https://img.shields.io/badge/Go-1.21+-00ADD8.svg" alt="Go 1.21+"></a>
+  <a href="https://fastapi.tiangolo.com/"><img src="https://img.shields.io/badge/FastAPI-0.135-009688.svg" alt="FastAPI"></a>
+  <a href="https://www.keycloak.org/"><img src="https://img.shields.io/badge/Keycloak-24-4D4D4D.svg" alt="Keycloak 24"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-BUSL_1.1-A2C2E8.svg" alt="License: BUSL 1.1"></a>
-  <a href="https://github.com/zak-li/pxtly/commits/master"><img src="https://img.shields.io/github/last-commit/zak-li/pxtly?logo=github" alt="Last commit"></a>
+  <a href="https://github.com/zak-li/pxtly/commits/master"><img src="https://img.shields.io/github/last-commit/zak-li/pxtly" alt="Last commit"></a>
 </p>
 
 <br>
@@ -285,49 +285,75 @@ The full list lives in [`.env.example`](.env.example).
 
 ## Project Structure
 
+The repository is organised by responsibility — application code, the Fabric consortium, side services, persistence, and tooling each live under their own top-level directory.
+
+### Application code
+
 ```
-pxtly/
-├── core/                       # FastAPI app + Celery worker
-│   ├── main.py                 #   ASGI entry, middleware, metrics
-│   ├── config.py               #   pydantic-settings root
-│   ├── features/
-│   │   ├── assets/             #     asset lifecycle
-│   │   ├── compliance/         #     AML, KYC, MiCA rules
-│   │   ├── audit/              #     trail, integrity, PDF reports
-│   │   ├── auth/               #     Keycloak OIDC/PKCE, GDPR
-│   │   ├── zkp/                #     ZK-KYC proofs (Schnorr)
-│   │   ├── fhe/                #     FHE fraud scorer (HElib CKKS)
-│   │   └── agent/              #     RAG pipeline, ChromaDB
-│   ├── fabric_client/          #   wallet, events, retry, circuit breaker
-│   ├── grpc_server/            #   gRPC servicers
-│   └── grpc_generated/         #   protoc-generated stubs (regen via scripts/)
-├── chaincode/                  # Go smart contract (rwa-token, CCaaS)
-├── cli/                        # Pxtly CLI (Typer + Rich + Textual)
-│   ├── api/                    #   one client per REST resource
-│   ├── commands/               #   one Typer sub-app per domain
-│   ├── http/                   #   transport + auto-refresh on 401
-│   ├── security/               #   keyring tokens, PKCE, audit log
-│   └── ui/                     #   Rich console, REPL, dashboard
-├── fabric/                     # Hyperledger Fabric network
-│   ├── config/                 #   configtx, connection profile, MSP material
-│   ├── docker/                 #   peers + orderer + CouchDB compose
-│   └── scripts/                #   deploy-chaincode.sh
-├── proto/                      # gRPC service definitions (.proto)
-├── stack/                      # Side services (run alongside the API)
-│   ├── keycloak/               #   compose, TLS, identity-first flow
-│   ├── monitoring/             #   Prometheus, Grafana, Loki, Promtail
-│   └── vault/                  #   policy + hcl config
-├── db/                         # Schema + seeds + Alembic migrations
-│   ├── migrations/             #   alembic env + versions/
-│   ├── sql/                    #   01_schema..08_zkp_tables
-│   └── fixtures/               #   csv/, json/ (sanctions manifest, etc.)
-├── scripts/                    # Operational scripts (Python + bash)
-│   ├── benchmarks/             #   fhe.py, zkp.py
-│   ├── simulations/            #   dashboard.py, full.py, jitter.py, game_theory.py
-│   ├── seed_db.py, health_check.py, generate_report.py, …
-│   └── generate_protos.sh, install_latex.sh
-└── tests/                      # pytest suite + fixtures
+core/                         FastAPI + Celery — application backend
+├── main.py                     ASGI entry, middleware, metrics
+├── config.py                   pydantic-settings root
+├── features/
+│   ├── assets/                 Asset lifecycle (issue, transfer, freeze)
+│   ├── compliance/             AML / KYC / MiCA rules
+│   ├── audit/                  On-chain trail, integrity, PDF reports
+│   ├── auth/                   Keycloak OIDC + PKCE + GDPR
+│   ├── zkp/                    ZK-KYC Schnorr proofs
+│   ├── fhe/                    HElib CKKS fraud scorer
+│   └── agent/                  RAG pipeline + ChromaDB
+├── fabric_client/              Wallet, events, retry, circuit breaker
+├── grpc_server/                gRPC servicers
+└── grpc_generated/             protoc-generated stubs
+
+chaincode/                    Go smart contract — rwa-token, CCaaS
+
+cli/                          Pxtly CLI — Typer + Rich + Textual
+├── api/                        One client per REST resource
+├── commands/                   One Typer sub-app per domain
+├── http/                       Transport + auto-refresh on 401
+├── security/                   Keyring tokens, PKCE, audit log
+└── ui/                         Rich console, REPL, dashboard
 ```
+
+### Consortium and side services
+
+```
+fabric/                       Hyperledger Fabric 2.5 network
+├── config/                     configtx, connection profile, MSP material
+├── docker/                     Peers, orderer, CouchDB compose
+└── scripts/                    deploy-chaincode.sh
+
+stack/                        Side services (run alongside the API)
+├── keycloak/                   Compose, TLS, identity-first flow
+├── monitoring/                 Prometheus, Grafana, Loki, Promtail
+└── vault/                      Policy + hcl config
+```
+
+### Persistence and tooling
+
+```
+db/                           Schema, seeds, Alembic migrations
+├── migrations/                 alembic env + versions/
+├── sql/                        01_schema … 08_zkp_tables
+└── fixtures/                   csv/, json/ (sanctions manifest, …)
+
+proto/                        gRPC service definitions (.proto)
+
+scripts/                      Operational scripts (Python + bash)
+├── benchmarks/                 fhe.py, zkp.py
+├── simulations/                dashboard.py, full.py, jitter.py, game_theory.py
+├── seed_db.py                  Apply SQL seeds + compliance fixtures
+├── health_check.py             Liveness probe for CI / oncall
+├── generate_report.py          Build a sample audit PDF locally
+├── generate_protos.sh          Regenerate Python gRPC stubs
+└── install_latex.sh            Install LaTeX deps (TeX Live)
+
+tests/                        pytest suite + fixtures
+```
+
+### Repository root
+
+`.github/` (assets + CI), `.env.example`, `Dockerfile`, `docker-compose.yml`, `requirements.txt`, `pyproject.toml`, `alembic.ini`, plus the metadata files (`README.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `SECURITY.md`, `LICENSE`).
 
 ## Observability
 
