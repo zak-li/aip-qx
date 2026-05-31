@@ -11,20 +11,18 @@
 
 <p align="center">
   <a href="https://github.com/zak-li/pxtly/releases"><img src="https://img.shields.io/github/v/tag/zak-li/pxtly?label=version&color=4AAFFD" alt="Version"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache_2.0-4DB4FD.svg" alt="License: Apache 2.0"></a>
-  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.12+-50B8FD.svg" alt="Python 3.12+"></a>
-  <a href="https://go.dev/"><img src="https://img.shields.io/badge/Go-1.21+-54BDFD.svg" alt="Go 1.21+"></a>
-  <a href="https://hyperledger-fabric.readthedocs.io/"><img src="https://img.shields.io/badge/Hyperledger_Fabric-2.5-57C1FD.svg" alt="Hyperledger Fabric 2.5"></a>
-  <a href="https://www.postgresql.org/"><img src="https://img.shields.io/badge/PostgreSQL-14+-5AC6FD.svg" alt="PostgreSQL 14+"></a>
-  <a href="https://neo4j.com/"><img src="https://img.shields.io/badge/Neo4j-5.23-5DCAFD.svg" alt="Neo4j 5.23"></a>
-  <a href="https://redis.io/"><img src="https://img.shields.io/badge/Redis-7+-61CFFD.svg" alt="Redis 7+"></a>
-  <a href="https://www.trychroma.com/"><img src="https://img.shields.io/badge/ChromaDB-1.5-64D3FD.svg" alt="ChromaDB 1.5"></a>
-  <a href="https://www.docker.com/"><img src="https://img.shields.io/badge/Docker-26.1+-67D8FC.svg" alt="Docker"></a>
-  <a href="https://www.keycloak.org/"><img src="https://img.shields.io/badge/Keycloak-24-6BDCFC.svg" alt="Keycloak 24"></a>
-  <a href="https://www.vaultproject.io/"><img src="https://img.shields.io/badge/HashiCorp_Vault-1.16+-6EE1FC.svg" alt="HashiCorp Vault"></a>
-  <a href="https://prometheus.io/"><img src="https://img.shields.io/badge/Prometheus-2.52+-71E5FC.svg" alt="Prometheus"></a>
-  <a href="https://grafana.com/"><img src="https://img.shields.io/badge/Grafana-11.0+-74EAFC.svg" alt="Grafana"></a>
-  <a href="https://docs.astral.sh/ruff/"><img src="https://img.shields.io/badge/code_style-ruff-78EEFC.svg" alt="Code style: ruff"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache_2.0-4EB4FD.svg" alt="License: Apache 2.0"></a>
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.12+-51B9FD.svg" alt="Python 3.12+"></a>
+  <a href="https://go.dev/"><img src="https://img.shields.io/badge/Go-1.21+-55BFFD.svg" alt="Go 1.21+"></a>
+  <a href="https://hyperledger-fabric.readthedocs.io/"><img src="https://img.shields.io/badge/Hyperledger_Fabric-2.5-59C4FD.svg" alt="Hyperledger Fabric 2.5"></a>
+  <a href="https://www.postgresql.org/"><img src="https://img.shields.io/badge/PostgreSQL-14+-5DC9FD.svg" alt="PostgreSQL 14+"></a>
+  <a href="https://neo4j.com/"><img src="https://img.shields.io/badge/Neo4j-5.23-61CEFD.svg" alt="Neo4j 5.23"></a>
+  <a href="https://redis.io/"><img src="https://img.shields.io/badge/Redis-7+-64D4FD.svg" alt="Redis 7+"></a>
+  <a href="https://www.docker.com/"><img src="https://img.shields.io/badge/Docker-26.1+-68D9FC.svg" alt="Docker"></a>
+  <a href="https://www.keycloak.org/"><img src="https://img.shields.io/badge/Keycloak-24-6CDEFC.svg" alt="Keycloak 24"></a>
+  <a href="https://www.vaultproject.io/"><img src="https://img.shields.io/badge/HashiCorp_Vault-1.16+-70E3FC.svg" alt="HashiCorp Vault"></a>
+  <a href="https://grafana.com/"><img src="https://img.shields.io/badge/Grafana-11.0+-73E9FC.svg" alt="Grafana"></a>
+  <a href="https://docs.astral.sh/ruff/"><img src="https://img.shields.io/badge/code_style-ruff-77EEFC.svg" alt="Code style: ruff"></a>
   <a href="https://docs.pytest.org/"><img src="https://img.shields.io/badge/tested_with-pytest-7BF3FC.svg" alt="Tested with pytest"></a>
 </p>
 
