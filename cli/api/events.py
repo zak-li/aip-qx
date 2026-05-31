@@ -7,14 +7,14 @@ Two entry points:
 
   * `sse_client` — long-running asyncio task used by the Textual dashboard
     (consumes events into an asyncio.Queue).
-  * `stream_events()` — synchronous generator used by the `qx events stream`
+  * `stream_events()` — synchronous generator used by the `pxtly events stream`
     command (prints lines as they arrive).
 
 Both use the persisted Bearer token from the keyring; no refresh logic is
 applied to the stream itself because httpx/asyncio cannot retroactively
 swap headers on an open response. If the stream returns 401 the loop
 reconnects and the auth header is fetched fresh — which will trigger the
-QxAuth middleware refresh on the *next* normal request.
+PxtlyAuth middleware refresh on the *next* normal request.
 """
 from __future__ import annotations
 
@@ -22,8 +22,8 @@ import asyncio
 import json
 import logging
 import time
+from collections.abc import Iterator
 from dataclasses import dataclass, field
-from typing import Iterator, Optional
 
 import httpx
 
@@ -51,8 +51,8 @@ class SseClient:
 
     def __init__(self, url: str) -> None:
         self._url = url
-        self._task: Optional[asyncio.Task[None]] = None
-        self._queue: Optional[asyncio.Queue[SseEvent]] = None
+        self._task: asyncio.Task[None] | None = None
+        self._queue: asyncio.Queue[SseEvent] | None = None
         self._connected = False
         self._total_received = 0
 
@@ -85,7 +85,7 @@ class SseClient:
         self._connected = False
         self._queue = None
 
-    async def get_event(self) -> Optional[SseEvent]:
+    async def get_event(self) -> SseEvent | None:
         q = self._get_queue()
         try:
             return q.get_nowait()
@@ -161,9 +161,9 @@ async def _parse_event_stream(lines):
             data_lines = []
 
 
-def stream_events(max_events: Optional[int] = None) -> Iterator[SseEvent]:
+def stream_events(max_events: int | None = None) -> Iterator[SseEvent]:
     """
-    Synchronous generator used by `qx events stream`. Yields SseEvent
+    Synchronous generator used by `pxtly events stream`. Yields SseEvent
     objects. Reconnects on transient errors; surfaces a clean exit on
     KeyboardInterrupt.
     """

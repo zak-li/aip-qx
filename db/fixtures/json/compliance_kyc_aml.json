@@ -1,4 +1,4 @@
-﻿{
+{
   "participants": [
     {
       "user_id": "10000000-0000-0000-0000-000000000001",
@@ -721,7 +721,7 @@
       "rule_id": "RULE-LARGE-TX-001",
       "rule_description": "Alerte automatique transaction superieure a 10M EUR MiCA art.68 declaration obligatoire",
       "status": "REVIEWED_CLEARED",
-      "reviewed_by": "sophie.lambert@reg01.qx.demo",
+      "reviewed_by": "sophie.lambert@reg01.pxtly.demo",
       "reviewed_at": "2025-03-16 11:00:00",
       "disposition": "FALSE_POSITIVE",
       "notes": "Transaction institutionnelle conforme OAT emission primaire validee REG01"
@@ -737,7 +737,7 @@
       "rule_id": "RULE-EMIR-DERIV-002",
       "rule_description": "Anomalie EMIR reporting derive swap taux superieur a 1M EUR delai reporting T+1 depasse",
       "status": "OPEN_INVESTIGATION",
-      "assigned_to": "sophie.lambert@reg01.qx.demo",
+      "assigned_to": "sophie.lambert@reg01.pxtly.demo",
       "regulatory_action": "ASSET_FREEZE",
       "regulatory_ref": "REG01-INV-2025-DRV-00041",
       "notes": "Investigation en cours gel preventif actif jusqu a resolution"

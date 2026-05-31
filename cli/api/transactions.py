@@ -8,7 +8,7 @@ Endpoints (prefix /api/v1/transactions):
 """
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any
 
 from cli.http import request
 from cli.settings import settings
@@ -19,7 +19,7 @@ def _u(path: str = "") -> str:
 
 
 async def list_tx(
-    asset_id: Optional[str] = None,
+    asset_id: str | None = None,
     limit: int = 50,
     offset: int = 0,
 ) -> list[dict[str, Any]]:

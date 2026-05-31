@@ -1,4 +1,4 @@
-"""`qx agent …` — MiCA regulatory RAG agent."""
+"""`pxtly agent …` — MiCA regulatory RAG agent."""
 from __future__ import annotations
 
 import typer

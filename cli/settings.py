@@ -16,7 +16,7 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
-from typing import Literal, Optional
+from typing import Literal
 
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -81,7 +81,7 @@ class Settings(BaseSettings):
     keycloak_client_id: str = Field(default="qx-api")
     # Only set when using a confidential client. Public clients (PKCE) leave
     # this empty. Read from env only; never persisted.
-    keycloak_client_secret: Optional[str] = Field(default=None, repr=False)
+    keycloak_client_secret: str | None = Field(default=None, repr=False)
 
     # ── Transport security ──────────────────────────────────────────────────
     environment: Literal["production", "staging", "development"] = Field(default="production")
@@ -91,7 +91,7 @@ class Settings(BaseSettings):
     # Optional path to a CA bundle that signs the Keycloak / API certificates
     # (e.g. the self-signed CA from `stack/keycloak/gen-tls.sh`). When set,
     # this is used as the trust anchor instead of the system store.
-    ca_bundle_path: Optional[str] = Field(default=None)
+    ca_bundle_path: str | None = Field(default=None)
 
     # ── Real-time ───────────────────────────────────────────────────────────
     sse_reconnect_delay: float = Field(default=5.0, ge=1.0, le=60.0)
@@ -101,7 +101,7 @@ class Settings(BaseSettings):
 
     @field_validator("ca_bundle_path")
     @classmethod
-    def _resolve_ca_bundle(cls, v: Optional[str]) -> Optional[str]:
+    def _resolve_ca_bundle(cls, v: str | None) -> str | None:
         if not v:
             return None
         path = Path(v).expanduser()
@@ -120,7 +120,7 @@ class Settings(BaseSettings):
     # ── Lifecycle ───────────────────────────────────────────────────────────
 
     @classmethod
-    def load(cls) -> "Settings":
+    def load(cls) -> Settings:
         return cls(**_load_json_file())
 
     def persist(self) -> None:

@@ -5,7 +5,7 @@ Shared async HTTP entrypoint for every api/ client.
 
 Features:
   * Single httpx.AsyncClient per request (no pool leak across event loops).
-  * QxAuth middleware: Bearer injection + transparent refresh on 401.
+  * PxtlyAuth middleware: Bearer injection + transparent refresh on 401.
   * Exponential backoff retry for 429 / 5xx / network errors.
   * Cache write-through and offline-mode fallback via cli/cache.py.
   * Typed error mapping — never raises raw httpx exceptions.
@@ -17,16 +17,16 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from typing import Any, Optional, Protocol, runtime_checkable
+from typing import Any, Protocol, runtime_checkable
 
 import httpx
 
-from cli.http.auth import QxAuth
+from cli.http.auth import PxtlyAuth
 from cli.http.exceptions import (
     AuthError,
     NetworkError,
     NotFoundError,
-    QxApiError,
+    PxtlyApiError,
     ServerError,
     ValidationError,
 )
@@ -58,7 +58,7 @@ def _raise_for_response(response: httpx.Response) -> None:
             or body.get("error")
             or response.text
         )
-        if isinstance(detail, (dict, list)):
+        if isinstance(detail, dict | list):
             detail = str(detail)
     except Exception:
         detail = response.text or f"HTTP {response.status_code}"
@@ -73,14 +73,14 @@ def _raise_for_response(response: httpx.Response) -> None:
         raise ValidationError(f"[{code}] {detail}", status_code=code)
     if code >= 500:
         raise ServerError(f"[{code}] {detail}", status_code=code)
-    raise QxApiError(f"[{code}] {detail}", status_code=code)
+    raise PxtlyApiError(f"[{code}] {detail}", status_code=code)
 
 
 def _build_client(*, use_auth: bool) -> httpx.AsyncClient:
     return httpx.AsyncClient(
         verify=settings.verify_param,
         timeout=httpx.Timeout(settings.http_timeout),
-        auth=QxAuth() if use_auth else None,
+        auth=PxtlyAuth() if use_auth else None,
         limits=httpx.Limits(max_connections=20, max_keepalive_connections=10),
         follow_redirects=False,  # don't silently follow redirects across hosts
     )
@@ -90,7 +90,7 @@ async def request(
     method: str,
     url: str,
     *,
-    cache_key: Optional[str] = None,
+    cache_key: str | None = None,
     cache_ttl: float = 3600.0,
     skip_auth: bool = False,
     **kwargs: Any,
@@ -108,7 +108,7 @@ async def request(
     from cli.cache import cache
     from cli.network_state import set_online
 
-    last_exc: Optional[Exception] = None
+    last_exc: Exception | None = None
 
     for attempt in range(_RETRY_ATTEMPTS):
         try:

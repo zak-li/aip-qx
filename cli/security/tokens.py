@@ -22,7 +22,7 @@ import json
 import logging
 import time
 from dataclasses import asdict, dataclass
-from typing import Any, Optional
+from typing import Any
 
 import keyring
 import keyring.errors
@@ -42,7 +42,7 @@ class TokenBundle:
     """A full Keycloak/OIDC token bundle as persisted in the keyring."""
 
     access_token: str
-    refresh_token: Optional[str] = None
+    refresh_token: str | None = None
     token_type: str = "Bearer"
     expires_at: float = 0.0  # absolute Unix epoch, NOT a relative duration
     refresh_expires_at: float = 0.0
@@ -51,7 +51,7 @@ class TokenBundle:
     # ── Lifecycle helpers ───────────────────────────────────────────────────
 
     @classmethod
-    def from_oidc_response(cls, body: dict[str, Any]) -> "TokenBundle":
+    def from_oidc_response(cls, body: dict[str, Any]) -> TokenBundle:
         """Build a bundle from a raw Keycloak token endpoint response."""
         now = time.time()
         return cls(
@@ -80,7 +80,7 @@ class TokenBundle:
         ).decode("ascii")
 
     @classmethod
-    def from_b64(cls, s: str) -> "TokenBundle":
+    def from_b64(cls, s: str) -> TokenBundle:
         return cls(**json.loads(base64.urlsafe_b64decode(s.encode("ascii"))))
 
 
@@ -102,7 +102,7 @@ def save_token_bundle(bundle: TokenBundle) -> None:
         ) from exc
 
 
-def get_token_bundle() -> Optional[TokenBundle]:
+def get_token_bundle() -> TokenBundle | None:
     """Return the persisted bundle or None if nothing is stored."""
     try:
         raw = keyring.get_password(_SERVICE, _KEY)
@@ -119,7 +119,7 @@ def get_token_bundle() -> Optional[TokenBundle]:
         return None
 
 
-def get_access_token() -> Optional[str]:
+def get_access_token() -> str | None:
     """Return just the access token, or None. Does NOT refresh."""
     bundle = get_token_bundle()
     return bundle.access_token if bundle else None

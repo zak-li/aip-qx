@@ -23,5 +23,5 @@ pydantic-settings>=2.1,<3.0
 # Secure token storage
 keyring>=24.0,<26         # OS-native credential vault (Windows CredMan, macOS Keychain, Secret Service)
 
-# Optional — only required by `qx dashboard`
+# Optional — only required by `pxtly dashboard`
 textual>=0.83,<1.0

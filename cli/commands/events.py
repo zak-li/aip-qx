@@ -1,4 +1,4 @@
-"""`qx events stream` — live tail of the platform SSE feed."""
+"""`pxtly events stream` — live tail of the platform SSE feed."""
 from __future__ import annotations
 
 import typer
@@ -19,7 +19,7 @@ def stream(
         from cli.api.events import stream_events
     except ImportError as exc:
         display_error(f"SSE backend unavailable: {exc}")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from exc
 
     console.print("[dim]Streaming events — Ctrl-C to stop.[/dim]")
     try:

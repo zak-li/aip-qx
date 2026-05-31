@@ -20,9 +20,10 @@ import logging
 import sqlite3
 import threading
 import time
+from collections.abc import Generator
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Generator, Optional
+from typing import Any
 
 log = logging.getLogger(__name__)
 
@@ -34,7 +35,7 @@ class CacheDB:
         db_path.parent.mkdir(parents=True, exist_ok=True)
         self._path = db_path
         self._lock = threading.Lock()
-        self._conn: Optional[sqlite3.Connection] = None
+        self._conn: sqlite3.Connection | None = None
         self._ensure_schema()
 
     def _connection(self) -> sqlite3.Connection:
@@ -85,7 +86,7 @@ class CacheDB:
                 (key, data, time.time(), ttl),
             )
 
-    def get(self, key: str) -> Optional[Any]:
+    def get(self, key: str) -> Any | None:
         with self._lock:
             row = self._connection().execute(
                 "SELECT payload, cached_at, ttl FROM cache_entries WHERE key = ?",
@@ -115,11 +116,12 @@ class CacheDB:
             None, lambda: self.set(key, payload, ttl)
         )
 
-    async def aget(self, key: str) -> Optional[Any]:
+    async def aget(self, key: str) -> Any | None:
         return await asyncio.get_running_loop().run_in_executor(
             None, lambda: self.get(key)
         )
 
 
 from cli.settings import settings as _settings  # noqa: E402  — avoid circular import at module top
+
 cache: CacheDB = CacheDB(_settings.db_path)

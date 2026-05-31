@@ -8,7 +8,7 @@ Endpoints (prefix /api/v1/organizations):
 """
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any
 
 from cli.http import request
 from cli.settings import settings
@@ -26,8 +26,8 @@ async def list_orgs() -> list[dict[str, Any]]:
 
 
 async def list_users(
-    role: Optional[str] = None,
-    country: Optional[str] = None,
+    role: str | None = None,
+    country: str | None = None,
 ) -> list[dict[str, Any]]:
     params: dict[str, Any] = {}
     if role:

@@ -23,7 +23,15 @@ from rich.text import Text
 from rich.theme import Theme
 
 from cli.ui.theme import (
-    DANGER, DIM2, MUTED, NEUTRAL, OFFLINE, SUCCESS, V1, V2, WARN,
+    DANGER,
+    DIM2,
+    MUTED,
+    NEUTRAL,
+    OFFLINE,
+    SUCCESS,
+    V1,
+    V2,
+    WARN,
 )
 
 log = logging.getLogger(__name__)
@@ -92,10 +100,11 @@ def display_offline_warning() -> None:
 # -- Banner ------------------------------------------------------------------
 
 def display_banner() -> None:
+    from rich.text import Text
+
     from cli.network_state import is_online
     from cli.ui.ascii import animate
-    from rich.text import Text
-    from cli.ui.theme import V1, V2, MUTED, NEUTRAL
+    from cli.ui.theme import MUTED, NEUTRAL, V1, V2
 
     console.print()
     animate()

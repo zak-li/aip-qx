@@ -16,7 +16,7 @@ Endpoints (prefix /api/v1/assets):
 """
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any
 
 from cli.http import request
 from cli.settings import settings
@@ -68,8 +68,8 @@ async def valuations(asset_id: str) -> list[dict[str, Any]]:
 
 
 async def list_assets(
-    status: Optional[str] = None,
-    asset_type: Optional[str] = None,
+    status: str | None = None,
+    asset_type: str | None = None,
     limit: int = 50,
     offset: int = 0,
 ) -> list[dict[str, Any]]:

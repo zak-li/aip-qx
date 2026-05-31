@@ -1,4 +1,4 @@
-"""`qx zkp …` — zero-knowledge KYC credentials."""
+"""`pxtly zkp …` — zero-knowledge KYC credentials."""
 from __future__ import annotations
 
 import typer

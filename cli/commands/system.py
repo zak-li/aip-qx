@@ -1,4 +1,4 @@
-"""`qx system …` — platform health, config, audit log."""
+"""`pxtly system …` — platform health, config, audit log."""
 from __future__ import annotations
 
 import typer

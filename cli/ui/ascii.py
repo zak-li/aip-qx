@@ -6,8 +6,8 @@ Pixel-Bird ASCII Art Coloré - Version Dégradé SVG avec Socle Noir
 Spécifiquement optimisé pour le banner de démarrage de Pxtly CLI.
 """
 import base64
-import zlib
 import sys
+import zlib
 
 # Sprite compressé du grand oiseau cool
 BIRD_DATA = {
@@ -90,13 +90,13 @@ def animate():
     
     # Niveau 1 (Supérieur)
     l1 = ["  ", "  "] # Double marge pour centrer la barre réduite
-    for x in range(1, width - 1):
+    for _ in range(1, width - 1):
         l1.append(f"\033[38;2;{r_ped};{g_ped};{b_ped}m{BLOCK}\033[0m")
     write("".join(l1) + "\n")
     
     # Niveau 2 (Inférieur)
     l2 = ["  "]
-    for x in range(width):
+    for _ in range(width):
         l2.append(f"\033[38;2;{r_ped};{g_ped};{b_ped}m▄▄\033[0m")
     write("".join(l2) + "\n")
 

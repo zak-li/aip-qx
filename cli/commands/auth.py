@@ -1,4 +1,4 @@
-"""`qx auth …` — login, logout, refresh, profile, GDPR exports."""
+"""`pxtly auth …` — login, logout, refresh, profile, GDPR exports."""
 from __future__ import annotations
 
 import json
@@ -59,7 +59,7 @@ def status() -> None:
     """Show whether a session exists and when it expires."""
     bundle = get_token_bundle()
     if not bundle:
-        display_info("Not authenticated. Run: qx auth login")
+        display_info("Not authenticated. Run: pxtly auth login")
         return
     payload = {
         "token_type": bundle.token_type,
@@ -80,7 +80,7 @@ def refresh() -> None:
         raise typer.Exit(1)
     new = run_api(lambda: api_auth.refresh_now())
     if new is None:
-        display_info("Refresh token expired — run `qx auth login` again.")
+        display_info("Refresh token expired — run `pxtly auth login` again.")
         raise typer.Exit(1)
     display_success("Token refreshed.")
 

@@ -24,7 +24,7 @@ import logging
 import socket
 import threading
 import webbrowser
-from typing import Any, Optional
+from typing import Any
 from urllib.parse import parse_qs, urlparse
 
 from cli.http import request
@@ -97,7 +97,7 @@ class _CallbackHandler(http.server.BaseHTTPRequestHandler):
     received_query: dict[str, list[str]] = {}
     done: threading.Event = threading.Event()
 
-    def do_GET(self):  # noqa: N802
+    def do_GET(self):
         parsed = urlparse(self.path)
         _CallbackHandler.received_query = parse_qs(parsed.query)
         self.send_response(200)
@@ -107,7 +107,7 @@ class _CallbackHandler(http.server.BaseHTTPRequestHandler):
             "<html><body style='font-family:system-ui;text-align:center;"
             "padding:3rem'><h2>Pxtly CLI</h2>"
             "<p>Authentication complete — you can close this tab.</p>"
-            "</body></html>".encode("utf-8")
+            "</body></html>".encode()
         )
         _CallbackHandler.done.set()
 
@@ -190,7 +190,7 @@ async def login_pkce(open_browser: bool = True, timeout: float = 180.0) -> Token
 # ── Refresh / logout / profile ──────────────────────────────────────────────
 
 
-async def refresh_now() -> Optional[TokenBundle]:
+async def refresh_now() -> TokenBundle | None:
     """
     Force a refresh of the current token bundle. Returns the new bundle, or
     None if there is no refresh token or it has expired.

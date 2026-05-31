@@ -1,4 +1,4 @@
-"""`qx dashboard` — full-screen Textual TUI."""
+"""`pxtly dashboard` — full-screen Textual TUI."""
 from __future__ import annotations
 
 import typer
@@ -21,7 +21,7 @@ def launch(ctx: typer.Context) -> None:
         launch_dashboard()
     except ImportError as exc:
         display_error(f"Textual not installed: {exc}. Run: pip install textual")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from exc
     except Exception as exc:
         display_error(str(exc))
-        raise typer.Exit(1)
+        raise typer.Exit(1) from exc

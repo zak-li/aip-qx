@@ -12,7 +12,7 @@ Endpoints (prefix /api/v1/audit):
 """
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any
 
 from cli.http import request
 from cli.settings import settings
@@ -25,7 +25,7 @@ def _u(path: str = "") -> str:
 async def list_log(
     limit: int = 50,
     offset: int = 0,
-    actor: Optional[str] = None,
+    actor: str | None = None,
 ) -> list[dict[str, Any]]:
     params: dict[str, Any] = {"limit": limit, "offset": offset}
     if actor:

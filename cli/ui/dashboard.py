@@ -36,12 +36,12 @@ Architecture decisions
 """
 from __future__ import annotations
 
-import asyncio
 import logging
 import time
 from collections import deque
+from collections.abc import Callable
 from datetime import datetime
-from typing import ClassVar, Deque
+from typing import ClassVar
 
 from textual.app import App, ComposeResult
 from textual.binding import Binding
@@ -51,9 +51,9 @@ from textual.timer import Timer
 from textual.widgets import DataTable, Footer, RichLog, Static
 from textual.widgets._data_table import RowKey
 
+from cli.api.events import SseEvent, sse_client
 from cli.network_state import is_online, register_callback, unregister_callback
 from cli.settings import settings
-from cli.api.events import SseEvent, sse_client
 from cli.ui.theme import DASHBOARD_CSS
 
 log = logging.getLogger(__name__)
@@ -181,13 +181,13 @@ class QxDashboard(App[None]):
     _online: reactive[bool] = reactive(True)
     _start_time: float
     _ticker: Timer | None
-    _audit_keys: Deque[RowKey]
+    _audit_keys: deque[RowKey]
 
     def __init__(self) -> None:
         super().__init__()
         self._start_time = time.monotonic()
         self._ticker = None
-        self._audit_keys: Deque[RowKey] = deque(maxlen=_MAX_TABLE_ROWS)
+        self._audit_keys: deque[RowKey] = deque(maxlen=_MAX_TABLE_ROWS)
 
     # -- Layout --------------------------------------------------------------
 
@@ -374,7 +374,7 @@ class QxDashboard(App[None]):
     # -- Utilities -----------------------------------------------------------
 
     @staticmethod
-    def _safe_call(fn: "Callable[[], None]") -> None:
+    def _safe_call(fn: Callable[[], None]) -> None:
         """Execute fn, swallow and log any exception so the app never crashes."""
         try:
             fn()

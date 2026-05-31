@@ -10,7 +10,7 @@
 
 **Do not open a public issue for security vulnerabilities.**
 
-Send a report to [qx.yovtg@aleeas.com](mailto:qx.yovtg@aleeas.com) with the following:
+Send a report to [pxtly.yovtg@aleeas.com](mailto:pxtly.yovtg@aleeas.com) with the following:
 
 - A description of the vulnerability and its potential impact
 - Steps to reproduce or a minimal proof-of-concept

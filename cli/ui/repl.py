@@ -31,6 +31,7 @@ from prompt_toolkit.formatted_text import HTML
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.key_binding import KeyBindings
 
+from cli.async_runner import run
 from cli.network_state import is_online, register_callback
 from cli.settings import settings
 from cli.ui.console import (
@@ -47,8 +48,7 @@ from cli.ui.console import (
     enter_fullscreen,
     exit_fullscreen,
 )
-from cli.ui.theme import DIM, MUTED, V1, V2, V3
-from cli.async_runner import run
+from cli.ui.theme import DIM, MUTED, V1, V2
 
 log = logging.getLogger(__name__)
 
@@ -282,7 +282,8 @@ def _handle_ask(arg: str) -> None:
 
 
 def _handle_auth(arg: str) -> None:
-    from cli.api.auth import login_password, login_pkce, logout as _logout
+    from cli.api.auth import login_password, login_pkce
+    from cli.api.auth import logout as _logout
     from cli.security import delete_tokens
 
     if arg.lower() == "logout":

@@ -1,4 +1,4 @@
-"""`qx orgs …` — institutions, users, portfolios."""
+"""`pxtly orgs …` — institutions, users, portfolios."""
 from __future__ import annotations
 
 import typer

@@ -18,7 +18,7 @@ from cli.http.exceptions import (
     AuthError,
     NetworkError,
     NotFoundError,
-    QxApiError,
+    PxtlyApiError,
     ServerError,
     ValidationError,
 )
@@ -28,7 +28,7 @@ __all__ = [
     "CachedResponse",
     "NetworkError",
     "NotFoundError",
-    "QxApiError",
+    "PxtlyApiError",
     "ResponseLike",
     "ServerError",
     "ValidationError",

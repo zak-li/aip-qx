@@ -1,4 +1,4 @@
-"""`qx compliance …` — KYC / AML / sanctions workflows."""
+"""`pxtly compliance …` — KYC / AML / sanctions workflows."""
 from __future__ import annotations
 
 import typer

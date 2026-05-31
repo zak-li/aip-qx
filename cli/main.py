@@ -19,19 +19,19 @@ from cli.settings import settings
 configure_logging(settings.log_dir)
 
 # Sub-applications — imported *after* logging is configured. The order
-# determines the listing in `qx --help`.
-from cli.commands.auth import app as auth_app
+# determines the listing in `pxtly --help`.
+from cli.commands.agent import app as agent_app
 from cli.commands.assets import app as assets_app
 from cli.commands.audit import app as audit_app
+from cli.commands.auth import app as auth_app
 from cli.commands.compliance import app as compliance_app
-from cli.commands.organizations import app as orgs_app
-from cli.commands.transactions import app as tx_app
-from cli.commands.zkp import app as zkp_app
-from cli.commands.tribunal import app as tribunal_app
-from cli.commands.agent import app as agent_app
-from cli.commands.events import app as events_app
-from cli.commands.system import app as system_app
 from cli.commands.dashboard import app as dashboard_app
+from cli.commands.events import app as events_app
+from cli.commands.organizations import app as orgs_app
+from cli.commands.system import app as system_app
+from cli.commands.transactions import app as tx_app
+from cli.commands.tribunal import app as tribunal_app
+from cli.commands.zkp import app as zkp_app
 
 app = typer.Typer(
     name="pxtly",

@@ -19,21 +19,22 @@ import base64
 import functools
 import json
 import logging
-from typing import Any, Awaitable, Callable, Optional
+from collections.abc import Awaitable, Callable
+from typing import Any
 
 import typer
 
-from cli.http import AuthError, QxApiError
+from cli.async_runner import run
+from cli.http import AuthError, PxtlyApiError
 from cli.security.audit import audit_event
 from cli.security.tokens import get_token_bundle
 from cli.ui.console import console, display_error
 from cli.ui.theme import V2
-from cli.async_runner import run
 
 log = logging.getLogger(__name__)
 
 
-def actor() -> Optional[str]:
+def actor() -> str | None:
     """
     Best-effort actor identifier — pulled from the JWT 'preferred_username'
     or 'sub' claim. Used only for the local audit log; never trusted as
@@ -62,7 +63,7 @@ def run_api(coro_factory: Callable[[], Awaitable[Any]]) -> Any:
 def audited(command_name: str) -> Callable:
     """
     Decorator factory: wraps a command so that every invocation produces one
-    audit line (success or failure) and any QxApiError is rendered via the
+    audit line (success or failure) and any PxtlyApiError is rendered via the
     common error pipeline instead of bubbling up a stack trace.
     """
 
@@ -80,16 +81,16 @@ def audited(command_name: str) -> Callable:
                 )
                 display_error(
                     "Authentication required or session expired. "
-                    "Run: qx auth login"
+                    "Run: pxtly auth login"
                 )
-                raise typer.Exit(1)
-            except QxApiError as exc:
+                raise typer.Exit(1) from exc
+            except PxtlyApiError as exc:
                 audit_event(
                     command_name, args=kwargs, actor=actor(),
                     result="api_error", status_code=exc.status_code,
                 )
                 display_error(str(exc))
-                raise typer.Exit(1)
+                raise typer.Exit(1) from exc
             except typer.Exit:
                 raise
             except Exception as exc:
@@ -99,7 +100,7 @@ def audited(command_name: str) -> Callable:
                     result="error", extra={"exception_type": type(exc).__name__},
                 )
                 display_error(f"{type(exc).__name__}: {exc}")
-                raise typer.Exit(2)
+                raise typer.Exit(2) from exc
 
         return wrapper
 

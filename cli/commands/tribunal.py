@@ -1,4 +1,4 @@
-"""`qx tribunal …` — regulator commit-reveal voting."""
+"""`pxtly tribunal …` — regulator commit-reveal voting."""
 from __future__ import annotations
 
 import typer

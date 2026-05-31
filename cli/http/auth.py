@@ -3,7 +3,7 @@ cli/http/auth.py
 ----------------
 Bearer-token injection middleware with transparent refresh.
 
-`QxAuth.auth_flow` implements httpx's generator-based auth protocol:
+`PxtlyAuth.auth_flow` implements httpx's generator-based auth protocol:
 
   1. Read the persisted TokenBundle.
   2. If absent → send the request with no Authorization header (skipped for
@@ -21,7 +21,7 @@ is not protected by Bearer, so this doesn't recurse.
 from __future__ import annotations
 
 import logging
-from typing import Generator, Optional
+from collections.abc import Generator
 from urllib.parse import urlparse
 
 import httpx
@@ -48,7 +48,7 @@ def _is_auth_free(url: str) -> bool:
     return any(p in url for p in _AUTH_FREE_PATHS)
 
 
-def _attempt_refresh(bundle: TokenBundle) -> Optional[TokenBundle]:
+def _attempt_refresh(bundle: TokenBundle) -> TokenBundle | None:
     """
     POST to Keycloak's token endpoint with grant_type=refresh_token.
     Returns the new bundle on success, None on failure.
@@ -87,7 +87,7 @@ def _attempt_refresh(bundle: TokenBundle) -> Optional[TokenBundle]:
         return None
 
 
-class QxAuth(httpx.Auth):
+class PxtlyAuth(httpx.Auth):
     """httpx Auth implementation with transparent token refresh on 401."""
 
     # We re-send the same request body after a 401+refresh, so the body

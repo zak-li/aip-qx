@@ -3,7 +3,7 @@ cli/security/pkce.py
 --------------------
 OAuth 2.0 Authorization Code + PKCE helpers (RFC 7636).
 
-The CLI uses this for `qx auth login --pkce`: rather than asking the
+The CLI uses this for `pxtly auth login --pkce`: rather than asking the
 user for their password and posting it via Direct Access Grant
 (grant_type=password, which is officially discouraged by the OAuth 2.0
 Security Best Current Practice), it pops a browser to the Keycloak

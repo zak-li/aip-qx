@@ -1,4 +1,4 @@
-"""`qx tx …` — transaction history."""
+"""`pxtly tx …` — transaction history."""
 from __future__ import annotations
 
 import typer

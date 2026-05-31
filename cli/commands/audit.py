@@ -1,4 +1,4 @@
-"""`qx audit …` — on-chain audit + LLM-generated PDF reports."""
+"""`pxtly audit …` — on-chain audit + LLM-generated PDF reports."""
 from __future__ import annotations
 
 import typer

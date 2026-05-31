@@ -1,4 +1,4 @@
-"""`qx assets …` — RWA asset lifecycle."""
+"""`pxtly assets …` — RWA asset lifecycle."""
 from __future__ import annotations
 
 import typer

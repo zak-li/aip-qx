@@ -47,3 +47,9 @@ ignore = ["B008", "S101", "S104", "S311", "E501"]
 "core/features/agent/groq_client.py" = ["E501"]   # long prompt strings
 "core/features/zkp/*"                = ["S324"]   # SHA-1 not used; SHA-256/SHA-512 only
 "tests/**"                              = ["S", "B"]
+# CLI-specific exceptions:
+"cli/main.py"                = ["E402"]   # Typer pattern: configure_logging() before sub-app imports
+"cli/api/auth.py"            = ["RUF012", "ASYNC109"]  # single-shot loopback handler + intentional timeout param
+"cli/ui/console.py"          = ["S605", "S607"]  # `cls`/`clear` for fullscreen REPL is intentional
+"cli/ui/ascii.py"            = ["S110"]   # terminal init swallows errors by design
+"cli/security/pkce.py"       = ["RUF003"]  # ambiguous EN-DASH in prose comment
