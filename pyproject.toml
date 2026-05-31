@@ -1,3 +1,28 @@
+[project]
+name = "pxtly"
+version = "1.0.0"
+description = "Institutional Real-World Asset tokenisation on Hyperledger Fabric — MiCA compliance, dual endorsement, ZK-KYC, FHE fraud scoring, regulatory RAG agent."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { file = "LICENSE" }
+authors = [{ name = "Zakaria Rahali", email = "pxtly.yovtg@aleeas.com" }]
+keywords = ["blockchain", "hyperledger-fabric", "tokenization", "rwa", "compliance", "mica", "kyc", "aml", "zkp", "fhe"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial",
+    "Topic :: Security :: Cryptography",
+    "Operating System :: POSIX :: Linux",
+]
+
+[project.urls]
+Homepage = "https://github.com/zak-li/pxtly"
+Repository = "https://github.com/zak-li/pxtly"
+Issues = "https://github.com/zak-li/pxtly/issues"
+Changelog = "https://github.com/zak-li/pxtly/blob/master/CHANGELOG.md"
+
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]

@@ -16,6 +16,7 @@
   <a href="https://go.dev/"><img src="https://img.shields.io/badge/Go-1.21+-00ADD8.svg" alt="Go 1.21+"></a>
   <a href="https://fastapi.tiangolo.com/"><img src="https://img.shields.io/badge/FastAPI-0.135-009688.svg" alt="FastAPI"></a>
   <a href="https://www.keycloak.org/"><img src="https://img.shields.io/badge/Keycloak-24-4D4D4D.svg" alt="Keycloak 24"></a>
+  <a href="https://github.com/zak-li/pxtly/releases"><img src="https://img.shields.io/github/v/tag/zak-li/pxtly?label=version" alt="Version"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-BUSL_1.1-A2C2E8.svg" alt="License: BUSL 1.1"></a>
   <a href="https://github.com/zak-li/pxtly/commits/master"><img src="https://img.shields.io/github/last-commit/zak-li/pxtly" alt="Last commit"></a>
 </p>
@@ -290,65 +291,65 @@ The repository is organised by responsibility — application code, the Fabric c
 ### Application code
 
 ```
-core/                         FastAPI + Celery — application backend
-├── main.py                     ASGI entry, middleware, metrics
-├── config.py                   pydantic-settings root
+core/                         # FastAPI + Celery — application backend
+├── main.py                   #   ASGI entry, middleware, metrics
+├── config.py                 #   pydantic-settings root
 ├── features/
-│   ├── assets/                 Asset lifecycle (issue, transfer, freeze)
-│   ├── compliance/             AML / KYC / MiCA rules
-│   ├── audit/                  On-chain trail, integrity, PDF reports
-│   ├── auth/                   Keycloak OIDC + PKCE + GDPR
-│   ├── zkp/                    ZK-KYC Schnorr proofs
-│   ├── fhe/                    HElib CKKS fraud scorer
-│   └── agent/                  RAG pipeline + ChromaDB
-├── fabric_client/              Wallet, events, retry, circuit breaker
-├── grpc_server/                gRPC servicers
-└── grpc_generated/             protoc-generated stubs
+│   ├── assets/               #     Asset lifecycle (issue, transfer, freeze)
+│   ├── compliance/           #     AML / KYC / MiCA rules
+│   ├── audit/                #     On-chain trail, integrity, PDF reports
+│   ├── auth/                 #     Keycloak OIDC + PKCE + GDPR
+│   ├── zkp/                  #     ZK-KYC Schnorr proofs
+│   ├── fhe/                  #     HElib CKKS fraud scorer
+│   └── agent/                #     RAG pipeline + ChromaDB
+├── fabric_client/            #   Wallet, events, retry, circuit breaker
+├── grpc_server/              #   gRPC servicers
+└── grpc_generated/           #   protoc-generated stubs
 
-chaincode/                    Go smart contract — rwa-token, CCaaS
+chaincode/                    # Go smart contract — rwa-token, CCaaS
 
-cli/                          Pxtly CLI — Typer + Rich + Textual
-├── api/                        One client per REST resource
-├── commands/                   One Typer sub-app per domain
-├── http/                       Transport + auto-refresh on 401
-├── security/                   Keyring tokens, PKCE, audit log
-└── ui/                         Rich console, REPL, dashboard
+cli/                          # Pxtly CLI — Typer + Rich + Textual
+├── api/                      #   One client per REST resource
+├── commands/                 #   One Typer sub-app per domain
+├── http/                     #   Transport + auto-refresh on 401
+├── security/                 #   Keyring tokens, PKCE, audit log
+└── ui/                       #   Rich console, REPL, dashboard
 ```
 
 ### Consortium and side services
 
 ```
-fabric/                       Hyperledger Fabric 2.5 network
-├── config/                     configtx, connection profile, MSP material
-├── docker/                     Peers, orderer, CouchDB compose
-└── scripts/                    deploy-chaincode.sh
+fabric/                       # Hyperledger Fabric 2.5 network
+├── config/                   #   configtx, connection profile, MSP material
+├── docker/                   #   Peers, orderer, CouchDB compose
+└── scripts/                  #   deploy-chaincode.sh
 
-stack/                        Side services (run alongside the API)
-├── keycloak/                   Compose, TLS, identity-first flow
-├── monitoring/                 Prometheus, Grafana, Loki, Promtail
-└── vault/                      Policy + hcl config
+stack/                        # Side services (run alongside the API)
+├── keycloak/                 #   Compose, TLS, identity-first flow
+├── monitoring/               #   Prometheus, Grafana, Loki, Promtail
+└── vault/                    #   Policy + hcl config
 ```
 
 ### Persistence and tooling
 
 ```
-db/                           Schema, seeds, Alembic migrations
-├── migrations/                 alembic env + versions/
-├── sql/                        01_schema … 08_zkp_tables
-└── fixtures/                   csv/, json/ (sanctions manifest, …)
+db/                           # Schema, seeds, Alembic migrations
+├── migrations/               #   alembic env + versions/
+├── sql/                      #   01_schema … 08_zkp_tables
+└── fixtures/                 #   csv/, json/ (sanctions manifest, …)
 
-proto/                        gRPC service definitions (.proto)
+proto/                        # gRPC service definitions (.proto)
 
-scripts/                      Operational scripts (Python + bash)
-├── benchmarks/                 fhe.py, zkp.py
-├── simulations/                dashboard.py, full.py, jitter.py, game_theory.py
-├── seed_db.py                  Apply SQL seeds + compliance fixtures
-├── health_check.py             Liveness probe for CI / oncall
-├── generate_report.py          Build a sample audit PDF locally
-├── generate_protos.sh          Regenerate Python gRPC stubs
-└── install_latex.sh            Install LaTeX deps (TeX Live)
+scripts/                      # Operational scripts (Python + bash)
+├── benchmarks/               #   fhe.py, zkp.py
+├── simulations/              #   dashboard.py, full.py, jitter.py, game_theory.py
+├── seed_db.py                #   Apply SQL seeds + compliance fixtures
+├── health_check.py           #   Liveness probe for CI / oncall
+├── generate_report.py        #   Build a sample audit PDF locally
+├── generate_protos.sh        #   Regenerate Python gRPC stubs
+└── install_latex.sh          #   Install LaTeX deps (TeX Live)
 
-tests/                        pytest suite + fixtures
+tests/                        # pytest suite + fixtures
 ```
 
 ### Repository root
