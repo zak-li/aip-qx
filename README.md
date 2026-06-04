@@ -11,18 +11,21 @@
 
 <p align="center">
   <a href="https://github.com/zak-li/pxtly/releases"><img src="https://img.shields.io/github/v/tag/zak-li/pxtly?label=version&color=4AAFFD" alt="Version"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache_2.0-4EB4FD.svg" alt="License: Apache 2.0"></a>
-  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.12+-51B9FD.svg" alt="Python 3.12+"></a>
-  <a href="https://go.dev/"><img src="https://img.shields.io/badge/Go-1.21+-55BFFD.svg" alt="Go 1.21+"></a>
-  <a href="https://hyperledger-fabric.readthedocs.io/"><img src="https://img.shields.io/badge/Hyperledger_Fabric-2.5-59C4FD.svg" alt="Hyperledger Fabric 2.5"></a>
-  <a href="https://www.postgresql.org/"><img src="https://img.shields.io/badge/PostgreSQL-14+-5DC9FD.svg" alt="PostgreSQL 14+"></a>
-  <a href="https://neo4j.com/"><img src="https://img.shields.io/badge/Neo4j-5.23-61CEFD.svg" alt="Neo4j 5.23"></a>
-  <a href="https://redis.io/"><img src="https://img.shields.io/badge/Redis-7+-64D4FD.svg" alt="Redis 7+"></a>
-  <a href="https://www.docker.com/"><img src="https://img.shields.io/badge/Docker-26.1+-68D9FC.svg" alt="Docker"></a>
-  <a href="https://www.keycloak.org/"><img src="https://img.shields.io/badge/Keycloak-24-6CDEFC.svg" alt="Keycloak 24"></a>
-  <a href="https://www.vaultproject.io/"><img src="https://img.shields.io/badge/HashiCorp_Vault-1.16+-70E3FC.svg" alt="HashiCorp Vault"></a>
-  <a href="https://grafana.com/"><img src="https://img.shields.io/badge/Grafana-11.0+-73E9FC.svg" alt="Grafana"></a>
-  <a href="https://docs.astral.sh/ruff/"><img src="https://img.shields.io/badge/code_style-ruff-77EEFC.svg" alt="Code style: ruff"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache_2.0-4DB3FD.svg" alt="License: Apache 2.0"></a>
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.12+-50B8FD.svg" alt="Python 3.12+"></a>
+  <a href="https://go.dev/"><img src="https://img.shields.io/badge/Go-1.21+-53BCFD.svg" alt="Go 1.21+"></a>
+  <a href="https://docs.celeryq.dev/"><img src="https://img.shields.io/badge/Celery-5.6+-56C0FD.svg" alt="Celery"></a>
+  <a href="https://hyperledger-fabric.readthedocs.io/"><img src="https://img.shields.io/badge/Hyperledger_Fabric-2.5-59C4FD.svg" alt="Hyperledger Fabric 2.5"></a><br>
+  <a href="https://www.postgresql.org/"><img src="https://img.shields.io/badge/PostgreSQL-14+-5CC9FD.svg" alt="PostgreSQL 14+"></a>
+  <a href="https://neo4j.com/"><img src="https://img.shields.io/badge/Neo4j-5.23-5FCDFD.svg" alt="Neo4j 5.23"></a>
+  <a href="https://redis.io/"><img src="https://img.shields.io/badge/Redis-7+-63D1FD.svg" alt="Redis 7+"></a>
+  <a href="https://docs.trychroma.com/"><img src="https://img.shields.io/badge/ChromaDB-1.5-66D5FC.svg" alt="ChromaDB"></a>
+  <a href="https://www.keycloak.org/"><img src="https://img.shields.io/badge/Keycloak-24-69DAFC.svg" alt="Keycloak 24"></a>
+  <a href="https://www.vaultproject.io/"><img src="https://img.shields.io/badge/HashiCorp_Vault-1.16+-6CDEFC.svg" alt="HashiCorp Vault"></a><br>
+  <a href="https://prometheus.io/"><img src="https://img.shields.io/badge/Prometheus-2.x-6FE2FC.svg" alt="Prometheus"></a>
+  <a href="https://grafana.com/"><img src="https://img.shields.io/badge/Grafana-11.0+-72E6FC.svg" alt="Grafana"></a>
+  <a href="https://www.docker.com/"><img src="https://img.shields.io/badge/Docker-26.1+-75EBFC.svg" alt="Docker"></a>
+  <a href="https://docs.astral.sh/ruff/"><img src="https://img.shields.io/badge/code_style-ruff-78EFFC.svg" alt="Code style: ruff"></a>
   <a href="https://docs.pytest.org/"><img src="https://img.shields.io/badge/tested_with-pytest-7BF3FC.svg" alt="Tested with pytest"></a>
 </p>
 
@@ -30,7 +33,7 @@
 
 ## Pxtly
 
-> **Pxtly**: turning regulatory trust into executable code. Compliance isn't bolted on, it endorses every transaction.
+> **Pxtly** (/pɪkstli/): **Px** (Price), **T**x (Transaction), and **L**edger. Compliant asset pricing and execution directly on-chain.
 
 Pxtly is an institutional platform for tokenising Real World Assets on a permissioned Hyperledger Fabric network. It handles the full asset lifecycle from issuance to redemption, with built-in AML/KYC compliance, ZK-KYC identity proofs, FHE-based fraud scoring, and a RAG regulatory agent for MiCA queries.
 
@@ -48,13 +51,13 @@ Pxtly is an institutional platform for tokenising Real World Assets on a permiss
 
 ## Features
 
-The Fabric network runs two organisations, **BANK01** (issuer) and **REG01** (regulator), each with a dedicated peer and CouchDB state database. The Go chaincode runs as Chaincode-as-a-Service and enforces a **2-of-2 endorsement policy** on every state-changing transaction. Assets move through an `ACTIF`, `GELE`, `EN_EMISSION`, `REMBOURSE` lifecycle recorded immutably on-chain, and Fabric events stream live via gRPC with automatic reconnection.
+Pxtly runs a permissioned `Hyperledger Fabric` network with two organizations (`BANK01` and `REG01`) and `CouchDB` state databases, synchronized with an application `PostgreSQL` database for a dual-ledger source of truth. The Go contract is deployed as `Chaincode-as-a-Service (CCaaS)` and enforces a `2-of-2 endorsement policy`. Real-world assets transition through a strict, immutable lifecycle (`EN_EMISSION`, `ACTIF`, `GELE`, `REMBOURSE`) with all ledger modifications monitored by a resilient `gRPC block listener`.
 
-The platform embeds compliance directly into transaction execution and asset lifecycle management. Sanctions screening is backed by Ed25519-signed manifests with fuzzy PEP/UN/EU matching, while the MiCA enforcement layer validates exposure boundaries (Art. 68 thresholds), restricted asset classes, and supervisory reporting requirements. zk-KYC workflows enable cryptographic identity attestation through Merkle proofs without exposing underlying credentials. Encrypted fraud analytics powered by Fully Homomorphic Encryption (HElib CKKS) evaluate AML risk on confidential datasets, with persistent monitoring of KYC validity and systemic concentration exposure.
+The platform embeds regulatory compliance directly into the ledger lifecycle. Sanctions screening features `Ed25519-signed manifests` with fuzzy PEP matching, while the `MiCA compliance engine` automatically enforces transaction boundaries (Art. 68) and asset restrictions. Identity verification is handled cryptographically via `Zero-Knowledge Proofs` (`zk-KYC` Schnorr proofs) to protect user privacy under `GDPR`, and confidential AML risk calculations are evaluated over encrypted indicators using `Fully Homomorphic Encryption` (`FHE` CKKS via `HElib`).
 
-Pxtly exposes a FastAPI REST API and a gRPC server in parallel. Authentication is OIDC-based via Keycloak with PKCE (authorization_code flow). Private keys for Fabric identities are stored in HashiCorp Vault (KV v2, AppRole in production), and every response carries six security headers with rate limiting and trusted-proxy host filtering.
+Enterprise-grade security is achieved by delegating identity management to `Keycloak OIDC` (authorization flow with `PKCE`) and storing Fabric signing keys in `HashiCorp Vault` (`KV v2`). To mitigate memory-dump attacks, private keys are cleared from RAM immediately after signature generation using low-level memory operations. Distributed transaction consistency between `PostgreSQL` and `Fabric` is guaranteed through the `SAGA orchestration pattern`, which triggers automated compensating actions on execution failures.
 
-Every transaction produces an on-chain audit entry. An off-chain integrity checker verifies hashes independently, PDF audit reports are generated asynchronously via Celery + LaTeX, and the RAG agent answers regulatory questions by querying a ChromaDB vector store with a Groq-hosted LLM.
+Platform monitoring and auditing are decentralized. A dedicated `Tribunal` resolves transaction disputes through a three-phase `Commit-Reveal` voting protocol, applying `game-theoretic slashing` to penalize dishonest auditors. Real-time updates are streamed to clients via `Server-Sent Events (SSE)` backed by `Redis Pub/Sub`, and an automated `Celery` pipeline compiles certified PDF audit reports and feeds a regulatory `RAG agent` powered by `ChromaDB` and `Groq`.
 
 ## Requirements
 
@@ -80,6 +83,10 @@ Every transaction produces an on-chain audit entry. An off-chain integrity check
 | HashiCorp Vault | Fabric identity key storage (KV v2) |
 | Keycloak 24 | OIDC SSO / PKCE authentication |
 | Neo4j 5+ | Graph database for AML relationship analysis (Aura in production) |
+| ChromaDB | Vector database for RAG agent semantic indexing |
+| Groq API / LLaMA 3.3 | Large Language Model engine for regulatory querying |
+| HElib CKKS (C++/pybind11) | Native client & server library for Homomorphic Encryption (FHE) |
+| TeX Live / pdflatex | Document compiler for certified PDF audit reports |
 | Docker + Compose | Peers, orderer, CouchDB, Keycloak, API, Celery containers |
 
 ## Quick Start
