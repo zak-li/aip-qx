@@ -73,3 +73,7 @@ dapp/
 
 # Windows binaries
 *.exe
+
+# Sub-repository for custom redirect links
+pxtly-links/
+
